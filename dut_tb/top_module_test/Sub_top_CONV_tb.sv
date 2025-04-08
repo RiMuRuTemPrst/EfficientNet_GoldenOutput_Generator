@@ -75,7 +75,7 @@ module Sub_top_CONV_tb #(
     //reg [3:0] PE_next_valid;
     int count_for_layer_1 =0 ;
     int count_for_layer_2 =0;
-    
+    int count_GOPS = 0;
     reg [19:0] addr_w[15:0];
     reg [19:0] addr_IFM;
     reg [15:0] PE_reset;
