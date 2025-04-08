@@ -54,6 +54,7 @@ module Sub_top_CONV(
     input  wire [7:0] IFM_W,
     input  wire [1:0] stride,
 
+    input  wire [7:0] IFM_C_layer2,
     input  wire [7:0] OFM_C_layer2,
     output wire [15:0] valid,
     //output wire [15:0] done_window,
@@ -636,12 +637,12 @@ module Sub_top_CONV(
         .OFM_3(OFM_3_n_state)
     );
 
-    CONV_1x1_controller addr_n_state(
+    CONV_1x1_controller CONV_1x1_controller_inst(
         .clk(clk),
         .reset_n(reset),
         .valid(wr_data_valid),
-        .weight_c(OFM_C_layer2),
-        .num_filter(32),
+        .weight_c(IFM_C_layer2),
+        .num_filter(OFM_C_layer2),
         .cal_start(cal_start_ctl),
         .addr_ifm(addr_ram_next_rd),
         .addr_weight(addr_w_n_state),

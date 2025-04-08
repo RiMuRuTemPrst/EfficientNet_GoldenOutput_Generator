@@ -21,13 +21,10 @@ reg [7:0] valid_count;
 reg [7:0] count_deep_pixel;
 reg [7:0] count_filter;
 reg next_filter;
-//value for mode of uart
-// reg [6:0] end_bit;
-// reg [3:0] bit_num;
-// reg [3:0] bit_to_end;
-// reg [3:0] sum_of_bit;
-//calculate value for mode of uart
-//assign end_bit = 24 + stop_bit_num * 16;
+
+parameter Num_of_PE_x4     = 16;
+
+
 always_comb begin
     // case(data_bit_num)
     //     2'b00: bit_num = 5;
@@ -61,7 +58,7 @@ always_comb begin
 
         // ST_START_BIT
         START_PIXEL : begin
-            if((valid_count >= weight_c - 8) || (next_filter) ) begin
+            if((valid_count >= weight_c - 'h8) || (next_filter) ) begin
                 next_state =  DEEP_FETCH;
             end
             else next_state =  START_PIXEL;
@@ -69,11 +66,11 @@ always_comb begin
 
         // ST_DATA_BIT
         DEEP_FETCH : begin
-            if(count_deep_pixel < weight_c - 4) begin
+            if(count_deep_pixel < weight_c - 'h4) begin
                 next_state = DEEP_FETCH ;
             end
             else begin
-                if(count_filter < num_filter - 4) next_state =  START_PIXEL;
+                if(count_filter < num_filter - 'h4) next_state =  START_PIXEL;
                 else next_state =  END_PIXEL;
             end
         end
@@ -110,12 +107,12 @@ end
                 PE_reset <=4'b1111;
                 if (count_filter!=0) PE_finish <=4'b1111;
                 else                 PE_finish <=4'b0;
-                if(valid == 1) valid_count <= valid_count + 16;
+                if(valid == 1) valid_count <= valid_count + Num_of_PE_x4;
                 if(next_state == START_PIXEL) begin
                 end
                 if(next_state == DEEP_FETCH) begin
-                    addr_ifm <= addr_ifm + 4 ;
-                    addr_weight <= addr_weight + 4 ;
+                    addr_ifm <= addr_ifm + 'h4 ;
+                    addr_weight <= addr_weight + 'h4 ;
                     if(~next_filter)
                     valid_count <= 0;
                     count_deep_pixel <= count_deep_pixel + 4;
@@ -124,24 +121,22 @@ end
             DEEP_FETCH: begin
                 PE_reset <=0;
                 PE_finish <=0;
-                if(valid == 1) valid_count <= valid_count + 16;
+                if(valid == 1) valid_count <= valid_count + Num_of_PE_x4;
                 if(next_state == DEEP_FETCH) begin
-                    addr_ifm <= addr_ifm + 4 ;
-                    addr_weight <= addr_weight + 4 ;
-                    count_deep_pixel <= count_deep_pixel + 4;
+                    addr_ifm <= addr_ifm + 'h4 ;
+                    addr_weight <= addr_weight + 'h4 ;
+                    count_deep_pixel <= count_deep_pixel + 'h4;
                 end
 
                 if(next_state == START_PIXEL) begin
-                    addr_ifm <= addr_ifm - 124 ;
-                    addr_weight <= addr_weight + 4 ;
+                    addr_ifm <= addr_ifm - (weight_c-'h4) ;
+                    addr_weight <= addr_weight + 'h4 ;
                     count_deep_pixel <= 0;
-                    count_filter <= count_filter + 4;
+                    count_filter <= count_filter + 'h4;
                     next_filter <= 1;
                 end
 
                 if(next_state == END_PIXEL) begin
-                    // addr_ifm <= addr_ifm + 4 ;
-                    // addr_weight <= addr_weight + 4 ;
                     count_deep_pixel <= 0;
                     count_filter <= 0;
                 end

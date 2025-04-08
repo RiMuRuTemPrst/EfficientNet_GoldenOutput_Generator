@@ -5,7 +5,7 @@ import math
 # === CONFIG: Đặt tham số trực tiếp ở đây ===
 ifm_height = 56
 ifm_width = 56
-ifm_channel = 128
+ifm_channel = 64
 
 weight_height = 1
 weight_width = 1

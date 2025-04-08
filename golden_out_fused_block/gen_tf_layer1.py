@@ -3,16 +3,16 @@ import tensorflow as tf
 import math
 
 # === CONFIG: Đặt tham số trực tiếp ở đây ===
-ifm_height = 58
-ifm_width = 58
-ifm_channel = 32
+ifm_height = 114
+ifm_width = 114
+ifm_channel = 16
 
 weight_height = 3
 weight_width = 3
-weight_filter = 128
+weight_filter = 64
 
 padding = 0 # Padding P
-stride = 1   # Stride S
+stride = 2   # Stride S
 
 # === Hàm đọc dữ liệu từ file HEX với thứ tự hàng → cột → channel → filter ===
 def read_hex_file_weight(filename, shape):

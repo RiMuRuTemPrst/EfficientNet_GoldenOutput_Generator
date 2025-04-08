@@ -1,0 +1,85 @@
+### CÁC LỚP THUỘC FUSED BLOCK (ví dụ: block1a) ###
+
+Layer 8: block1a_dwconv
+  Input shape: (None, 112, 112, 32)
+  Output shape: (None, 112, 112, 32)
+  Kernel size: (3, 3)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 288
+--------------------------------------------------
+Layer 9: block1a_bn
+  Input shape: (None, 112, 112, 32)
+  Output shape: (None, 112, 112, 32)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 128
+--------------------------------------------------
+Layer 10: block1a_activation
+  Input shape: (None, 112, 112, 32)
+  Output shape: (None, 112, 112, 32)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 11: block1a_se_squeeze
+  Input shape: (None, 112, 112, 32)
+  Output shape: (None, 32)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 12: block1a_se_reshape
+  Input shape: (None, 32)
+  Output shape: (None, 1, 1, 32)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 13: block1a_se_reduce
+  Input shape: (None, 1, 1, 32)
+  Output shape: (None, 1, 1, 8)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 264
+  IFM_W: 1, IFM_C: 32, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 8
+--------------------------------------------------
+Layer 14: block1a_se_expand
+  Input shape: (None, 1, 1, 8)
+  Output shape: (None, 1, 1, 32)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 288
+  IFM_W: 1, IFM_C: 8, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 32
+--------------------------------------------------
+Layer 15: block1a_se_excite
+  Input shape: None
+  Output shape: (None, 112, 112, 32)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 16: block1a_project_conv
+  Input shape: (None, 112, 112, 32)
+  Output shape: (None, 112, 112, 16)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 512
+  IFM_W: 112, IFM_C: 32, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 16
+--------------------------------------------------
+Layer 17: block1a_project_bn
+  Input shape: (None, 112, 112, 16)
+  Output shape: (None, 112, 112, 16)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 64
+--------------------------------------------------

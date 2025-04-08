@@ -8,12 +8,12 @@ def save_to_hex_file(data, filename):
 
 if __name__ == "__main__":
     # Cố định tham số cho Conv1
-    ifm_height = 58
-    ifm_width = 58
-    ifm_channel = 32
+    ifm_height = 114
+    ifm_width = 114
+    ifm_channel = 16
     weight_height = 3
     weight_width = 3
-    weight_filter = 128
+    weight_filter = 64
     padding = 0
 
     # Cố định tham số cho Conv2

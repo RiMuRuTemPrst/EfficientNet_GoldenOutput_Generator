@@ -1,0 +1,1996 @@
+
+### THÔNG TIN CHI TIẾT CÁC LỚP ###
+
+Layer 0: input_layer_14
+  Input shape: None
+  Output shape: (None, 224, 224, 3)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 1: rescaling_28
+  Input shape: (None, 224, 224, 3)
+  Output shape: (None, 224, 224, 3)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 2: normalization_14
+  Input shape: (None, 224, 224, 3)
+  Output shape: (None, 224, 224, 3)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 7
+--------------------------------------------------
+Layer 3: rescaling_29
+  Input shape: (None, 224, 224, 3)
+  Output shape: (None, 224, 224, 3)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 4: stem_conv_pad
+  Input shape: (None, 224, 224, 3)
+  Output shape: (None, 225, 225, 3)
+  Kernel size: None
+  Strides: None
+  Padding: ((0, 1), (0, 1))
+  Number of parameters: 0
+--------------------------------------------------
+Layer 5: stem_conv
+  Input shape: (None, 225, 225, 3)
+  Output shape: (None, 112, 112, 32)
+  Kernel size: (3, 3)
+  Strides: (2, 2)
+  Padding: valid
+  Number of parameters: 864
+  IFM_W: 225, IFM_C: 3, Kernel_W: 3, Padding: valid, Stride: 2, OFM_C: 32
+--------------------------------------------------
+Layer 6: stem_bn
+  Input shape: (None, 112, 112, 32)
+  Output shape: (None, 112, 112, 32)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 128
+--------------------------------------------------
+Layer 7: stem_activation
+  Input shape: (None, 112, 112, 32)
+  Output shape: (None, 112, 112, 32)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 8: block1a_dwconv
+  Input shape: (None, 112, 112, 32)
+  Output shape: (None, 112, 112, 32)
+  Kernel size: (3, 3)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 288
+--------------------------------------------------
+Layer 9: block1a_bn
+  Input shape: (None, 112, 112, 32)
+  Output shape: (None, 112, 112, 32)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 128
+--------------------------------------------------
+Layer 10: block1a_activation
+  Input shape: (None, 112, 112, 32)
+  Output shape: (None, 112, 112, 32)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 11: block1a_se_squeeze
+  Input shape: (None, 112, 112, 32)
+  Output shape: (None, 32)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 12: block1a_se_reshape
+  Input shape: (None, 32)
+  Output shape: (None, 1, 1, 32)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 13: block1a_se_reduce
+  Input shape: (None, 1, 1, 32)
+  Output shape: (None, 1, 1, 8)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 264
+  IFM_W: 1, IFM_C: 32, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 8
+--------------------------------------------------
+Layer 14: block1a_se_expand
+  Input shape: (None, 1, 1, 8)
+  Output shape: (None, 1, 1, 32)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 288
+  IFM_W: 1, IFM_C: 8, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 32
+--------------------------------------------------
+Layer 15: block1a_se_excite
+  Input shape: None
+  Output shape: (None, 112, 112, 32)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 16: block1a_project_conv
+  Input shape: (None, 112, 112, 32)
+  Output shape: (None, 112, 112, 16)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 512
+  IFM_W: 112, IFM_C: 32, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 16
+--------------------------------------------------
+Layer 17: block1a_project_bn
+  Input shape: (None, 112, 112, 16)
+  Output shape: (None, 112, 112, 16)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 64
+--------------------------------------------------
+Layer 18: block2a_expand_conv
+  Input shape: (None, 112, 112, 16)
+  Output shape: (None, 112, 112, 96)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 1536
+  IFM_W: 112, IFM_C: 16, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 96
+--------------------------------------------------
+Layer 19: block2a_expand_bn
+  Input shape: (None, 112, 112, 96)
+  Output shape: (None, 112, 112, 96)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 384
+--------------------------------------------------
+Layer 20: block2a_expand_activation
+  Input shape: (None, 112, 112, 96)
+  Output shape: (None, 112, 112, 96)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 21: block2a_dwconv_pad
+  Input shape: (None, 112, 112, 96)
+  Output shape: (None, 113, 113, 96)
+  Kernel size: None
+  Strides: None
+  Padding: ((0, 1), (0, 1))
+  Number of parameters: 0
+--------------------------------------------------
+Layer 22: block2a_dwconv
+  Input shape: (None, 113, 113, 96)
+  Output shape: (None, 56, 56, 96)
+  Kernel size: (3, 3)
+  Strides: (2, 2)
+  Padding: valid
+  Number of parameters: 864
+--------------------------------------------------
+Layer 23: block2a_bn
+  Input shape: (None, 56, 56, 96)
+  Output shape: (None, 56, 56, 96)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 384
+--------------------------------------------------
+Layer 24: block2a_activation
+  Input shape: (None, 56, 56, 96)
+  Output shape: (None, 56, 56, 96)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 25: block2a_se_squeeze
+  Input shape: (None, 56, 56, 96)
+  Output shape: (None, 96)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 26: block2a_se_reshape
+  Input shape: (None, 96)
+  Output shape: (None, 1, 1, 96)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 27: block2a_se_reduce
+  Input shape: (None, 1, 1, 96)
+  Output shape: (None, 1, 1, 4)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 388
+  IFM_W: 1, IFM_C: 96, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 4
+--------------------------------------------------
+Layer 28: block2a_se_expand
+  Input shape: (None, 1, 1, 4)
+  Output shape: (None, 1, 1, 96)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 480
+  IFM_W: 1, IFM_C: 4, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 96
+--------------------------------------------------
+Layer 29: block2a_se_excite
+  Input shape: None
+  Output shape: (None, 56, 56, 96)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 30: block2a_project_conv
+  Input shape: (None, 56, 56, 96)
+  Output shape: (None, 56, 56, 24)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 2304
+  IFM_W: 56, IFM_C: 96, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 24
+--------------------------------------------------
+Layer 31: block2a_project_bn
+  Input shape: (None, 56, 56, 24)
+  Output shape: (None, 56, 56, 24)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 96
+--------------------------------------------------
+Layer 32: block2b_expand_conv
+  Input shape: (None, 56, 56, 24)
+  Output shape: (None, 56, 56, 144)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 3456
+  IFM_W: 56, IFM_C: 24, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 144
+--------------------------------------------------
+Layer 33: block2b_expand_bn
+  Input shape: (None, 56, 56, 144)
+  Output shape: (None, 56, 56, 144)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 576
+--------------------------------------------------
+Layer 34: block2b_expand_activation
+  Input shape: (None, 56, 56, 144)
+  Output shape: (None, 56, 56, 144)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 35: block2b_dwconv
+  Input shape: (None, 56, 56, 144)
+  Output shape: (None, 56, 56, 144)
+  Kernel size: (3, 3)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 1296
+--------------------------------------------------
+Layer 36: block2b_bn
+  Input shape: (None, 56, 56, 144)
+  Output shape: (None, 56, 56, 144)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 576
+--------------------------------------------------
+Layer 37: block2b_activation
+  Input shape: (None, 56, 56, 144)
+  Output shape: (None, 56, 56, 144)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 38: block2b_se_squeeze
+  Input shape: (None, 56, 56, 144)
+  Output shape: (None, 144)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 39: block2b_se_reshape
+  Input shape: (None, 144)
+  Output shape: (None, 1, 1, 144)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 40: block2b_se_reduce
+  Input shape: (None, 1, 1, 144)
+  Output shape: (None, 1, 1, 6)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 870
+  IFM_W: 1, IFM_C: 144, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 6
+--------------------------------------------------
+Layer 41: block2b_se_expand
+  Input shape: (None, 1, 1, 6)
+  Output shape: (None, 1, 1, 144)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 1008
+  IFM_W: 1, IFM_C: 6, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 144
+--------------------------------------------------
+Layer 42: block2b_se_excite
+  Input shape: None
+  Output shape: (None, 56, 56, 144)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 43: block2b_project_conv
+  Input shape: (None, 56, 56, 144)
+  Output shape: (None, 56, 56, 24)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 3456
+  IFM_W: 56, IFM_C: 144, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 24
+--------------------------------------------------
+Layer 44: block2b_project_bn
+  Input shape: (None, 56, 56, 24)
+  Output shape: (None, 56, 56, 24)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 96
+--------------------------------------------------
+Layer 45: block2b_drop
+  Input shape: (None, 56, 56, 24)
+  Output shape: (None, 56, 56, 24)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 46: block2b_add
+  Input shape: None
+  Output shape: (None, 56, 56, 24)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 47: block3a_expand_conv
+  Input shape: (None, 56, 56, 24)
+  Output shape: (None, 56, 56, 144)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 3456
+  IFM_W: 56, IFM_C: 24, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 144
+--------------------------------------------------
+Layer 48: block3a_expand_bn
+  Input shape: (None, 56, 56, 144)
+  Output shape: (None, 56, 56, 144)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 576
+--------------------------------------------------
+Layer 49: block3a_expand_activation
+  Input shape: (None, 56, 56, 144)
+  Output shape: (None, 56, 56, 144)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 50: block3a_dwconv_pad
+  Input shape: (None, 56, 56, 144)
+  Output shape: (None, 59, 59, 144)
+  Kernel size: None
+  Strides: None
+  Padding: ((1, 2), (1, 2))
+  Number of parameters: 0
+--------------------------------------------------
+Layer 51: block3a_dwconv
+  Input shape: (None, 59, 59, 144)
+  Output shape: (None, 28, 28, 144)
+  Kernel size: (5, 5)
+  Strides: (2, 2)
+  Padding: valid
+  Number of parameters: 3600
+--------------------------------------------------
+Layer 52: block3a_bn
+  Input shape: (None, 28, 28, 144)
+  Output shape: (None, 28, 28, 144)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 576
+--------------------------------------------------
+Layer 53: block3a_activation
+  Input shape: (None, 28, 28, 144)
+  Output shape: (None, 28, 28, 144)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 54: block3a_se_squeeze
+  Input shape: (None, 28, 28, 144)
+  Output shape: (None, 144)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 55: block3a_se_reshape
+  Input shape: (None, 144)
+  Output shape: (None, 1, 1, 144)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 56: block3a_se_reduce
+  Input shape: (None, 1, 1, 144)
+  Output shape: (None, 1, 1, 6)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 870
+  IFM_W: 1, IFM_C: 144, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 6
+--------------------------------------------------
+Layer 57: block3a_se_expand
+  Input shape: (None, 1, 1, 6)
+  Output shape: (None, 1, 1, 144)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 1008
+  IFM_W: 1, IFM_C: 6, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 144
+--------------------------------------------------
+Layer 58: block3a_se_excite
+  Input shape: None
+  Output shape: (None, 28, 28, 144)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 59: block3a_project_conv
+  Input shape: (None, 28, 28, 144)
+  Output shape: (None, 28, 28, 40)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 5760
+  IFM_W: 28, IFM_C: 144, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 40
+--------------------------------------------------
+Layer 60: block3a_project_bn
+  Input shape: (None, 28, 28, 40)
+  Output shape: (None, 28, 28, 40)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 160
+--------------------------------------------------
+Layer 61: block3b_expand_conv
+  Input shape: (None, 28, 28, 40)
+  Output shape: (None, 28, 28, 240)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 9600
+  IFM_W: 28, IFM_C: 40, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 240
+--------------------------------------------------
+Layer 62: block3b_expand_bn
+  Input shape: (None, 28, 28, 240)
+  Output shape: (None, 28, 28, 240)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 960
+--------------------------------------------------
+Layer 63: block3b_expand_activation
+  Input shape: (None, 28, 28, 240)
+  Output shape: (None, 28, 28, 240)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 64: block3b_dwconv
+  Input shape: (None, 28, 28, 240)
+  Output shape: (None, 28, 28, 240)
+  Kernel size: (5, 5)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 6000
+--------------------------------------------------
+Layer 65: block3b_bn
+  Input shape: (None, 28, 28, 240)
+  Output shape: (None, 28, 28, 240)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 960
+--------------------------------------------------
+Layer 66: block3b_activation
+  Input shape: (None, 28, 28, 240)
+  Output shape: (None, 28, 28, 240)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 67: block3b_se_squeeze
+  Input shape: (None, 28, 28, 240)
+  Output shape: (None, 240)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 68: block3b_se_reshape
+  Input shape: (None, 240)
+  Output shape: (None, 1, 1, 240)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 69: block3b_se_reduce
+  Input shape: (None, 1, 1, 240)
+  Output shape: (None, 1, 1, 10)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 2410
+  IFM_W: 1, IFM_C: 240, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 10
+--------------------------------------------------
+Layer 70: block3b_se_expand
+  Input shape: (None, 1, 1, 10)
+  Output shape: (None, 1, 1, 240)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 2640
+  IFM_W: 1, IFM_C: 10, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 240
+--------------------------------------------------
+Layer 71: block3b_se_excite
+  Input shape: None
+  Output shape: (None, 28, 28, 240)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 72: block3b_project_conv
+  Input shape: (None, 28, 28, 240)
+  Output shape: (None, 28, 28, 40)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 9600
+  IFM_W: 28, IFM_C: 240, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 40
+--------------------------------------------------
+Layer 73: block3b_project_bn
+  Input shape: (None, 28, 28, 40)
+  Output shape: (None, 28, 28, 40)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 160
+--------------------------------------------------
+Layer 74: block3b_drop
+  Input shape: (None, 28, 28, 40)
+  Output shape: (None, 28, 28, 40)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 75: block3b_add
+  Input shape: None
+  Output shape: (None, 28, 28, 40)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 76: block4a_expand_conv
+  Input shape: (None, 28, 28, 40)
+  Output shape: (None, 28, 28, 240)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 9600
+  IFM_W: 28, IFM_C: 40, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 240
+--------------------------------------------------
+Layer 77: block4a_expand_bn
+  Input shape: (None, 28, 28, 240)
+  Output shape: (None, 28, 28, 240)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 960
+--------------------------------------------------
+Layer 78: block4a_expand_activation
+  Input shape: (None, 28, 28, 240)
+  Output shape: (None, 28, 28, 240)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 79: block4a_dwconv_pad
+  Input shape: (None, 28, 28, 240)
+  Output shape: (None, 29, 29, 240)
+  Kernel size: None
+  Strides: None
+  Padding: ((0, 1), (0, 1))
+  Number of parameters: 0
+--------------------------------------------------
+Layer 80: block4a_dwconv
+  Input shape: (None, 29, 29, 240)
+  Output shape: (None, 14, 14, 240)
+  Kernel size: (3, 3)
+  Strides: (2, 2)
+  Padding: valid
+  Number of parameters: 2160
+--------------------------------------------------
+Layer 81: block4a_bn
+  Input shape: (None, 14, 14, 240)
+  Output shape: (None, 14, 14, 240)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 960
+--------------------------------------------------
+Layer 82: block4a_activation
+  Input shape: (None, 14, 14, 240)
+  Output shape: (None, 14, 14, 240)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 83: block4a_se_squeeze
+  Input shape: (None, 14, 14, 240)
+  Output shape: (None, 240)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 84: block4a_se_reshape
+  Input shape: (None, 240)
+  Output shape: (None, 1, 1, 240)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 85: block4a_se_reduce
+  Input shape: (None, 1, 1, 240)
+  Output shape: (None, 1, 1, 10)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 2410
+  IFM_W: 1, IFM_C: 240, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 10
+--------------------------------------------------
+Layer 86: block4a_se_expand
+  Input shape: (None, 1, 1, 10)
+  Output shape: (None, 1, 1, 240)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 2640
+  IFM_W: 1, IFM_C: 10, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 240
+--------------------------------------------------
+Layer 87: block4a_se_excite
+  Input shape: None
+  Output shape: (None, 14, 14, 240)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 88: block4a_project_conv
+  Input shape: (None, 14, 14, 240)
+  Output shape: (None, 14, 14, 80)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 19200
+  IFM_W: 14, IFM_C: 240, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 80
+--------------------------------------------------
+Layer 89: block4a_project_bn
+  Input shape: (None, 14, 14, 80)
+  Output shape: (None, 14, 14, 80)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 320
+--------------------------------------------------
+Layer 90: block4b_expand_conv
+  Input shape: (None, 14, 14, 80)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 38400
+  IFM_W: 14, IFM_C: 80, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 480
+--------------------------------------------------
+Layer 91: block4b_expand_bn
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 1920
+--------------------------------------------------
+Layer 92: block4b_expand_activation
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 93: block4b_dwconv
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: (3, 3)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 4320
+--------------------------------------------------
+Layer 94: block4b_bn
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 1920
+--------------------------------------------------
+Layer 95: block4b_activation
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 96: block4b_se_squeeze
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 97: block4b_se_reshape
+  Input shape: (None, 480)
+  Output shape: (None, 1, 1, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 98: block4b_se_reduce
+  Input shape: (None, 1, 1, 480)
+  Output shape: (None, 1, 1, 20)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 9620
+  IFM_W: 1, IFM_C: 480, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 20
+--------------------------------------------------
+Layer 99: block4b_se_expand
+  Input shape: (None, 1, 1, 20)
+  Output shape: (None, 1, 1, 480)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 10080
+  IFM_W: 1, IFM_C: 20, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 480
+--------------------------------------------------
+Layer 100: block4b_se_excite
+  Input shape: None
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 101: block4b_project_conv
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 80)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 38400
+  IFM_W: 14, IFM_C: 480, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 80
+--------------------------------------------------
+Layer 102: block4b_project_bn
+  Input shape: (None, 14, 14, 80)
+  Output shape: (None, 14, 14, 80)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 320
+--------------------------------------------------
+Layer 103: block4b_drop
+  Input shape: (None, 14, 14, 80)
+  Output shape: (None, 14, 14, 80)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 104: block4b_add
+  Input shape: None
+  Output shape: (None, 14, 14, 80)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 105: block4c_expand_conv
+  Input shape: (None, 14, 14, 80)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 38400
+  IFM_W: 14, IFM_C: 80, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 480
+--------------------------------------------------
+Layer 106: block4c_expand_bn
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 1920
+--------------------------------------------------
+Layer 107: block4c_expand_activation
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 108: block4c_dwconv
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: (3, 3)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 4320
+--------------------------------------------------
+Layer 109: block4c_bn
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 1920
+--------------------------------------------------
+Layer 110: block4c_activation
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 111: block4c_se_squeeze
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 112: block4c_se_reshape
+  Input shape: (None, 480)
+  Output shape: (None, 1, 1, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 113: block4c_se_reduce
+  Input shape: (None, 1, 1, 480)
+  Output shape: (None, 1, 1, 20)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 9620
+  IFM_W: 1, IFM_C: 480, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 20
+--------------------------------------------------
+Layer 114: block4c_se_expand
+  Input shape: (None, 1, 1, 20)
+  Output shape: (None, 1, 1, 480)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 10080
+  IFM_W: 1, IFM_C: 20, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 480
+--------------------------------------------------
+Layer 115: block4c_se_excite
+  Input shape: None
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 116: block4c_project_conv
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 80)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 38400
+  IFM_W: 14, IFM_C: 480, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 80
+--------------------------------------------------
+Layer 117: block4c_project_bn
+  Input shape: (None, 14, 14, 80)
+  Output shape: (None, 14, 14, 80)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 320
+--------------------------------------------------
+Layer 118: block4c_drop
+  Input shape: (None, 14, 14, 80)
+  Output shape: (None, 14, 14, 80)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 119: block4c_add
+  Input shape: None
+  Output shape: (None, 14, 14, 80)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 120: block5a_expand_conv
+  Input shape: (None, 14, 14, 80)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 38400
+  IFM_W: 14, IFM_C: 80, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 480
+--------------------------------------------------
+Layer 121: block5a_expand_bn
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 1920
+--------------------------------------------------
+Layer 122: block5a_expand_activation
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 123: block5a_dwconv
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: (5, 5)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 12000
+--------------------------------------------------
+Layer 124: block5a_bn
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 1920
+--------------------------------------------------
+Layer 125: block5a_activation
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 126: block5a_se_squeeze
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 127: block5a_se_reshape
+  Input shape: (None, 480)
+  Output shape: (None, 1, 1, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 128: block5a_se_reduce
+  Input shape: (None, 1, 1, 480)
+  Output shape: (None, 1, 1, 20)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 9620
+  IFM_W: 1, IFM_C: 480, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 20
+--------------------------------------------------
+Layer 129: block5a_se_expand
+  Input shape: (None, 1, 1, 20)
+  Output shape: (None, 1, 1, 480)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 10080
+  IFM_W: 1, IFM_C: 20, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 480
+--------------------------------------------------
+Layer 130: block5a_se_excite
+  Input shape: None
+  Output shape: (None, 14, 14, 480)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 131: block5a_project_conv
+  Input shape: (None, 14, 14, 480)
+  Output shape: (None, 14, 14, 112)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 53760
+  IFM_W: 14, IFM_C: 480, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 112
+--------------------------------------------------
+Layer 132: block5a_project_bn
+  Input shape: (None, 14, 14, 112)
+  Output shape: (None, 14, 14, 112)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 448
+--------------------------------------------------
+Layer 133: block5b_expand_conv
+  Input shape: (None, 14, 14, 112)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 75264
+  IFM_W: 14, IFM_C: 112, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 672
+--------------------------------------------------
+Layer 134: block5b_expand_bn
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 2688
+--------------------------------------------------
+Layer 135: block5b_expand_activation
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 136: block5b_dwconv
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: (5, 5)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 16800
+--------------------------------------------------
+Layer 137: block5b_bn
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 2688
+--------------------------------------------------
+Layer 138: block5b_activation
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 139: block5b_se_squeeze
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 140: block5b_se_reshape
+  Input shape: (None, 672)
+  Output shape: (None, 1, 1, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 141: block5b_se_reduce
+  Input shape: (None, 1, 1, 672)
+  Output shape: (None, 1, 1, 28)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 18844
+  IFM_W: 1, IFM_C: 672, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 28
+--------------------------------------------------
+Layer 142: block5b_se_expand
+  Input shape: (None, 1, 1, 28)
+  Output shape: (None, 1, 1, 672)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 19488
+  IFM_W: 1, IFM_C: 28, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 672
+--------------------------------------------------
+Layer 143: block5b_se_excite
+  Input shape: None
+  Output shape: (None, 14, 14, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 144: block5b_project_conv
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 14, 14, 112)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 75264
+  IFM_W: 14, IFM_C: 672, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 112
+--------------------------------------------------
+Layer 145: block5b_project_bn
+  Input shape: (None, 14, 14, 112)
+  Output shape: (None, 14, 14, 112)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 448
+--------------------------------------------------
+Layer 146: block5b_drop
+  Input shape: (None, 14, 14, 112)
+  Output shape: (None, 14, 14, 112)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 147: block5b_add
+  Input shape: None
+  Output shape: (None, 14, 14, 112)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 148: block5c_expand_conv
+  Input shape: (None, 14, 14, 112)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 75264
+  IFM_W: 14, IFM_C: 112, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 672
+--------------------------------------------------
+Layer 149: block5c_expand_bn
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 2688
+--------------------------------------------------
+Layer 150: block5c_expand_activation
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 151: block5c_dwconv
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: (5, 5)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 16800
+--------------------------------------------------
+Layer 152: block5c_bn
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 2688
+--------------------------------------------------
+Layer 153: block5c_activation
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 154: block5c_se_squeeze
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 155: block5c_se_reshape
+  Input shape: (None, 672)
+  Output shape: (None, 1, 1, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 156: block5c_se_reduce
+  Input shape: (None, 1, 1, 672)
+  Output shape: (None, 1, 1, 28)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 18844
+  IFM_W: 1, IFM_C: 672, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 28
+--------------------------------------------------
+Layer 157: block5c_se_expand
+  Input shape: (None, 1, 1, 28)
+  Output shape: (None, 1, 1, 672)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 19488
+  IFM_W: 1, IFM_C: 28, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 672
+--------------------------------------------------
+Layer 158: block5c_se_excite
+  Input shape: None
+  Output shape: (None, 14, 14, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 159: block5c_project_conv
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 14, 14, 112)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 75264
+  IFM_W: 14, IFM_C: 672, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 112
+--------------------------------------------------
+Layer 160: block5c_project_bn
+  Input shape: (None, 14, 14, 112)
+  Output shape: (None, 14, 14, 112)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 448
+--------------------------------------------------
+Layer 161: block5c_drop
+  Input shape: (None, 14, 14, 112)
+  Output shape: (None, 14, 14, 112)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 162: block5c_add
+  Input shape: None
+  Output shape: (None, 14, 14, 112)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 163: block6a_expand_conv
+  Input shape: (None, 14, 14, 112)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 75264
+  IFM_W: 14, IFM_C: 112, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 672
+--------------------------------------------------
+Layer 164: block6a_expand_bn
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 2688
+--------------------------------------------------
+Layer 165: block6a_expand_activation
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 14, 14, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 166: block6a_dwconv_pad
+  Input shape: (None, 14, 14, 672)
+  Output shape: (None, 17, 17, 672)
+  Kernel size: None
+  Strides: None
+  Padding: ((1, 2), (1, 2))
+  Number of parameters: 0
+--------------------------------------------------
+Layer 167: block6a_dwconv
+  Input shape: (None, 17, 17, 672)
+  Output shape: (None, 7, 7, 672)
+  Kernel size: (5, 5)
+  Strides: (2, 2)
+  Padding: valid
+  Number of parameters: 16800
+--------------------------------------------------
+Layer 168: block6a_bn
+  Input shape: (None, 7, 7, 672)
+  Output shape: (None, 7, 7, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 2688
+--------------------------------------------------
+Layer 169: block6a_activation
+  Input shape: (None, 7, 7, 672)
+  Output shape: (None, 7, 7, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 170: block6a_se_squeeze
+  Input shape: (None, 7, 7, 672)
+  Output shape: (None, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 171: block6a_se_reshape
+  Input shape: (None, 672)
+  Output shape: (None, 1, 1, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 172: block6a_se_reduce
+  Input shape: (None, 1, 1, 672)
+  Output shape: (None, 1, 1, 28)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 18844
+  IFM_W: 1, IFM_C: 672, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 28
+--------------------------------------------------
+Layer 173: block6a_se_expand
+  Input shape: (None, 1, 1, 28)
+  Output shape: (None, 1, 1, 672)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 19488
+  IFM_W: 1, IFM_C: 28, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 672
+--------------------------------------------------
+Layer 174: block6a_se_excite
+  Input shape: None
+  Output shape: (None, 7, 7, 672)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 175: block6a_project_conv
+  Input shape: (None, 7, 7, 672)
+  Output shape: (None, 7, 7, 192)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 129024
+  IFM_W: 7, IFM_C: 672, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 192
+--------------------------------------------------
+Layer 176: block6a_project_bn
+  Input shape: (None, 7, 7, 192)
+  Output shape: (None, 7, 7, 192)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 768
+--------------------------------------------------
+Layer 177: block6b_expand_conv
+  Input shape: (None, 7, 7, 192)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 221184
+  IFM_W: 7, IFM_C: 192, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 1152
+--------------------------------------------------
+Layer 178: block6b_expand_bn
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 4608
+--------------------------------------------------
+Layer 179: block6b_expand_activation
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 180: block6b_dwconv
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: (5, 5)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 28800
+--------------------------------------------------
+Layer 181: block6b_bn
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 4608
+--------------------------------------------------
+Layer 182: block6b_activation
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 183: block6b_se_squeeze
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 184: block6b_se_reshape
+  Input shape: (None, 1152)
+  Output shape: (None, 1, 1, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 185: block6b_se_reduce
+  Input shape: (None, 1, 1, 1152)
+  Output shape: (None, 1, 1, 48)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 55344
+  IFM_W: 1, IFM_C: 1152, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 48
+--------------------------------------------------
+Layer 186: block6b_se_expand
+  Input shape: (None, 1, 1, 48)
+  Output shape: (None, 1, 1, 1152)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 56448
+  IFM_W: 1, IFM_C: 48, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 1152
+--------------------------------------------------
+Layer 187: block6b_se_excite
+  Input shape: None
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 188: block6b_project_conv
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 192)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 221184
+  IFM_W: 7, IFM_C: 1152, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 192
+--------------------------------------------------
+Layer 189: block6b_project_bn
+  Input shape: (None, 7, 7, 192)
+  Output shape: (None, 7, 7, 192)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 768
+--------------------------------------------------
+Layer 190: block6b_drop
+  Input shape: (None, 7, 7, 192)
+  Output shape: (None, 7, 7, 192)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 191: block6b_add
+  Input shape: None
+  Output shape: (None, 7, 7, 192)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 192: block6c_expand_conv
+  Input shape: (None, 7, 7, 192)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 221184
+  IFM_W: 7, IFM_C: 192, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 1152
+--------------------------------------------------
+Layer 193: block6c_expand_bn
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 4608
+--------------------------------------------------
+Layer 194: block6c_expand_activation
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 195: block6c_dwconv
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: (5, 5)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 28800
+--------------------------------------------------
+Layer 196: block6c_bn
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 4608
+--------------------------------------------------
+Layer 197: block6c_activation
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 198: block6c_se_squeeze
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 199: block6c_se_reshape
+  Input shape: (None, 1152)
+  Output shape: (None, 1, 1, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 200: block6c_se_reduce
+  Input shape: (None, 1, 1, 1152)
+  Output shape: (None, 1, 1, 48)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 55344
+  IFM_W: 1, IFM_C: 1152, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 48
+--------------------------------------------------
+Layer 201: block6c_se_expand
+  Input shape: (None, 1, 1, 48)
+  Output shape: (None, 1, 1, 1152)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 56448
+  IFM_W: 1, IFM_C: 48, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 1152
+--------------------------------------------------
+Layer 202: block6c_se_excite
+  Input shape: None
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 203: block6c_project_conv
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 192)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 221184
+  IFM_W: 7, IFM_C: 1152, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 192
+--------------------------------------------------
+Layer 204: block6c_project_bn
+  Input shape: (None, 7, 7, 192)
+  Output shape: (None, 7, 7, 192)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 768
+--------------------------------------------------
+Layer 205: block6c_drop
+  Input shape: (None, 7, 7, 192)
+  Output shape: (None, 7, 7, 192)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 206: block6c_add
+  Input shape: None
+  Output shape: (None, 7, 7, 192)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 207: block6d_expand_conv
+  Input shape: (None, 7, 7, 192)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 221184
+  IFM_W: 7, IFM_C: 192, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 1152
+--------------------------------------------------
+Layer 208: block6d_expand_bn
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 4608
+--------------------------------------------------
+Layer 209: block6d_expand_activation
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 210: block6d_dwconv
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: (5, 5)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 28800
+--------------------------------------------------
+Layer 211: block6d_bn
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 4608
+--------------------------------------------------
+Layer 212: block6d_activation
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 213: block6d_se_squeeze
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 214: block6d_se_reshape
+  Input shape: (None, 1152)
+  Output shape: (None, 1, 1, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 215: block6d_se_reduce
+  Input shape: (None, 1, 1, 1152)
+  Output shape: (None, 1, 1, 48)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 55344
+  IFM_W: 1, IFM_C: 1152, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 48
+--------------------------------------------------
+Layer 216: block6d_se_expand
+  Input shape: (None, 1, 1, 48)
+  Output shape: (None, 1, 1, 1152)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 56448
+  IFM_W: 1, IFM_C: 48, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 1152
+--------------------------------------------------
+Layer 217: block6d_se_excite
+  Input shape: None
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 218: block6d_project_conv
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 192)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 221184
+  IFM_W: 7, IFM_C: 1152, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 192
+--------------------------------------------------
+Layer 219: block6d_project_bn
+  Input shape: (None, 7, 7, 192)
+  Output shape: (None, 7, 7, 192)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 768
+--------------------------------------------------
+Layer 220: block6d_drop
+  Input shape: (None, 7, 7, 192)
+  Output shape: (None, 7, 7, 192)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 221: block6d_add
+  Input shape: None
+  Output shape: (None, 7, 7, 192)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 222: block7a_expand_conv
+  Input shape: (None, 7, 7, 192)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 221184
+  IFM_W: 7, IFM_C: 192, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 1152
+--------------------------------------------------
+Layer 223: block7a_expand_bn
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 4608
+--------------------------------------------------
+Layer 224: block7a_expand_activation
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 225: block7a_dwconv
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: (3, 3)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 10368
+--------------------------------------------------
+Layer 226: block7a_bn
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 4608
+--------------------------------------------------
+Layer 227: block7a_activation
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 228: block7a_se_squeeze
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 229: block7a_se_reshape
+  Input shape: (None, 1152)
+  Output shape: (None, 1, 1, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 230: block7a_se_reduce
+  Input shape: (None, 1, 1, 1152)
+  Output shape: (None, 1, 1, 48)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 55344
+  IFM_W: 1, IFM_C: 1152, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 48
+--------------------------------------------------
+Layer 231: block7a_se_expand
+  Input shape: (None, 1, 1, 48)
+  Output shape: (None, 1, 1, 1152)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 56448
+  IFM_W: 1, IFM_C: 48, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 1152
+--------------------------------------------------
+Layer 232: block7a_se_excite
+  Input shape: None
+  Output shape: (None, 7, 7, 1152)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 233: block7a_project_conv
+  Input shape: (None, 7, 7, 1152)
+  Output shape: (None, 7, 7, 320)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 368640
+  IFM_W: 7, IFM_C: 1152, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 320
+--------------------------------------------------
+Layer 234: block7a_project_bn
+  Input shape: (None, 7, 7, 320)
+  Output shape: (None, 7, 7, 320)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 1280
+--------------------------------------------------
+Layer 235: top_conv
+  Input shape: (None, 7, 7, 320)
+  Output shape: (None, 7, 7, 1280)
+  Kernel size: (1, 1)
+  Strides: (1, 1)
+  Padding: same
+  Number of parameters: 409600
+  IFM_W: 7, IFM_C: 320, Kernel_W: 1, Padding: same, Stride: 1, OFM_C: 1280
+--------------------------------------------------
+Layer 236: top_bn
+  Input shape: (None, 7, 7, 1280)
+  Output shape: (None, 7, 7, 1280)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 5120
+--------------------------------------------------
+Layer 237: top_activation
+  Input shape: (None, 7, 7, 1280)
+  Output shape: (None, 7, 7, 1280)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 238: avg_pool
+  Input shape: (None, 7, 7, 1280)
+  Output shape: (None, 1280)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 239: top_dropout
+  Input shape: (None, 1280)
+  Output shape: (None, 1280)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 0
+--------------------------------------------------
+Layer 240: predictions
+  Input shape: (None, 1280)
+  Output shape: (None, 1000)
+  Kernel size: None
+  Strides: None
+  Padding: None
+  Number of parameters: 1281000
+--------------------------------------------------

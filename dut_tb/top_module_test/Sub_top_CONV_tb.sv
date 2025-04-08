@@ -3,15 +3,15 @@
 // kernel 3x3x16x32
 // OFM 56x56x32
 
-`define GOL1 0
+`define GOL1 1
 
-`define IFM_W_para 58
-`define IFM_C_para 32
-`define KERNEL_W_para 3
-`define OFM_C_para 128
-`define Stride_para 1
+`define IFM_W_layer1_para 56
+`define IFM_C_layer1_para 32
+`define KERNEL_W_layer1_para 3
+`define OFM_C_layer1_para 128
+`define Stride_para 2
 
-`define OFM_C_layer2_para 128
+`define OFM_C_layer2_para 48
 
 `define Num_of_PE_para 16
 
@@ -96,28 +96,28 @@ module Sub_top_CONV_tb;
     integer ofm_file_2[3:0];
     int link_inital;
 
-    reg [7:0] input_data_mem [0:107648]; // BRAM input data
-    reg [7:0] input_data_mem0 [0:2303];
-    reg [7:0] input_data_mem1 [0:2303];
-    reg [7:0] input_data_mem2 [0:2303];
-    reg [7:0] input_data_mem3 [0:2303];
-    reg [7:0] input_data_mem4 [0:2303];
-    reg [7:0] input_data_mem5 [0:2303];
-    reg [7:0] input_data_mem6 [0:2303];
-    reg [7:0] input_data_mem7 [0:2303];
-    reg [7:0] input_data_mem8 [0:2303];
-    reg [7:0] input_data_mem9 [0:2303];
-    reg [7:0] input_data_mem10 [0:2303];
-    reg [7:0] input_data_mem11 [0:2303];
-    reg [7:0] input_data_mem12 [0:2303];
-    reg [7:0] input_data_mem13 [0:2303];
-    reg [7:0] input_data_mem14 [0:2303];
-    reg [7:0] input_data_mem15 [0:2303];
+    reg [7:0] input_data_mem [0:1076480]; // BRAM input data
+    reg [7:0] input_data_mem0 [0:23030];
+    reg [7:0] input_data_mem1 [0:23030];
+    reg [7:0] input_data_mem2 [0:23030];
+    reg [7:0] input_data_mem3 [0:23030];
+    reg [7:0] input_data_mem4 [0:23030];
+    reg [7:0] input_data_mem5 [0:23030];
+    reg [7:0] input_data_mem6 [0:23030];
+    reg [7:0] input_data_mem7 [0:23030];
+    reg [7:0] input_data_mem8 [0:23030];
+    reg [7:0] input_data_mem9 [0:23030];
+    reg [7:0] input_data_mem10 [0:23030];
+    reg [7:0] input_data_mem11 [0:23030];
+    reg [7:0] input_data_mem12 [0:23030];
+    reg [7:0] input_data_mem13 [0:23030];
+    reg [7:0] input_data_mem14 [0:23030];
+    reg [7:0] input_data_mem15 [0:23030];
 
     reg [7:0] input_data_mem0_n_state [0:53823]; // BRAM input data
-    reg [7:0] input_data_mem1_n_state [0:2303];
-    reg [7:0] input_data_mem2_n_state [0:2303];
-    reg [7:0] input_data_mem3_n_state [0:2303];
+    reg [7:0] input_data_mem1_n_state [0:23030];
+    reg [7:0] input_data_mem2_n_state [0:23030];
+    reg [7:0] input_data_mem3_n_state [0:23030];
 
 
     reg [31:0] ofm_data;
@@ -169,6 +169,7 @@ module Sub_top_CONV_tb;
         .done_compute(done_compute),
 
         //layer2
+        .IFM_C_layer2(`OFM_C_layer1_para),
         .OFM_C_layer2(`OFM_C_layer2_para),
 
         // for Control_unit
@@ -201,8 +202,8 @@ module Sub_top_CONV_tb;
         clk = 0;
         forever #5 clk = ~clk;
     end
-    int input_size = `IFM_W_para*`IFM_W_para*`IFM_C_para;
-    int tile = `OFM_C_para/`Num_of_PE_para;
+    int input_size = `IFM_W_layer1_para*`IFM_W_layer1_para*`IFM_C_layer1_para;
+    int tile = `OFM_C_layer1_para/`Num_of_PE_para;
     initial begin
         ////////////////////////////////////LOAD PHASE//////////////////////////////////////////////////
         // Reset phase
@@ -216,11 +217,11 @@ module Sub_top_CONV_tb;
         wr_rd_en_Weight_lay2=0;
         addr = 0;
 
-        KERNEL_W = `KERNEL_W_para ;
-        OFM_W = ((`IFM_W_para+ 2*0 -`KERNEL_W_para)/ `Stride_para )+1;
-        OFM_C = `OFM_C_para;
-        IFM_C = `IFM_C_para;
-        IFM_W = `IFM_W_para;
+        KERNEL_W = `KERNEL_W_layer1_para ;
+        OFM_W = ((`IFM_W_layer1_para+ 2*0 -`KERNEL_W_layer1_para)/ `Stride_para )+1;
+        OFM_C = `OFM_C_layer1_para;
+        IFM_C = `IFM_C_layer1_para;
+        IFM_W = `IFM_W_layer1_para;
 
 
         stride = `Stride_para;
