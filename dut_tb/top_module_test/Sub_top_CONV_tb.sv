@@ -5,17 +5,24 @@
 
 `define GOL1 1
 
-`define IFM_W_layer1_para 56
-`define IFM_C_layer1_para 32
-`define KERNEL_W_layer1_para 3
-`define OFM_C_layer1_para 128
-`define Stride_para 2
+// `define IFM_W_layer1_para 58
+// `define IFM_C_layer1_para 32
+// `define KERNEL_W_layer1_para 3
+// `define OFM_C_layer1_para 128
+// `define Stride_para 2
 
-`define OFM_C_layer2_para 48
+// `define OFM_C_layer2_para 16
 
-`define Num_of_PE_para 16
+ `define Num_of_PE_para 16
 
-module Sub_top_CONV_tb;
+module Sub_top_CONV_tb #(
+    parameter IFM_W_layer1_para= 58, 
+    parameter IFM_C_layer1_para =32,
+    parameter KERNEL_W_layer1_para =3,
+    parameter OFM_C_layer1_para= 128,
+    parameter Stride_para= 2,
+    parameter OFM_C_layer2_para= 16
+);
 
     
 
@@ -169,8 +176,8 @@ module Sub_top_CONV_tb;
         .done_compute(done_compute),
 
         //layer2
-        .IFM_C_layer2(`OFM_C_layer1_para),
-        .OFM_C_layer2(`OFM_C_layer2_para),
+        .IFM_C_layer2(OFM_C_layer1_para),
+        .OFM_C_layer2(OFM_C_layer2_para),
 
         // for Control_unit
         .run(run),
@@ -202,8 +209,8 @@ module Sub_top_CONV_tb;
         clk = 0;
         forever #5 clk = ~clk;
     end
-    int input_size = `IFM_W_layer1_para*`IFM_W_layer1_para*`IFM_C_layer1_para;
-    int tile = `OFM_C_layer1_para/`Num_of_PE_para;
+    int input_size = IFM_W_layer1_para*IFM_W_layer1_para*IFM_C_layer1_para;
+    int tile = OFM_C_layer1_para/`Num_of_PE_para;
     initial begin
         ////////////////////////////////////LOAD PHASE//////////////////////////////////////////////////
         // Reset phase
@@ -217,14 +224,14 @@ module Sub_top_CONV_tb;
         wr_rd_en_Weight_lay2=0;
         addr = 0;
 
-        KERNEL_W = `KERNEL_W_layer1_para ;
-        OFM_W = ((`IFM_W_layer1_para+ 2*0 -`KERNEL_W_layer1_para)/ `Stride_para )+1;
-        OFM_C = `OFM_C_layer1_para;
-        IFM_C = `IFM_C_layer1_para;
-        IFM_W = `IFM_W_layer1_para;
+        KERNEL_W = KERNEL_W_layer1_para ;
+        OFM_W = ((IFM_W_layer1_para+ 2*0 -KERNEL_W_layer1_para)/ Stride_para )+1;
+        OFM_C = OFM_C_layer1_para;
+        IFM_C = IFM_C_layer1_para;
+        IFM_W = IFM_W_layer1_para;
 
 
-        stride = `Stride_para;
+        stride = Stride_para;
 
         cal_start = 0;
         data_in_IFM = 0;

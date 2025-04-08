@@ -111,6 +111,9 @@ always @(*) begin
         'h2: begin
             num_of_KERNEL_points = 'h4;
         end
+        'h1: begin
+            num_of_KERNEL_points = 'h1;
+        end
         default : 
             num_of_KERNEL_points = 'h9;
     endcase
