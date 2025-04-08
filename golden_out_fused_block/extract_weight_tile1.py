@@ -31,9 +31,9 @@ def read_and_write_file(input_file, output_file, n, m, num_segments, offset, wei
 def main():
     # Cố định các tham số
     pe = 16  # Số lượng PE
-    filter_count = 128  # Số lượng filters
+    filter_count = 64  # Số lượng filters
     weight_height = 3  # Chiều cao của weight
-    weight_channel = 32  # Số lượng channel của weight
+    weight_channel = 16  # Số lượng channel của weight
 
     input_file = "../Fused-Block-CNN/golden_out_fused_block/weight_hex_folder/weight1.hex"
     tile = filter_count // pe

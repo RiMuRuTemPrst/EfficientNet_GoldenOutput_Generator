@@ -31,7 +31,7 @@ def read_and_write_file(input_file, output_file, n, m, num_segments, offset, ofm
 def main():
     # Cố định tham số
     pe = 16
-    ofm_channel = 128
+    ofm_channel = 64
     ofm_height = 56
 
     input_file = "../Fused-Block-CNN/golden_out_fused_block/output_hex_folder/ofm1.hex"

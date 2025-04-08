@@ -3,13 +3,15 @@
 // kernel 3x3x16x32
 // OFM 56x56x32
 
-`define GOL1 0
+`define GOL1 1
 
-`define IFM_W_para 58
-`define IFM_C_para 32
-`define KERNEL_W_para 3
-`define OFM_C_para 128
-`define Stride_para 1
+`define IFM_W_layer1_para 56
+`define IFM_C_layer1_para 32
+`define KERNEL_W_layer1_para 3
+`define OFM_C_layer1_para 128
+`define Stride_para 2
+
+`define OFM_C_layer2_para 48
 
 `define Num_of_PE_para 16
 
@@ -30,6 +32,7 @@ module Sub_top_CONV_tb;
     reg [7:0] IFM_C;
     reg [7:0] IFM_W;
     reg [1:0] stride;
+
 
     reg [31:0] addr, addr_lay2;
     reg [31:0] data_in_IFM;
@@ -59,6 +62,8 @@ module Sub_top_CONV_tb;
     //reg       wr_en_next;
     reg [31:0] addr_ram_next_rd;
     //reg [31:0] addr_ram_next_wr;
+
+    wire [3:0] PE_finish_PE_cluster1x1_wire;
 
     //reg [3:0] PE_next_valid;
     int count_for_layer_1 =0 ;
@@ -91,28 +96,28 @@ module Sub_top_CONV_tb;
     integer ofm_file_2[3:0];
     int link_inital;
 
-    reg [7:0] input_data_mem [0:107648]; // BRAM input data
-    reg [7:0] input_data_mem0 [0:2303];
-    reg [7:0] input_data_mem1 [0:2303];
-    reg [7:0] input_data_mem2 [0:2303];
-    reg [7:0] input_data_mem3 [0:2303];
-    reg [7:0] input_data_mem4 [0:2303];
-    reg [7:0] input_data_mem5 [0:2303];
-    reg [7:0] input_data_mem6 [0:2303];
-    reg [7:0] input_data_mem7 [0:2303];
-    reg [7:0] input_data_mem8 [0:2303];
-    reg [7:0] input_data_mem9 [0:2303];
-    reg [7:0] input_data_mem10 [0:2303];
-    reg [7:0] input_data_mem11 [0:2303];
-    reg [7:0] input_data_mem12 [0:2303];
-    reg [7:0] input_data_mem13 [0:2303];
-    reg [7:0] input_data_mem14 [0:2303];
-    reg [7:0] input_data_mem15 [0:2303];
+    reg [7:0] input_data_mem [0:1076480]; // BRAM input data
+    reg [7:0] input_data_mem0 [0:23030];
+    reg [7:0] input_data_mem1 [0:23030];
+    reg [7:0] input_data_mem2 [0:23030];
+    reg [7:0] input_data_mem3 [0:23030];
+    reg [7:0] input_data_mem4 [0:23030];
+    reg [7:0] input_data_mem5 [0:23030];
+    reg [7:0] input_data_mem6 [0:23030];
+    reg [7:0] input_data_mem7 [0:23030];
+    reg [7:0] input_data_mem8 [0:23030];
+    reg [7:0] input_data_mem9 [0:23030];
+    reg [7:0] input_data_mem10 [0:23030];
+    reg [7:0] input_data_mem11 [0:23030];
+    reg [7:0] input_data_mem12 [0:23030];
+    reg [7:0] input_data_mem13 [0:23030];
+    reg [7:0] input_data_mem14 [0:23030];
+    reg [7:0] input_data_mem15 [0:23030];
 
     reg [7:0] input_data_mem0_n_state [0:53823]; // BRAM input data
-    reg [7:0] input_data_mem1_n_state [0:2303];
-    reg [7:0] input_data_mem2_n_state [0:2303];
-    reg [7:0] input_data_mem3_n_state [0:2303];
+    reg [7:0] input_data_mem1_n_state [0:23030];
+    reg [7:0] input_data_mem2_n_state [0:23030];
+    reg [7:0] input_data_mem3_n_state [0:23030];
 
 
     reg [31:0] ofm_data;
@@ -148,11 +153,11 @@ module Sub_top_CONV_tb;
 
         .addr(addr),
         .cal_start(cal_start),
-        // .addr_IFM(addr_IFM),
 
         //control signal layer 1
         .PE_reset(PE_reset),
         .PE_finish(PE_finish),
+        .PE_finish_PE_cluster1x1(PE_finish_PE_cluster1x1_wire),
 
         .KERNEL_W(KERNEL_W),
         .OFM_C(OFM_C),
@@ -163,6 +168,10 @@ module Sub_top_CONV_tb;
         .valid(valid),
         .done_compute(done_compute),
 
+        //layer2
+        .IFM_C_layer2(`OFM_C_layer1_para),
+        .OFM_C_layer2(`OFM_C_layer2_para),
+
         // for Control_unit
         .run(run),
         .instrution(instrution),
@@ -172,10 +181,6 @@ module Sub_top_CONV_tb;
         .wr_addr_Weight_for_tb(wr_addr_Weight_for_tb),
         
         
-        // .addr_w0(addr_w[0]), .addr_w1(addr_w[1]), .addr_w2(addr_w[2]), .addr_w3(addr_w[3]),
-        // .addr_w4(addr_w[4]), .addr_w5(addr_w[5]), .addr_w6(addr_w[6]), .addr_w7(addr_w[7]),
-        // .addr_w8(addr_w[8]), .addr_w9(addr_w[9]), .addr_w10(addr_w[10]), .addr_w11(addr_w[11]),
-        // .addr_w12(addr_w[12]), .addr_w13(addr_w[13]), .addr_w14(addr_w[14]), .addr_w15(addr_w[15]),
         .OFM_active_0(OFM_out[0]), .OFM_active_1(OFM_out[1]), .OFM_active_2(OFM_out[2]), .OFM_active_3(OFM_out[3]),
         .OFM_active_4(OFM_out[4]), .OFM_active_5(OFM_out[5]), .OFM_active_6(OFM_out[6]), .OFM_active_7(OFM_out[7]),
         .OFM_active_8(OFM_out[8]), .OFM_active_9(OFM_out[9]), .OFM_active_10(OFM_out[10]), .OFM_active_11(OFM_out[11]),
@@ -186,9 +191,7 @@ module Sub_top_CONV_tb;
         .data_in_Weight_2_n_state(data_in_Weight_2_n_state),    // layer 2
         .data_in_Weight_3_n_state(data_in_Weight_3_n_state),    // layer 2
         .control_mux(control_mux),                              // controll  layer1_2
-        //.wr_en_next (wr_en_next),                               // controll  layer1_2
-        //.addr_ram_next_rd(addr_ram_next_rd),                
-        //.addr_ram_next_wr(addr_ram_next_wr),
+
         .PE_reset_n_state(PE_reset_n_state),
        //.addr_w_n_state(addr_w_n_state),
         .OFM_0_n_state(OFM_n_state[0]), .OFM_1_n_state(OFM_n_state[1]), .OFM_2_n_state(OFM_n_state[2]) ,.OFM_3_n_state(OFM_n_state[3])
@@ -199,8 +202,8 @@ module Sub_top_CONV_tb;
         clk = 0;
         forever #5 clk = ~clk;
     end
-    int input_size = `IFM_W_para*`IFM_W_para*`IFM_C_para;
-    int tile = `OFM_C_para/`Num_of_PE_para;
+    int input_size = `IFM_W_layer1_para*`IFM_W_layer1_para*`IFM_C_layer1_para;
+    int tile = `OFM_C_layer1_para/`Num_of_PE_para;
     initial begin
         ////////////////////////////////////LOAD PHASE//////////////////////////////////////////////////
         // Reset phase
@@ -214,11 +217,12 @@ module Sub_top_CONV_tb;
         wr_rd_en_Weight_lay2=0;
         addr = 0;
 
-        KERNEL_W = `KERNEL_W_para ;
-        OFM_W = ((`IFM_W_para+ 2*0 -`KERNEL_W_para)/ `Stride_para )+1;
-        OFM_C = `OFM_C_para;
-        IFM_C = `IFM_C_para;
-        IFM_W = `IFM_W_para;
+        KERNEL_W = `KERNEL_W_layer1_para ;
+        OFM_W = ((`IFM_W_layer1_para+ 2*0 -`KERNEL_W_layer1_para)/ `Stride_para )+1;
+        OFM_C = `OFM_C_layer1_para;
+        IFM_C = `IFM_C_layer1_para;
+        IFM_W = `IFM_W_layer1_para;
+
 
         stride = `Stride_para;
 
@@ -240,6 +244,11 @@ module Sub_top_CONV_tb;
         data_in_Weight_13 = 0;
         data_in_Weight_14 = 0;
         data_in_Weight_15 = 0;
+
+        data_in_Weight_0_n_state=0;
+        data_in_Weight_1_n_state=0;
+        data_in_Weight_2_n_state=0;
+        data_in_Weight_3_n_state=0;
         
         //addr_ram_next_wr = -1;
         //wr_en_next = 0;
@@ -301,7 +310,7 @@ module Sub_top_CONV_tb;
                 for (i = 0; i < input_size+1; i = i + 4) begin
                     //addr = i >> 2;  // Chia 4 vì mỗi lần lưu 32-bit
                     data_in_IFM = {input_data_mem[wr_addr_IFM_for_tb*4], input_data_mem[wr_addr_IFM_for_tb*4+1], input_data_mem[wr_addr_IFM_for_tb*4+2], input_data_mem[wr_addr_IFM_for_tb*4+3]};
-                    //wr_rd_en_IFM <= 1;
+
                     #10;
                 end
                 wr_rd_en_IFM = 0;
@@ -346,227 +355,33 @@ module Sub_top_CONV_tb;
                 wr_rd_en_Weight_lay2 = 0;
             end
         join
-        //wr_rd_en_Weight = 0;
-    
-        #5000;
-        #10
-        ////////////////////////////////////CAL PHASE//////////////////////////////////////////////////
 
-        cal_start = 1; // ready phari leen o canh duong va sau do it nhat 3 chu ki thi PE_reset ( PE_reset ) phai kich hoat
-        #25 // 3 chu ki
-        repeat (200) begin
-        // //#20
-        // PE_reset = 16'hFFFF;
-        // PE_finish = 0;
-        // #10 // one cyvles
-        // PE_reset = 16'b0;
-        // #700 // 36 -2 cyvles for one pixel in OFM = num_of_tiles * kernel_W
-        // PE_finish = 16'hFFFF;
-        #10;
-        end
         @(posedge done_compute);
         PE_finish = 0;
-      //#100000;
+    #100000;
         $finish;
     end
     initial begin
-        // Mở các file hex để lưu OFM (sẽ tạo các file nếu chưa tồn tại)
         for (k = 0; k < 16; k = k + 1) begin
-            // Mở file để ghi (nếu file chưa có, sẽ được tạo ra)
-            //ofm_file[k]  = $fopen("/home/manhung/Hung/CNN/Fused-Block-CNN/dut/OFM_PE_check.hex", "w");
             if (`GOL1) ofm_file[k] = $fopen($sformatf("../Fused-Block-CNN/address/OFM_PE%0d_DUT.hex", k), "w");
-            else    ofm_file[k] = $fopen($sformatf("../Fused-Block-CNN/golden_out_fused_block/output_hex_folder/OFM_PE1%0d_DUT.hex", k), "w");
+            else    ofm_file[k] = $fopen($sformatf("../Fused-Block-CNN/golden_out_fused_block/output_hex_folder/OFM1_PE%0d_DUT.hex", k), "w");
             if (ofm_file[k] == 0) begin
-                $display("Error opening file OFM_PE%d.hex", k); // Nếu không mở được file, in thông báo lỗi
-                $finish;  // Dừng mô phỏng nếu không mở được file
+                $display("Error opening file OFM_PE%d.hex", k); 
+                $finish;  
             end
         end
+
          for (m = 0; m < 4; m = m + 1) begin
-        //     // Mở file để ghi (nếu file chưa có, sẽ được tạo ra)
-        //     //ofm_file[k]  = $fopen("/home/manhung/Hung/CNN/Fused-Block-CNN/dut/OFM_PE_check.hex", "w");
              ofm_file_2[m] = $fopen($sformatf("../Fused-Block-CNN/golden_out_fused_block/output_hex_folder/OFM2_PE%0d_DUT.hex", m), "w");
              if (ofm_file_2[m] == 0) begin
-                 $display("Error opening file OFM_PE%d.hex", k); // Nếu không mở được file, in thông báo lỗi
-                 $finish;  // Dừng mô phỏng nếu không mở được file
+                 $display("Error opening file OFM_PE%d.hex", k);
+                 $finish;  
              end
          end
     end
    
     
 
-
-    //--------------------------------Data_controller--------------------------------------------//
-    initial begin
-        forever begin
-            @ ( posedge clk ) begin
-            if(valid == 16'hFFFF) begin
-                count_valid = count_valid + 1;
-                end
-            end
-        end
-    end
-    initial begin
-        forever begin
-            @ ( posedge clk ) begin
-            if(count_valid % 8 == 0  && count_valid != 0) begin
-                count_valid = 0;
-                link_inital =  1;
-                repeat(6) begin
-                @(posedge clk);
-                end
-                @(posedge clk);
-                repeat(29)  begin
-                    @(posedge clk);
-                end
-                @(posedge clk)
-                @(posedge clk)
-                
-                repeat(32)  begin
-                    @(posedge clk);
-                end
-
-                repeat(32)  begin
-                    @(posedge clk);
-                end
-
-                repeat(32)  begin
-                    @(posedge clk);
-
-                end
-
-                repeat(32)  begin
-                    @(posedge clk);
-
-                end
-                repeat(32)  begin
-                    @(posedge clk);
-
-                end
-                repeat(32)  begin
-                    @(posedge clk);
-                end
-                repeat(32)  begin
-                    @(posedge clk);
-                end
-                @(posedge clk);
-
-                                             
-            end
-        end 
-        end
-    end
-
-    initial begin
-        forever begin
-            @ ( posedge clk ) begin
-        if(link_inital) begin
-                //count_valid = 0;
-                link_inital = 0;
-                repeat(5) begin
-                @(posedge clk);
-                end
-                PE_reset_n_state = 15;
-                @(posedge clk);
-                //$display("dasdas");
-                PE_reset_n_state = 0;
-                repeat(31) begin
-                @(posedge clk);
-                end
-                PE_reset_n_state =15;
-                PE_reset_n_state_1 =15;
-                @(posedge clk);
-                PE_reset_n_state = 0;
-                PE_reset_n_state_1 =0;
-                repeat(31) begin
-                @(posedge clk);
-                end
-                PE_reset_n_state = 15;
-                PE_reset_n_state_1 = 15;
-                @(posedge clk);
-                PE_reset_n_state = 0;
-                PE_reset_n_state_1 = 0;
-                repeat(31) begin
-                @(posedge clk);
-                end
-                PE_reset_n_state = 15;
-                PE_reset_n_state_1 = 15;
-                @(posedge clk);
-                PE_reset_n_state = 0;
-                PE_reset_n_state_1 = 0;
-                repeat(31) begin
-                @(posedge clk);
-                end
-                PE_reset_n_state = 15;
-                PE_reset_n_state_1 = 15;
-                @(posedge clk);
-                PE_reset_n_state = 0;
-                PE_reset_n_state_1 = 0;
-                repeat(31) begin
-                @(posedge clk);
-                end
-                PE_reset_n_state = 15;
-                PE_reset_n_state_1 = 15;
-                @(posedge clk);
-                PE_reset_n_state = 0;
-                PE_reset_n_state_1 = 0;
-                repeat(31) begin
-                @(posedge clk);
-                end
-                PE_reset_n_state = 15;
-                PE_reset_n_state_1 = 15;
-                @(posedge clk);
-                PE_reset_n_state = 0;
-                PE_reset_n_state_1 = 0;
-                repeat(31) begin
-                @(posedge clk);
-                end
-                PE_reset_n_state = 15;
-                PE_reset_n_state_1 = 15;
-                @(posedge clk);
-                PE_reset_n_state = 0;
-                PE_reset_n_state_1 = 0;
-                repeat(31) begin
-                @(posedge clk);
-                end
-                PE_reset_n_state = 15;
-                PE_reset_n_state_1 = 15;
-                @(posedge clk);
-                PE_reset_n_state = 0;
-                PE_reset_n_state_1 = 0;
-        end                                            
-            end
-        end
-    end
-    // initial begin
-    //     forever begin
-    //     @ ( posedge clk ) begin
-    //         if(valid == 16'hFFFF) begin
-    //         //#10
-    //         control_mux <= 0;
-    //         addr_ram_next_wr <= addr_ram_next_wr + 1;
-    //         wr_en_next <= 1;
-    //         @ ( posedge clk )
-    //         control_mux <= 1;
-    //         addr_ram_next_wr <= addr_ram_next_wr + 1;
-    //         @ ( posedge clk )
-    //         control_mux <= 2;
-    //         addr_ram_next_wr <= addr_ram_next_wr + 1;
-    //         @ ( posedge clk )
-    //         control_mux <= 3;
-    //         addr_ram_next_wr <= addr_ram_next_wr + 1;
-    //         @ ( posedge clk ) 
-    //         wr_en_next <= 0;
-    //         end
-    //     end
-    //     end
-    // end
-    initial begin
-        forever begin
-            @(posedge clk) begin
-                if(cal_start) count_GOPS = count_GOPS + 1;
-            end
-        end
-    end
 always @(posedge clk) begin
     if (valid == 16'hFFFF) begin
         // Lưu giá trị OFM vào các file tương ứng
@@ -585,7 +400,7 @@ always @(posedge clk) begin
     end
 end
 always @(posedge clk) begin
-    if (PE_reset_n_state_1 == 15) begin
+    if (PE_finish_PE_cluster1x1_wire == 15) begin
         // Lưu giá trị OFM vào các file tương ứng
         count_for_layer_2 = count_for_layer_2 + 1;
         for (k1 = 0; k1 < 4; k1 = k1 + 1) begin

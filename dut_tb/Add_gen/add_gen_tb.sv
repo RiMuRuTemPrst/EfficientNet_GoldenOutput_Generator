@@ -53,12 +53,12 @@ module address_generator_tb;
         // Initialize signals
         clk = 0;
         rst_n = 0;
-        KERNEL_W = 3;
-        OFM_W = 4;
+        KERNEL_W = 1;
+        OFM_W = 9;
         IFM_C = 16;
         IFM_W = 9;
         OFM_C = 16;
-        stride = 2;
+        stride = 1;
         ready = 0;
         addr_in = 32'h0000;
 
@@ -75,6 +75,7 @@ module address_generator_tb;
         // Monitor and write to files
         while (!done_compute) begin
             @(negedge clk );
+            
                 if (addr_valid_ifm)
                     $fwrite(file_ifm,"%H\n", req_addr_out_ifm[15:0]);
                 if (addr_valid_filter)

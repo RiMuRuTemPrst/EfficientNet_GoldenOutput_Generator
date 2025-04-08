@@ -55,7 +55,7 @@ if __name__ == "__main__":
     # Cố định tham số
     ofm_width = 56
     max_pe = 16
-    ofm_channel = 128
+    ofm_channel = 64
 
     tile = ofm_channel // max_pe
     OFFSET = ofm_width * ofm_width   # Khoảng cách dòng
