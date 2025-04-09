@@ -127,11 +127,18 @@ module Sub_top_MB_CONV_tb #(
     reg [7:0] input_data_mem3_n_state [0:23030];
 
 
-    reg [31:0] ofm_data;
-    reg [31:0] ofm_data_2;
+    logic wr_rd_req_IFM_layer_2;
+    logic [31:0] OFM_data_layer_2;
+    logic [31:0] addr_IFM_layer_2;
+    logic [31:0] wr_addr_IFM_layer_2;
+    logic write_padding;
     //CAL START
+    logic [31:0] padding_addr;
+    logic [31:0] data_addr_layer_2;
     reg cal_start;
     wire [15:0] valid ;
+    reg [7:0] ofm_data;
+    reg [7:0] ofm_data_2;
     reg [7:0] ofm_data_byte;
     reg [7:0] ofm_data_byte_2;
     int count_valid;
@@ -194,9 +201,15 @@ module Sub_top_MB_CONV_tb #(
         .OFM_12(OFM_out[12]), .OFM_13(OFM_out[13]), .OFM_14(OFM_out[14]), .OFM_15(OFM_out[15]),
 
 
-        .PE_reset_n_state(PE_reset_n_state)
+        .PE_reset_n_state(PE_reset_n_state),
        //.addr_w_n_state(addr_w_n_state),
 
+       // layer 2
+        .wr_rd_req_IFM_layer_2(wr_rd_req_IFM_layer_2),
+        .OFM_data_layer_2(OFM_data_layer_2),
+        .addr_IFM_layer_2(addr_IFM_layer_2),
+        .wr_addr_IFM_layer_2(wr_addr_IFM_layer_2),
+        .write_padding(write_padding)
     );
 
     initial begin
@@ -251,6 +264,12 @@ module Sub_top_MB_CONV_tb #(
         data_in_Weight_2_n_state=0;
         data_in_Weight_3_n_state=0;
         
+        //wr_rd_req_IFM_layer_2 = 0;
+        //OFM_data_layer_2 = 0;
+        addr_IFM_layer_2 = 0;
+        padding_addr = 0;
+        data_addr_layer_2 = 0;
+       // write_padding = 1;
         //addr_ram_next_wr = -1;
         //wr_en_next = 0;
 
@@ -380,9 +399,26 @@ module Sub_top_MB_CONV_tb #(
              end
          end
     end
-   
-    
-
+   assign wr_rd_req_IFM_layer_2 = 1;
+   assign write_padding = (valid == 16'hFFFF) ? 1 : 0;
+   assign wr_addr_IFM_layer_2 = (valid == 16'hFFFF) ? data_addr_layer_2 : padding_addr; 
+    initial begin
+        forever begin
+        @ (posedge clk)
+        if(uut.cal_start_ctl) begin
+        if(valid == 16'hFFFF) begin
+            //wr_rd_req_IFM_layer_2 = 1;
+            addr_IFM_layer_2 <= data_addr_layer_2;
+            data_addr_layer_2 = data_addr_layer_2 + 4;
+            @ (posedge clk );
+            //wr_rd_req_IFM_layer_2 = 0;
+        end 
+        else begin
+            padding_addr = padding_addr + 4;
+        end
+        end
+        end
+    end
 always @(posedge clk) begin
     if (valid == 16'hFFFF) begin
         // Lưu giá trị OFM vào các file tương ứng

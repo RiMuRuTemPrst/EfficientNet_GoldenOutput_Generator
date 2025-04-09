@@ -76,7 +76,16 @@ module Sub_top_MB_CONV(
     output wire [7:0]  OFM_13,
     output wire [7:0]  OFM_14,
     output wire [7:0]  OFM_15,
-    output wire [7:0]  OFM_16
+    output wire [7:0]  OFM_16,
+    input write_padding ,
+
+
+    // layer 2 signal 
+    input wr_rd_req_IFM_layer_2,
+    output [31:0] OFM_data_layer_2,
+    input [31:0] addr_IFM_layer_2,
+    input [31:0] wr_addr_IFM_layer_2
+
 );
 
     //wire for Weight connect to PE_1x1 from BRAM
@@ -162,6 +171,10 @@ module Sub_top_MB_CONV(
     wire [31:0] wr_addr_IFM;
 
     logic [31:0] base_addr =0;
+
+
+    // signal for layer 2
+    logic [127:0] data_in_IFM_layer_2;
 
     Control_unit Control_unit(
         .clk(clk),
@@ -387,7 +400,7 @@ module Sub_top_MB_CONV(
         .OFM_15(OFM_15)
 
     );
-    
+    assign data_in_IFM_layer_2 = write_padding ? {OFM_15,OFM_14,OFM_13,OFM_12,OFM_11,OFM_10,OFM_9,OFM_8,OFM_7,OFM_6,OFM_5,OFM_4,OFM_3,OFM_2,OFM_1,OFM_0} : 0;
     
     address_generator addr_gen(
         .clk(clk),
@@ -408,6 +421,16 @@ module Sub_top_MB_CONV(
         .finish_for_PE(finish_for_PE),
         .addr_valid_filter(addr_valid),
         .num_of_tiles_for_PE(tile)
+    );
+
+    BRAM_IFM_128bit_in IFM_BRAM_layer_2(
+        .clk(clk),
+        .rd_addr(addr_IFM_layer_2),
+        .wr_addr(wr_addr_IFM_layer_2),
+        //.wr_rd_en(wr_rd_en_IFM),
+        .wr_rd_en(wr_rd_req_IFM_layer_2),
+        .data_in(data_in_IFM_layer_2),
+        .data_out(OFM_data_layer_2)
     );
     assign done_window_for_PE_cluster       =   {16{done_window_one_bit}};
     assign finish_for_PE_cluster            =   (cal_start_ctl) && ( addr_IFM != 'b0 )   ? {16{finish_for_PE}} : 16'b0;
