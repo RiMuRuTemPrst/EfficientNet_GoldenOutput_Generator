@@ -21,11 +21,15 @@ module Sub_top_MB_CONV_tb #(
     parameter KERNEL_W_layer1_para =1,
     parameter OFM_C_layer1_para= 192,
     parameter Stride_para= 1,
-    parameter OFM_C_layer2_para= 16
-);
-
+    parameter OFM_C_layer2_para= 16,
     
 
+    //
+    parameter Start_addr_for_data_layer_2 = (IFM_W_layer1_para + 1) * OFM_C_layer1_para,
+    parameter enter_row_data = (IFM_W_layer1_para - 2) * OFM_C_layer1_para,
+    parameter inc_addr_for_enter_row = 2*OFM_C_layer1_para,
+    parameter End_addr_for_data_layer_2 = (IFM_W_layer1_para*(IFM_W_layer1_para - 1) - 1)  * OFM_C_layer1_para
+);
     reg clk;
     reg reset;
     reg wr_rd_en_IFM;
@@ -39,7 +43,6 @@ module Sub_top_MB_CONV_tb #(
     reg [7:0] IFM_C;
     reg [7:0] IFM_W;
     reg [1:0] stride;
-
 
     reg [31:0] addr, addr_lay2;
     reg [31:0] data_in_IFM;
@@ -142,6 +145,7 @@ module Sub_top_MB_CONV_tb #(
     reg [7:0] ofm_data_byte;
     reg [7:0] ofm_data_byte_2;
     int count_valid;
+    int count_row;
     Sub_top_MB_CONV uut (
         .clk(clk),
         .reset(reset),
@@ -268,7 +272,8 @@ module Sub_top_MB_CONV_tb #(
         //OFM_data_layer_2 = 0;
         addr_IFM_layer_2 = 0;
         padding_addr = 0;
-        data_addr_layer_2 = 0;
+        data_addr_layer_2 = Start_addr_for_data_layer_2;
+        count_row = 0;
        // write_padding = 1;
         //addr_ram_next_wr = -1;
         //wr_en_next = 0;
@@ -409,12 +414,26 @@ module Sub_top_MB_CONV_tb #(
         if(valid == 16'hFFFF) begin
             //wr_rd_req_IFM_layer_2 = 1;
             addr_IFM_layer_2 <= data_addr_layer_2;
-            data_addr_layer_2 = data_addr_layer_2 + 4;
+            if(count_row < enter_row_data) begin
+                data_addr_layer_2 = data_addr_layer_2 + 4;
+                count_row = count_row + 4;
+            end else
+            begin
+                data_addr_layer_2 = data_addr_layer_2 + inc_addr_for_enter_row;
+                count_row = 0;
+            end
             @ (posedge clk );
             //wr_rd_req_IFM_layer_2 = 0;
         end 
         else begin
-            padding_addr = padding_addr + 4;
+            
+            if((padding_addr > Start_addr_for_data_layer_2) && (padding_addr < End_addr_for_data_layer_2)) begin
+                if(padding_addr%OFM_C_layer1_para) padding_addr = padding_addr + 4;
+                else padding_addr = padding_addr + enter_row_data;
+            end
+            else begin
+                padding_addr = padding_addr + 4;
+            end
         end
         end
         end
