@@ -117,7 +117,7 @@ python3 ../Fused-Block-CNN/address/extract_weight_tile_dw.py \
 
 ofm_h=\$(( (\$1 - \$4 + 2 * \$7) / \$8 + 1 ))
 python3 ../Fused-Block-CNN/address/extract_ofm_tile.py \
-  --pe 16 --ofm_channel \$6 --ofm_height \${ofm_h}" --'
+  --pe 16 --ofm_channel \$3 --ofm_height \${ofm_h}" --'
 
 
 
