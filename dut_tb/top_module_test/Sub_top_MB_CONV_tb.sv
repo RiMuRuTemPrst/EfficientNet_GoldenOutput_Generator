@@ -25,10 +25,10 @@ module Sub_top_MB_CONV_tb #(
     
 
     //
-    parameter Start_addr_for_data_layer_2 = (IFM_W_layer1_para + 1) * OFM_C_layer1_para,
-    parameter enter_row_data = (IFM_W_layer1_para - 2) * OFM_C_layer1_para,
+    parameter Start_addr_for_data_layer_2 = (IFM_W_layer1_para + 3) * OFM_C_layer1_para,
+    parameter enter_row_data = (IFM_W_layer1_para) * OFM_C_layer1_para,
     parameter inc_addr_for_enter_row = 2*OFM_C_layer1_para,
-    parameter End_addr_for_data_layer_2 = (IFM_W_layer1_para*(IFM_W_layer1_para - 1) - 1)  * OFM_C_layer1_para
+    parameter End_addr_for_data_layer_2 = ((IFM_W_layer1_para + 2)*(IFM_W_layer1_para + 2) - (IFM_W_layer1_para + 3) ) * OFM_C_layer1_para
 );
     reg clk;
     reg reset;
@@ -272,8 +272,9 @@ module Sub_top_MB_CONV_tb #(
         //OFM_data_layer_2 = 0;
         addr_IFM_layer_2 = 0;
         padding_addr = 0;
-        data_addr_layer_2 = Start_addr_for_data_layer_2;
+        data_addr_layer_2 = Start_addr_for_data_layer_2/4;
         count_row = 0;
+        wr_rd_req_IFM_layer_2 = 1;
        // write_padding = 1;
         //addr_ram_next_wr = -1;
         //wr_en_next = 0;
@@ -397,29 +398,33 @@ module Sub_top_MB_CONV_tb #(
         end
 
          for (m = 0; m < 4; m = m + 1) begin
-             ofm_file_2[m] = $fopen($sformatf("../Fused-Block-CNN/golden_out_fused_block/output_hex_folder/OFM2_PE%0d_DUT.hex", m), "w");
+             ofm_file_2[m] = $fopen($sformatf("../Fused-Block-CNN/golden_out_fused_block/output_hex_folder/OFM%0d_DUT.hex", m), "w");
              if (ofm_file_2[m] == 0) begin
                  $display("Error opening file OFM_PE%d.hex", k);
                  $finish;  
              end
          end
     end
-   assign wr_rd_req_IFM_layer_2 = 1;
+   //assign wr_rd_req_IFM_layer_2 = 1;
    assign write_padding = (valid == 16'hFFFF) ? 1 : 0;
-   assign wr_addr_IFM_layer_2 = (valid == 16'hFFFF) ? data_addr_layer_2 : padding_addr; 
+   assign wr_addr_IFM_layer_2 = (valid == 16'hFFFF) ? data_addr_layer_2 : padding_addr/4; 
     initial begin
         forever begin
         @ (posedge clk)
+        if(data_addr_layer_2 > End_addr_for_data_layer_2/4-4) begin
+                addr_IFM_layer_2 = addr_IFM_layer_2 + 4;
+                wr_rd_req_IFM_layer_2 = 0;
+            end
         if(uut.cal_start_ctl) begin
         if(valid == 16'hFFFF) begin
             //wr_rd_req_IFM_layer_2 = 1;
-            addr_IFM_layer_2 <= data_addr_layer_2;
-            if(count_row < enter_row_data) begin
+            //addr_IFM_layer_2 <= data_addr_layer_2;
+            if(count_row < enter_row_data - 16) begin
                 data_addr_layer_2 = data_addr_layer_2 + 4;
-                count_row = count_row + 4;
+                count_row = count_row + 16;
             end else
             begin
-                data_addr_layer_2 = data_addr_layer_2 + inc_addr_for_enter_row;
+                data_addr_layer_2 = data_addr_layer_2 + inc_addr_for_enter_row /4+ 4 ;
                 count_row = 0;
             end
             @ (posedge clk );
@@ -427,12 +432,16 @@ module Sub_top_MB_CONV_tb #(
         end 
         else begin
             
-            if((padding_addr > Start_addr_for_data_layer_2) && (padding_addr < End_addr_for_data_layer_2)) begin
-                if(padding_addr%OFM_C_layer1_para) padding_addr = padding_addr + 4;
-                else padding_addr = padding_addr + enter_row_data;
+            if((padding_addr >= Start_addr_for_data_layer_2 - 16) && (padding_addr <= End_addr_for_data_layer_2)) begin
+                if(((padding_addr + 16)%OFM_C_layer1_para) || !((padding_addr + 16)%(30*OFM_C_layer1_para)) ) padding_addr = padding_addr +16 ;
+                else padding_addr = padding_addr + enter_row_data + 4;
             end
             else begin
-                padding_addr = padding_addr + 4;
+                if(padding_addr <= End_addr_for_data_layer_2 + OFM_C_layer1_para*(IFM_W_layer1_para+3))
+                    padding_addr = padding_addr + 16;
+                else begin
+                    //wr_rd_req_IFM_layer_2 = 0;
+                end
             end
         end
         end
