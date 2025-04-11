@@ -436,7 +436,7 @@ module Sub_top_MB_CONV_tb #(
         if(valid == 16'hFFFF) begin
             valid_for_next_pipeline = 0;
             count_valid_for_dw = count_valid_for_dw + 16;
-            if(count_valid_for_dw == OFM_C_layer1_para * IFM_W_layer1_para ) begin
+            if(count_valid_for_dw == OFM_C_layer1_para * IFM_W_layer1_para * 2 ) begin
                 count_line = count_line + 1;
                 count_valid_for_dw = 0;
                 if(count_line > 2) begin
