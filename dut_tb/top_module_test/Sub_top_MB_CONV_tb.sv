@@ -144,6 +144,13 @@ module Sub_top_MB_CONV_tb #(
     reg [7:0] ofm_data_2;
     reg [7:0] ofm_data_byte;
     reg [7:0] ofm_data_byte_2;
+
+
+    reg valid_for_next_pipeline;
+    int count_valid_for_dw;
+    int count_line;
+
+
     int count_valid;
     int count_row;
     Sub_top_MB_CONV uut (
@@ -275,6 +282,9 @@ module Sub_top_MB_CONV_tb #(
         data_addr_layer_2 = Start_addr_for_data_layer_2/4;
         count_row = 0;
         wr_rd_req_IFM_layer_2 = 1;
+        count_valid_for_dw = 0;
+        count_line = 0;
+        valid_for_next_pipeline = 0;
        // write_padding = 1;
         //addr_ram_next_wr = -1;
         //wr_en_next = 0;
@@ -417,6 +427,15 @@ module Sub_top_MB_CONV_tb #(
             end
         if(uut.cal_start_ctl) begin
         if(valid == 16'hFFFF) begin
+            valid_for_next_pipeline = 0;
+            count_valid_for_dw = count_valid_for_dw + 16;
+            if(count_valid_for_dw == OFM_C_layer1_para * IFM_W_layer1_para ) begin
+                count_line = count_line + 1;
+                count_valid_for_dw = 0;
+                if(count_line > 2) begin
+                    valid_for_next_pipeline = 1;
+                end
+            end
             //wr_rd_req_IFM_layer_2 = 1;
             //addr_IFM_layer_2 <= data_addr_layer_2;
             if(count_row < enter_row_data - 16) begin
@@ -434,7 +453,7 @@ module Sub_top_MB_CONV_tb #(
             
             if((padding_addr >= Start_addr_for_data_layer_2 - 16) && (padding_addr <= End_addr_for_data_layer_2)) begin
                 if(((padding_addr + 16)%OFM_C_layer1_para) || !((padding_addr + 16)%(30*OFM_C_layer1_para)) ) padding_addr = padding_addr +16 ;
-                else padding_addr = padding_addr + enter_row_data + 4;
+                else padding_addr = padding_addr + enter_row_data + 16;
             end
             else begin
                 if(padding_addr <= End_addr_for_data_layer_2 + OFM_C_layer1_para*(IFM_W_layer1_para+3))
