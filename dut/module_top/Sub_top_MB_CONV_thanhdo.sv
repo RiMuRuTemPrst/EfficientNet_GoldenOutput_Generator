@@ -46,7 +46,7 @@ module Sub_top_MB_CONV(
     //control singal layer 2
     output wire [3:0] PE_finish_PE_cluster1x1,
 
-    input  wire [3:0] KERNEL_W,
+    input  wire [3:0] KERNEL_W_layer1,
     input  wire [7:0] OFM_W_layer1,
     input  wire [7:0] OFM_C_layer1,
     input  wire [7:0] IFM_C_layer1,
@@ -56,6 +56,7 @@ module Sub_top_MB_CONV(
     input  wire [3:0] KERNEL_W_layer2,
     input  wire [7:0] IFM_C_layer2,
     input  wire [7:0] OFM_C_layer2,
+    
     input  wire [1:0] stride_layer2,
     output wire [15:0] valid,
     //output wire [15:0] done_window,
@@ -94,6 +95,7 @@ module Sub_top_MB_CONV(
     input wr_rd_req_IFM_layer_2,
     output [31:0] OFM_data_layer_2,
     input [31:0] addr_IFM_layer_2,
+    input valid_for_next_pipeline,
     input [31:0] wr_addr_IFM_layer_2
 
 );
@@ -146,7 +148,6 @@ module Sub_top_MB_CONV(
     wire [7:0]  OFM_n_CONV_13;
     wire [7:0]  OFM_n_CONV_14;
     wire [7:0]  OFM_n_CONV_15;
-    wire [7:0]  OFM_n_CONV_16;
 
     // wire [7:0]  OFM_active_0;
     // wire [7:0]  OFM_active_1;
@@ -447,7 +448,8 @@ module Sub_top_MB_CONV(
     wire done_window_layer2;
     wire addr_valid_filter_layer2;
     wire [7:0] num_of_tiles_for_PE_layer2;
-
+    wire [7:0] OFM_W_layer2 ;
+    assign OFM_W_layer2 =( OFM_W_layer1 - KERNEL_W_layer2 )/ stride_layer2 +1;
     address_generator_dw #(
         .TOTAL_PE(4),
         .DATA_WIDTH(32)
@@ -455,12 +457,12 @@ module Sub_top_MB_CONV(
         .clk(clk),
         .rst_n(rst_n),
         .KERNEL_W(KERNEL_W_layer2),
-        //.OFM_W(OFM_W),
+        .OFM_W(OFM_W_layer2),
         .OFM_C(OFM_C_layer2),
         .IFM_C(IFM_C_layer2),
         .IFM_W(OFM_W_layer1),
         .stride(stride_layer2),
-        .ready(ready),
+        .ready(valid_for_next_pipeline),
         .addr_in(0),
         .req_addr_out_ifm(req_addr_out_ifm_layer2),
         .req_addr_out_filter(req_addr_out_filter_layer2),
@@ -486,7 +488,7 @@ module Sub_top_MB_CONV(
     BRAM #(
     .DATA_WIDTH(8),
     .off_set_shift(0)
-    )BRam_Weight_0_layer1(
+    )BRam_Weight_0_DW(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layer2),
         .wr_addr(addr_Wei),

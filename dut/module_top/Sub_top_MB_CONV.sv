@@ -136,7 +136,7 @@ module Sub_top_MB_CONV(
     wire [7:0]  OFM_n_CONV_13;
     wire [7:0]  OFM_n_CONV_14;
     wire [7:0]  OFM_n_CONV_15;
-    wire [7:0]  OFM_n_CONV_16;
+
 
     // wire [7:0]  OFM_active_0;
     // wire [7:0]  OFM_active_1;

@@ -9,7 +9,7 @@
 // `define IFM_C_layer1_para 32
 // `define KERNEL_W_layer1_para 3
 // `define OFM_C_layer1_para 128
-// `define Stride_para 2
+// `define stride_layer1_para 2
 
 // `define OFM_C_layer2_para 16
 
@@ -20,8 +20,11 @@ module Sub_top_MB_CONV_tb #(
     parameter IFM_C_layer1_para =48,
     parameter KERNEL_W_layer1_para =1,
     parameter OFM_C_layer1_para= 192,
-    parameter Stride_para= 1,
+    parameter stride_layer1_para= 1,
+
+    parameter KERNEL_W_layer2_para =3,
     parameter OFM_C_layer2_para= 16,
+    parameter stride_layer2_para =2,
     
 
     //
@@ -37,12 +40,12 @@ module Sub_top_MB_CONV_tb #(
     reg wr_rd_en_Weight_lay2;
 
 
-    reg [3:0] KERNEL_W;
-    reg [7:0] OFM_C;
-    reg [7:0] OFM_W;
-    reg [7:0] IFM_C;
-    reg [7:0] IFM_W;
-    reg [1:0] stride;
+    reg [3:0] KERNEL_W_layer1;
+    reg [7:0] OFM_C_layer1;
+    reg [7:0] OFM_W_layer1;
+    reg [7:0] IFM_C_layer1;
+    reg [7:0] IFM_W_layer1;
+    reg [1:0] stride_layer1;
 
     reg [31:0] addr, addr_lay2;
     reg [31:0] data_in_IFM;
@@ -155,7 +158,7 @@ module Sub_top_MB_CONV_tb #(
     int count_row;
     Sub_top_MB_CONV uut (
         .clk(clk),
-        .reset(reset),
+        .rst_n(reset),
         .wr_rd_en_IFM(wr_rd_en_IFM),
         .wr_rd_en_Weight(wr_rd_en_Weight_lay2),
         .data_in_IFM(data_in_IFM),
@@ -184,18 +187,20 @@ module Sub_top_MB_CONV_tb #(
         .PE_finish(PE_finish),
         .PE_finish_PE_cluster1x1(PE_finish_PE_cluster1x1_wire),
 
-        .KERNEL_W(KERNEL_W),
-        .OFM_C(OFM_C),
-        .OFM_W(OFM_W),
-        .IFM_C(IFM_C),
-        .IFM_W(IFM_W),
-        .stride(stride),
+        .KERNEL_W_layer1(KERNEL_W_layer1),
+        .OFM_C_layer1(OFM_C_layer1),
+        .OFM_W_layer1(OFM_W_layer1),
+        .IFM_C_layer1(IFM_C_layer1),
+        .IFM_W_layer1(IFM_W_layer1),
+        .stride_layer1(stride_layer1),
         .valid(valid),
         .done_compute(done_compute),
 
         //layer2
-        .IFM_C_layer2(OFM_C_layer1_para),
+        .KERNEL_W_layer2(KERNEL_W_layer2_para),
+        .IFM_C_layer2(OFM_C_layer2_para),
         .OFM_C_layer2(OFM_C_layer2_para),
+        .stride_layer2(stride_layer2_para),
 
         // for Control_unit
         .run(run),
@@ -220,7 +225,9 @@ module Sub_top_MB_CONV_tb #(
         .OFM_data_layer_2(OFM_data_layer_2),
         .addr_IFM_layer_2(addr_IFM_layer_2),
         .wr_addr_IFM_layer_2(wr_addr_IFM_layer_2),
-        .write_padding(write_padding)
+        .write_padding(write_padding),
+        .valid_for_next_pipeline(valid_for_next_pipeline)      
+        //.rd_addr(addr_w)
     );
 
     initial begin
@@ -242,14 +249,14 @@ module Sub_top_MB_CONV_tb #(
         wr_rd_en_Weight_lay2=0;
         addr = 0;
 
-        KERNEL_W = KERNEL_W_layer1_para ;
-        OFM_W = ((IFM_W_layer1_para+ 2*0 -KERNEL_W_layer1_para)/ Stride_para )+1;
-        OFM_C = OFM_C_layer1_para;
-        IFM_C = IFM_C_layer1_para;
-        IFM_W = IFM_W_layer1_para;
+        KERNEL_W_layer1 = KERNEL_W_layer1_para ;
+        OFM_W_layer1 = ((IFM_W_layer1_para+ 2*0 -KERNEL_W_layer1_para)/ stride_layer1_para )+1;
+        OFM_C_layer1 = OFM_C_layer1_para;
+        IFM_C_layer1 = IFM_C_layer1_para;
+        IFM_W_layer1 = IFM_W_layer1_para;
 
 
-        stride = Stride_para;
+        stride_layer1 = stride_layer1_para;
 
         cal_start = 0;
         data_in_IFM = 0;
@@ -266,7 +273,7 @@ module Sub_top_MB_CONV_tb #(
         data_in_Weight_10 = 0;
         data_in_Weight_11 = 0;
         data_in_Weight_12 = 0;
-        data_in_Weight_13 = 0;
+        data_in_Weight_13 = 0;       
         data_in_Weight_14 = 0;
         data_in_Weight_15 = 0;
 
@@ -352,7 +359,7 @@ module Sub_top_MB_CONV_tb #(
                 wr_rd_en_IFM = 0;
             end
             begin
-                for (j = 0; j < IFM_C*KERNEL_W*KERNEL_W*tile +1; j = j + 4) begin
+                for (j = 0; j < IFM_C_layer1*KERNEL_W_layer1*KERNEL_W_layer1*tile +1; j = j + 4) begin
 
                     addr <= j >> 2;  // Chia 4 vì mỗi lần lưu 32-bit
                     data_in_Weight_0 = {input_data_mem0 [addr*4], input_data_mem0[addr*4+1], input_data_mem0[addr*4+2], input_data_mem0[addr*4+3]};
@@ -378,7 +385,7 @@ module Sub_top_MB_CONV_tb #(
                 wr_rd_en_Weight = 0;
             end
             begin
-                for (k = 0; k < IFM_C*KERNEL_W*KERNEL_W*tile +1; k = k + 4) begin
+                for (k = 0; k < OFM_C_layer1*KERNEL_W_layer2_para*KERNEL_W_layer2_para*tile +1; k = k + 4) begin
 
                     addr <= k >> 2;  // Chia 4 vì mỗi lần lưu 32-bit
                     data_in_Weight_0_n_state = {input_data_mem0_n_state[i], input_data_mem0_n_state[i+1], input_data_mem0_n_state[i+2], input_data_mem0_n_state[i+3]};
@@ -394,7 +401,7 @@ module Sub_top_MB_CONV_tb #(
 
         @(posedge done_compute);
         PE_finish = 0;
-    #100000;
+        #100;
         $finish;
     end
     initial begin

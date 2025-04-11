@@ -248,12 +248,16 @@ always @(*) begin
                 if ( count_for_a_OFM == OFM_W*OFM_W ) done_compute    =  1;
                 else done_compute    =  0;
             end else begin
-                if(ready) begin
-                    next_state_IFM =    NEXT_WINDOW;
-                    addr_valid_ifm  =   1;
+                if (row_index_OFM == OFM_W-1) begin
+                    if(ready) begin
+                        next_state_IFM =    NEXT_WINDOW;
+                        addr_valid_ifm  =   1;
+                    end else begin
+                        next_state_IFM  =   PENDING ;
+                        addr_valid_ifm  =   0;
+                    end
                 end else begin
-                    next_state_IFM  =   PENDING ;
-                    addr_valid_ifm  =   0;
+                    next_state_IFM =    NEXT_WINDOW;
                 end
                 
                 

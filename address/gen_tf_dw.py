@@ -85,4 +85,5 @@ if __name__ == "__main__":
     output_data = output_data.reshape(output_feature_height, output_feature_width, output_feature_channel)
 
     write_hex_file(output_file, output_data)
+    print(f"Kết quả đã được ghi vào {input_file}")
     print(f"Kết quả đã được ghi vào {output_file}")
