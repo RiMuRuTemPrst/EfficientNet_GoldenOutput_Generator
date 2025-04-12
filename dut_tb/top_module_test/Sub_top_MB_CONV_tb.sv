@@ -23,7 +23,7 @@ module Sub_top_MB_CONV_tb #(
     parameter stride_layer1_para= 1,
 
     parameter KERNEL_W_layer2_para =3,
-    parameter OFM_C_layer2_para= 16,
+    parameter OFM_C_layer2_para= 192,
     parameter stride_layer2_para =2,
     
 
@@ -86,7 +86,7 @@ module Sub_top_MB_CONV_tb #(
     reg [19:0] addr_IFM;
     reg [15:0] PE_reset;
     reg [15:0] PE_finish;
-    wire       done_compute;
+    wire       done_compute_layer1;
 
     reg       run;
     reg [3:0] instrution;
@@ -134,7 +134,7 @@ module Sub_top_MB_CONV_tb #(
 
 
     logic wr_rd_req_IFM_layer_2;
-    logic [31:0] OFM_data_layer_2;
+    logic [31:0] IFM_data_layer_2;
     logic [31:0] addr_IFM_layer_2;
     logic [31:0] wr_addr_IFM_layer_2;
     logic write_padding;
@@ -150,8 +150,9 @@ module Sub_top_MB_CONV_tb #(
 
 
     reg valid_for_next_pipeline;
+    wire done_compute_layer2;
     int count_valid_for_dw;
-    int count_line;
+    int count_line,count_line_pipelined;
 
 
     int count_valid;
@@ -194,7 +195,7 @@ module Sub_top_MB_CONV_tb #(
         .IFM_W_layer1(IFM_W_layer1),
         .stride_layer1(stride_layer1),
         .valid(valid),
-        .done_compute(done_compute),
+        .done_compute(done_compute_layer1),
 
         //layer2
         .KERNEL_W_layer2(KERNEL_W_layer2_para),
@@ -222,11 +223,12 @@ module Sub_top_MB_CONV_tb #(
 
        // layer 2
         .wr_rd_req_IFM_layer_2(wr_rd_req_IFM_layer_2),
-        .OFM_data_layer_2(OFM_data_layer_2),
+        .IFM_data_layer_2(IFM_data_layer_2),
         .addr_IFM_layer_2(addr_IFM_layer_2),
         .wr_addr_IFM_layer_2(wr_addr_IFM_layer_2),
         .write_padding(write_padding),
-        .valid_for_next_pipeline(valid_for_next_pipeline)      
+        .valid_for_next_pipeline(valid_for_next_pipeline),
+        .done_compute_layer2(done_compute_layer2)
         //.rd_addr(addr_w)
     );
 
@@ -283,7 +285,7 @@ module Sub_top_MB_CONV_tb #(
         data_in_Weight_3_n_state=0;
         
         //wr_rd_req_IFM_layer_2 = 0;
-        //OFM_data_layer_2 = 0;
+        //IFM_data_layer_2 = 0;
         addr_IFM_layer_2 = 0;
         padding_addr = 0;
         data_addr_layer_2 = Start_addr_for_data_layer_2/4;
@@ -291,6 +293,7 @@ module Sub_top_MB_CONV_tb #(
         wr_rd_req_IFM_layer_2 = 1;
         count_valid_for_dw = 0;
         count_line = 0;
+        count_line_pipelined =0;
         valid_for_next_pipeline = 0;
        // write_padding = 1;
         //addr_ram_next_wr = -1;
@@ -399,7 +402,7 @@ module Sub_top_MB_CONV_tb #(
             end
         join
 
-        @(posedge done_compute);
+        @(posedge done_compute_layer1);
         PE_finish = 0;
         #100;
         $finish;
@@ -425,6 +428,7 @@ module Sub_top_MB_CONV_tb #(
    //assign wr_rd_req_IFM_layer_2 = 1;
    assign write_padding = (valid == 16'hFFFF) ? 1 : 0;
    assign wr_addr_IFM_layer_2 = (valid == 16'hFFFF) ? data_addr_layer_2 : padding_addr/4; 
+
     initial begin
         forever begin
         @ (posedge clk)
@@ -436,11 +440,15 @@ module Sub_top_MB_CONV_tb #(
         if(valid == 16'hFFFF) begin
             valid_for_next_pipeline = 0;
             count_valid_for_dw = count_valid_for_dw + 16;
-            if(count_valid_for_dw == OFM_C_layer1_para * IFM_W_layer1_para * 2 ) begin
+            if(count_valid_for_dw == OFM_C_layer1_para * IFM_W_layer1_para ) begin
                 count_line = count_line + 1;
+                count_line_pipelined = count_line_pipelined + 1;
                 count_valid_for_dw = 0;
                 if(count_line > 2) begin
-                    valid_for_next_pipeline = 1;
+                    if(count_line_pipelined > 1 ) begin
+                        valid_for_next_pipeline = 1;
+                        count_line_pipelined =0;
+                    end
                 end
             end
             //wr_rd_req_IFM_layer_2 = 1;

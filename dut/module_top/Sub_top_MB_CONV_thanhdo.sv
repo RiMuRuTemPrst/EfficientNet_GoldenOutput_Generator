@@ -93,10 +93,11 @@ module Sub_top_MB_CONV(
 
     // layer 2 signal 
     input wr_rd_req_IFM_layer_2,
-    output [31:0] OFM_data_layer_2,
+    output [31:0] IFM_data_layer_2,
     input [31:0] addr_IFM_layer_2,
     input valid_for_next_pipeline,
-    input [31:0] wr_addr_IFM_layer_2
+    input [31:0] wr_addr_IFM_layer_2,
+    output       done_compute_layer2
 
 );
 
@@ -442,7 +443,7 @@ module Sub_top_MB_CONV(
 
     wire [31:0] req_addr_out_ifm_layer2;
     wire [31:0] req_addr_out_filter_layer2;
-    wire done_compute_layer2;
+    
     wire finish_for_PE_layer2;
     wire addr_valid_ifm_layer2;
     wire done_window_layer2;
@@ -474,6 +475,26 @@ module Sub_top_MB_CONV(
         .num_of_tiles_for_PE(num_of_tiles_for_PE_layer2)
     );
 
+    wire wr_en_from_control_padding;
+    wire [31:0] wr_addr_from_control_padding;
+    wire [16*8-1:0] IFM_data_layer_2_from_control_padding;
+    control_padding #( 
+        .PE()
+    ) control_padding_inst (
+        .clk(clk),
+        .rst_n(rst_n),
+        .valid(valid),
+        .start(cal_start_ctl),
+        .data_in({OFM_15,OFM_14,OFM_13,OFM_12,OFM_11,OFM_10,OFM_9,OFM_8,OFM_7,OFM_6,OFM_5,OFM_4,OFM_3,OFM_2,OFM_1,OFM_0}),
+        .OFM_C(OFM_C_layer1),
+        .OFM_W(OFM_W_layer1),
+        .padding(1),
+        .wr_en(wr_en_from_control_padding),
+        .addr_next(wr_addr_from_control_padding),
+        .data_out(IFM_data_layer_2_from_control_padding)
+
+    );
+
     BRAM_IFM_128bit_in IFM_BRAM_layer_2(
         .clk(clk),
         //.rd_addr(addr_IFM_layer_2),
@@ -481,8 +502,9 @@ module Sub_top_MB_CONV(
         .wr_addr(wr_addr_IFM_layer_2),
         //.wr_rd_en(wr_rd_en_IFM),
         .wr_rd_en(wr_rd_req_IFM_layer_2),
+        //.wr_rd_en(wr_en_from_control_padding),
         .data_in(data_in_IFM_layer_2),
-        .data_out(OFM_data_layer_2)
+        .data_out(IFM_data_layer_2)
     );
 
     BRAM #(
@@ -542,7 +564,7 @@ module Sub_top_MB_CONV(
         .Weight_1(Weight_1_n_state),
         .Weight_2(Weight_2_n_state),
         .Weight_3(Weight_3_n_state),
-        .IFM(OFM_data_layer_2),
+        .IFM(IFM_data_layer_2),
         .PE_reset(done_window_layer2),
         .PE_finish(),
         .OFM_0(OFM_0_n_state),

@@ -245,7 +245,7 @@ always @(*) begin
             if(count_for_a_Window_of_a_tile < num_of_tiles_for_PE*num_of_KERNEL_points -1 )begin
                 next_state_IFM =    FETCH_WINDOW ;
                 addr_valid_ifm  = 1'b1;
-                if ( count_for_a_OFM == OFM_W*OFM_W ) done_compute    =  1;
+                if ( count_for_a_OFM >= OFM_W*OFM_W-1 ) done_compute    =  1;
                 else done_compute    =  0;
             end else begin
                 if (row_index_OFM == OFM_W-1) begin

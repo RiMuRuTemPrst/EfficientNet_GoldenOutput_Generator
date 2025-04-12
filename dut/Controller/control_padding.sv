@@ -1,15 +1,15 @@
 module control_padding#(
-    parameter PE = 16,
-    parameter OFM_C = 192,
-    parameter OFM_W = 28,
-    parameter padding = 1
+    parameter PE = 16
 )
-(
+(   
     input                                clk,
     input                                rst_n,
     input                                valid,
     input                                start,
     input        [PE * 8 - 1 : 0]        data_in,
+    input  [7:0]                        OFM_C,
+    input  [7:0]                        OFM_W,
+    input                                padding,
     output logic                         wr_en,
     output logic [15:0]                  addr_next,
     output logic [PE * 8 - 1 : 0]        data_out
@@ -117,6 +117,7 @@ always_ff @(posedge clk or negedge rst_n)begin
         count_data <= 0;
         count_height <= 0;
         end_signal <=0;
+        addr_data <=0;
     end
     else 
     case (current_state) 
@@ -125,7 +126,7 @@ always_ff @(posedge clk or negedge rst_n)begin
             if (next_state == LEFT_RIGHT_PADDING) begin
                 addr_padding <= addr_padding + 4;
             end
-            else if (next_state == IDLE or next_state == ROW_DATA) begin
+            else if (next_state == IDLE || next_state == ROW_DATA) begin
                 addr_padding <= addr_padding;
             end
             else begin
