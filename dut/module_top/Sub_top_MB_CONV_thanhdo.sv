@@ -34,10 +34,10 @@ module Sub_top_MB_CONV(
     input [31:0] addr_ram_next_wr,
     input [3:0] PE_reset_n_state,
     //input [31:0] addr_w_n_state,
-    output [7:0] OFM_0_n_state,
-    output [7:0] OFM_1_n_state,
-    output [7:0] OFM_2_n_state,
-    output [7:0] OFM_3_n_state,
+    output [7:0] OFM_0_DW_layer,
+    output [7:0] OFM_1_DW_layer,
+    output [7:0] OFM_2_DW_layer,
+    output [7:0] OFM_3_DW_layer,
     
 
     //control signal layer 1
@@ -59,7 +59,7 @@ module Sub_top_MB_CONV(
     
     input  wire [1:0] stride_layer2,
     output wire [15:0] valid,
-    output wire        valid_layer2;
+    output wire        valid_layer2,
     //output wire [15:0] done_window,
     output wire        done_compute,
     
@@ -571,10 +571,10 @@ module Sub_top_MB_CONV(
         .IFM(IFM_data_layer_2),
         .PE_reset(done_window_layer2),
         .PE_finish(),
-        .OFM_0(OFM_0_n_state),
-        .OFM_1(OFM_1_n_state),
-        .OFM_2(OFM_2_n_state),
-        .OFM_3(OFM_3_n_state),
+        .OFM_0(OFM_0_DW_layer),
+        .OFM_1(OFM_1_DW_layer),
+        .OFM_2(OFM_2_DW_layer),
+        .OFM_3(OFM_3_DW_layer),
         .valid()
     );
     

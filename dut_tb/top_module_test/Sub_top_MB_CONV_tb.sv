@@ -95,7 +95,7 @@ module Sub_top_MB_CONV_tb #(
     wire        wr_rd_req_Weight_for_tb;
     wire [31:0] wr_addr_Weight_for_tb;
     reg [31:0] addr_w_n_state;
-    wire [7:0] OFM_n_state [3:0];
+    wire [7:0] OFM_DW [3:0];
     reg [3:0] PE_reset_n_state;
     reg [3:0] PE_reset_n_state_1;
 
@@ -104,7 +104,7 @@ module Sub_top_MB_CONV_tb #(
    
     wire [7:0] OFM_out[15:0];
     
-    integer i,j,k,m,k1=0;
+    integer i,j,k,m,k1,k2k=0;
     integer ofm_file[15:0];  // Mảng để lưu các file handle
     integer ofm_file_2[3:0];
     integer ofm_file_3;
@@ -144,6 +144,7 @@ module Sub_top_MB_CONV_tb #(
     logic [31:0] data_addr_layer_2;
     reg cal_start;
     wire [15:0] valid ;
+    wire        valid_layer2;
     reg [7:0] ofm_data;
     reg [7:0] ofm_data_2;
     reg [7:0] ofm_data_byte;
@@ -196,6 +197,7 @@ module Sub_top_MB_CONV_tb #(
         .IFM_W_layer1(IFM_W_layer1),
         .stride_layer1(stride_layer1),
         .valid(valid),
+        .valid_layer2(valid_layer2),
         .done_compute(done_compute_layer1),
 
         //layer2
@@ -217,6 +219,9 @@ module Sub_top_MB_CONV_tb #(
         .OFM_4(OFM_out[4]), .OFM_5(OFM_out[5]), .OFM_6(OFM_out[6]), .OFM_7(OFM_out[7]),
         .OFM_8(OFM_out[8]), .OFM_9(OFM_out[9]), .OFM_10(OFM_out[10]), .OFM_11(OFM_out[11]),
         .OFM_12(OFM_out[12]), .OFM_13(OFM_out[13]), .OFM_14(OFM_out[14]), .OFM_15(OFM_out[15]),
+
+        .OFM_0_DW_layer( OFM_DW[0]), .OFM_1_DW_layer( OFM_DW[1]), 
+        .OFM_2_DW_layer( OFM_DW[2]), .OFM_3_DW_layer( OFM_DW[3]), 
 
 
         .PE_reset_n_state(PE_reset_n_state),
@@ -348,7 +353,6 @@ module Sub_top_MB_CONV_tb #(
         $readmemh("../Fused-Block-CNN/golden_out_fused_block/weight_hex_folder/weight2_PE1.hex", input_data_mem1_n_state);
         $readmemh("../Fused-Block-CNN/golden_out_fused_block/weight_hex_folder/weight2_PE2.hex", input_data_mem2_n_state);
         $readmemh("../Fused-Block-CNN/golden_out_fused_block/weight_hex_folder/weight2_PE3.hex", input_data_mem3_n_state);
-
         run         =   1;
         instrution  =   1;
         fork
@@ -405,7 +409,7 @@ module Sub_top_MB_CONV_tb #(
 
         @(posedge done_compute_layer1);
         PE_finish = 0;
-        #100;
+    #100000;
         $finish;
     end
     initial begin
@@ -419,9 +423,9 @@ module Sub_top_MB_CONV_tb #(
         end
 
          for (m = 0; m < 4; m = m + 1) begin
-             ofm_file_2[m] = $fopen($sformatf("../Fused-Block-CNN/golden_out_fused_block/output_hex_folder/OFM%0d_DUT.hex", m), "w");
+             ofm_file_2[m] = $fopen($sformatf("../Fused-Block-CNN/address/OFM%0d_DUT_DW.hex", m), "w");
              if (ofm_file_2[m] == 0) begin
-                 $display("Error opening file OFM_PE%d.hex", k);
+                 $display("Error opening file OFM%d.hex", k);
                  $finish;  
              end
          end
@@ -513,12 +517,14 @@ always @(posedge clk) begin
 
     end
 end
+
+
 always @(posedge clk) begin
-    if (PE_finish_PE_cluster1x1_wire == 15) begin
+    if (valid_layer2 == 1) begin
         // Lưu giá trị OFM vào các file tương ứng
         count_for_layer_2 = count_for_layer_2 + 1;
         for (k1 = 0; k1 < 4; k1 = k1 + 1) begin
-            ofm_data_2 = OFM_n_state[k1];  // Lấy giá trị OFM từ output
+            ofm_data_2 = OFM_DW[k1];  // Lấy giá trị OFM từ output
             // Ghi từng byte của OFM vào các file
             ofm_data_byte_2 = ofm_data_2;
             //if (ofm_file[1] != 0) begin

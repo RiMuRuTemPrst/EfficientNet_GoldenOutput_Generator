@@ -26,26 +26,37 @@ reg [15:0] addr_data;// = OFM_C * (OFM_W + 3 * padding) / 4;
 logic end_signal;
 
 
-parameter ROW_PADDING =             3'b000;
-parameter LEFT_RIGHT_PADDING =      3'b001;
-parameter NEXT_LEFT_RIGHT_PADDING = 3'b010;
-parameter ROW_DATA =                3'b011;
-parameter NEXT_ROW_DATA =           3'b100;
-parameter IDLE =                    3'b101;
+
+
+
+
+parameter IDLE_0 =                  3'd0;
+parameter IDLE =                    3'd1;
+parameter ROW_PADDING =             3'd2;
+parameter ROW_DATA =                3'd3;
+parameter NEXT_ROW_DATA =           3'd4;
+parameter LEFT_RIGHT_PADDING =      3'd5;
+parameter NEXT_LEFT_RIGHT_PADDING = 3'd6;
 
 logic [2:0] current_state, next_state;
 
 always_ff @( posedge clk or negedge rst_n ) begin 
     if (!rst_n) begin
-        current_state <= IDLE;
+        current_state <= IDLE_0;
     end
     else current_state <= next_state;
 end
 always_comb begin 
     case(current_state)
+
+        IDLE_0: begin
+            if(start) next_state = ROW_PADDING;
+            else next_state= IDLE_0;
+        end
         IDLE: begin
-            if(start && (count_for_OFM == 1)) next_state = ROW_PADDING;
-            else if (valid)begin
+            // if(start ) next_state = ROW_PADDING;
+            // else
+             if (valid)begin
                 if (count_data >= ((OFM_C * OFM_W) >> 4) - 1) next_state = NEXT_ROW_DATA;
                 else next_state = ROW_DATA;
             end
@@ -78,10 +89,15 @@ always_comb begin
         NEXT_ROW_DATA: begin
             if (!valid) begin
                     if (count_padd >= ((OFM_C *(OFM_W + padding)) >> 4) - 1)begin
-                        if(end_signal) next_state = IDLE;
+                        if(end_signal) begin
+                             
+                             if (count_height < OFM_W - 1) next_state = IDLE;
+                                else next_state = IDLE_0;
+                        end
                         else next_state = LEFT_RIGHT_PADDING;
                     end
                     else next_state = ROW_PADDING;
+                
             end
             else begin
                 if (count_height < OFM_W - 1) next_state = ROW_DATA;
@@ -126,6 +142,8 @@ always_ff @(posedge clk or negedge rst_n)begin
     end
     else begin
     case (current_state) 
+        IDLE_0 : begin
+        end
         IDLE: begin end
         ROW_PADDING: begin
             if (next_state == LEFT_RIGHT_PADDING) begin
@@ -140,6 +158,7 @@ always_ff @(posedge clk or negedge rst_n)begin
             count_height_padd <= 0;
             end
             if (count_data==0) addr_data<= addr_data_base;
+            count_for_OFM <= count_for_OFM + 1;
         end
         ROW_DATA: begin
             if (next_state == NEXT_ROW_DATA)begin
@@ -173,6 +192,7 @@ always_ff @(posedge clk or negedge rst_n)begin
                 count_lr <= count_lr + 1;
                 addr_padding <= addr_padding + 4;
             end
+            count_for_OFM <= count_for_OFM + 1;
         end
         NEXT_LEFT_RIGHT_PADDING: begin
             if (next_state == ROW_PADDING) begin 
@@ -191,10 +211,10 @@ always_ff @(posedge clk or negedge rst_n)begin
                 count_height_padd <= count_height_padd + 1;
                 addr_padding <= addr_padding + OFM_W * OFM_C / 4 + 4;
             end
+            count_for_OFM <= count_for_OFM + 1;
         end
 
     endcase
-    count_for_OFM <= count_for_OFM + 1;
     end
 end
 always_comb begin
