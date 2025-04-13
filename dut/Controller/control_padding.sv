@@ -7,9 +7,9 @@ module control_padding#(
     input                                valid,
     input                                start,
     input        [PE * 8 - 1 : 0]        data_in,
-    input  [7:0]                        OFM_C,
-    input  [7:0]                        OFM_W,
-    input                                padding,
+    input logic [7:0]                     OFM_C,
+    input logic [7:0]                     OFM_W,
+    input logic                           padding,
     output logic                         wr_en,
     output logic [15:0]                  addr_next,
     output logic [PE * 8 - 1 : 0]        data_out
@@ -19,8 +19,10 @@ logic [15:0] count_data;
 logic [15:0] count_height;
 logic [15:0] count_height_padd;
 logic [15:0] count_lr;
+logic [31:0] count_for_OFM ;
+
 logic [15:0] addr_padding = 0;
-logic [15:0] addr_data = OFM_C * (OFM_W + 3 * padding) / 4;
+reg [15:0] addr_data;// = OFM_C * (OFM_W + 3 * padding) / 4;
 logic end_signal;
 
 
@@ -42,7 +44,7 @@ end
 always_comb begin 
     case(current_state)
         IDLE: begin
-            if(start) next_state = ROW_PADDING;
+            if(start && (count_for_OFM == 1)) next_state = ROW_PADDING;
             else if (valid)begin
                 if (count_data >= ((OFM_C * OFM_W) >> 4) - 1) next_state = NEXT_ROW_DATA;
                 else next_state = ROW_DATA;
@@ -109,6 +111,8 @@ always_comb begin
 
     endcase
 end
+wire [15:0] addr_data_base ;
+assign  addr_data_base = ( OFM_C * (OFM_W + 3 * padding)) >> 2;
 always_ff @(posedge clk or negedge rst_n)begin
     if (!rst_n) begin
         count_padd <= 0;
@@ -117,9 +121,10 @@ always_ff @(posedge clk or negedge rst_n)begin
         count_data <= 0;
         count_height <= 0;
         end_signal <=0;
-        addr_data <=0;
+        count_for_OFM <= 0;
+        addr_data  <= 0;
     end
-    else 
+    else begin
     case (current_state) 
         IDLE: begin end
         ROW_PADDING: begin
@@ -134,6 +139,7 @@ always_ff @(posedge clk or negedge rst_n)begin
             addr_padding <= addr_padding + 4;
             count_height_padd <= 0;
             end
+            if (count_data==0) addr_data<= addr_data_base;
         end
         ROW_DATA: begin
             if (next_state == NEXT_ROW_DATA)begin
@@ -188,9 +194,11 @@ always_ff @(posedge clk or negedge rst_n)begin
         end
 
     endcase
+    count_for_OFM <= count_for_OFM + 1;
+    end
 end
 always_comb begin
-    case(current_state)
+    case(next_state)
         IDLE: begin
             wr_en = 1;
             addr_next = (valid) ? addr_data : addr_padding;
@@ -198,7 +206,8 @@ always_comb begin
         end
         ROW_PADDING: begin
             wr_en = 1;
-            addr_next = (valid) ? addr_data : addr_padding;
+            //addr_next = (valid) ? addr_data : addr_padding; // tuan anh
+            addr_next = addr_padding; // thanh do
             data_out = 0;
         end
         ROW_DATA: begin

@@ -107,6 +107,7 @@ module Sub_top_MB_CONV_tb #(
     integer i,j,k,m,k1=0;
     integer ofm_file[15:0];  // Mảng để lưu các file handle
     integer ofm_file_2[3:0];
+    integer ofm_file_3;
     int link_inital;
 
     reg [7:0] input_data_mem [0:1076480]; // BRAM input data
@@ -424,6 +425,12 @@ module Sub_top_MB_CONV_tb #(
                  $finish;  
              end
          end
+
+             ofm_file_3= $fopen($sformatf("../Fused-Block-CNN/address/PADDING_control_IFM.hex"), "w");
+             if (ofm_file_3 == 0) begin
+                 $display("Error opening file", k);
+                 $finish;  
+             end
     end
    //assign wr_rd_req_IFM_layer_2 = 1;
    assign write_padding = (valid == 16'hFFFF) ? 1 : 0;
@@ -496,6 +503,14 @@ always @(posedge clk) begin
            // end
             ofm_data = ofm_data >> 8;  // Dịch 8 bit cho đến khi hết 32-bit
         end
+    end
+end
+always @(posedge clk) begin
+    if (valid == 16'hFFFF) begin
+        // Lưu giá trị OFM vào các file tương ứng
+
+                $fwrite(ofm_file_3, "%h\n", IFM_data_layer_2);  // Ghi giá trị từng byte vào file
+
     end
 end
 always @(posedge clk) begin

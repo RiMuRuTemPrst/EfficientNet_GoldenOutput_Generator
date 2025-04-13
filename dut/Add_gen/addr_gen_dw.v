@@ -40,7 +40,7 @@ reg [31:0] predict_window_addr_fetch_ifm;
 reg [31:0] predict_window_OFM_addr_fetch_ifm;
 reg [31:0] addr_fetch_filter;
 reg [31:0] window_start_addr_ifm;
-reg [31:0] window_start_addr_filter;
+//reg [31:0] window_start_addr_filter;
 
 
 // FSM state encoding for IFM

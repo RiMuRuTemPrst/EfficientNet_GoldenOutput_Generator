@@ -59,6 +59,7 @@ module Sub_top_MB_CONV(
     
     input  wire [1:0] stride_layer2,
     output wire [15:0] valid,
+    output wire        valid_layer2;
     //output wire [15:0] done_window,
     output wire        done_compute,
     
@@ -187,6 +188,7 @@ module Sub_top_MB_CONV(
 
     // signal for layer 2
     logic [127:0] data_in_IFM_layer_2;
+    wire finish_for_PE_DW_cluster;
 
     Control_unit Control_unit(
         .clk(clk),
@@ -475,6 +477,8 @@ module Sub_top_MB_CONV(
         .num_of_tiles_for_PE(num_of_tiles_for_PE_layer2)
     );
 
+    assign valid_layer2 =finish_for_PE_layer2;
+
     wire wr_en_from_control_padding;
     wire [31:0] wr_addr_from_control_padding;
     wire [16*8-1:0] IFM_data_layer_2_from_control_padding;
@@ -573,5 +577,6 @@ module Sub_top_MB_CONV(
         .OFM_3(OFM_3_n_state),
         .valid()
     );
+    
 
 endmodule
