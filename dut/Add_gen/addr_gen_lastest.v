@@ -227,7 +227,7 @@ end
 always @(*) begin
     case (current_state_IFM)
         START_ADDR_IFM: begin
-            if ( ready ) begin
+            if ( ready && count_for_a_OFM ==0 ) begin
                 next_state_IFM =    FETCH_WINDOW ;
             end else begin
                 next_state_IFM =    START_ADDR_IFM;
@@ -355,12 +355,14 @@ always @(posedge clk or negedge rst_n) begin
     end else begin
         case (current_state_IFM)
             START_ADDR_IFM: begin
+                done_compute    <=  0;
                 if ( ready ) begin
                     row_index_KERNEL        <= 8'b0;
                     col_index_KERNEL        <= 8'b0;
                     col_index_OFM           <= 8'b0;
                     count_for_a_Window      <= 8'b0;
                     window_start_addr_ifm   <= 8'h0;
+                    count_for_a_OFM         <=  'h0;
                 end else begin
                 end
                 
@@ -435,6 +437,8 @@ always @(posedge clk or negedge rst_n) begin
                     end
 
                 end else begin    
+                     if ( count_for_a_OFM >= OFM_W*OFM_W-1 ) done_compute    <=  1;
+                        else done_compute    <=  0;
                 end
                 if (count_for_a_OFM >= OFM_W*OFM_W -1 )   begin
                     

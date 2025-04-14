@@ -108,16 +108,18 @@ always @(*) begin
         end
 
         S_CAL: begin
+            cal_start = 1;
             if (done_compute) begin
-                cal_start = 0;
+                
                 next_state = S_STORE; // After computation, transition to STORE
             end else begin
-                cal_start = 1; // Start computation
+                next_state = S_CAL;  // Start computation
             end
         end
 
         S_STORE: begin
             next_state = S_STORE;
+            cal_start = 0;
         end
 
         default: begin
