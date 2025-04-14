@@ -16,10 +16,10 @@
  `define Num_of_PE_para 16
 
 module Sub_top_MB_CONV_tb #(
-    parameter IFM_W_layer1_para= 28, 
-    parameter IFM_C_layer1_para =48,
+    parameter IFM_W_layer1_para= 10, 
+    parameter IFM_C_layer1_para =16,
     parameter KERNEL_W_layer1_para =1,
-    parameter OFM_C_layer1_para= 192,
+    parameter OFM_C_layer1_para= 32,
     parameter Stride_para= 1,
     parameter OFM_C_layer2_para= 16,
     
@@ -434,7 +434,7 @@ module Sub_top_MB_CONV_tb #(
             
             if((padding_addr >= Start_addr_for_data_layer_2 - 16) && (padding_addr <= End_addr_for_data_layer_2)) begin
                 if(((padding_addr + 16)%OFM_C_layer1_para) || !((padding_addr + 16)%(30*OFM_C_layer1_para)) ) padding_addr = padding_addr +16 ;
-                else padding_addr = padding_addr + enter_row_data + 4;
+                else padding_addr = padding_addr + enter_row_data + 16;
             end
             else begin
                 if(padding_addr <= End_addr_for_data_layer_2 + OFM_C_layer1_para*(IFM_W_layer1_para+3))
