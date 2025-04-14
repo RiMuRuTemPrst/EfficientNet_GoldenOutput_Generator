@@ -6,7 +6,7 @@ def read_and_write_file(input_file, output_file, n, m, num_segments, offset, wei
 
         start_offset = 0
         if offset != 0:
-            start_offset = weight_height * weight_height * weight_channel * offset
+            start_offset = weight_height * weight_height  * offset
 
         current_index = start_offset
         output_lines = []

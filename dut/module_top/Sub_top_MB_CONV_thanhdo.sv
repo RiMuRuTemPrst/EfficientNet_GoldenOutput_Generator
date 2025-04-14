@@ -1,6 +1,6 @@
 module Sub_top_MB_CONV(
     input clk,
-    input reset,
+    input rst_n,
     input [31:0] addr,
     input wr_rd_en_IFM,
     input wr_rd_en_Weight,
@@ -23,6 +23,10 @@ module Sub_top_MB_CONV(
     input [31:0] data_in_Weight_14,
     input [31:0] data_in_Weight_15,
 
+    input [31:0] data_in_Weight_0_n_state,  // layer 2
+    input [31:0] data_in_Weight_1_n_state,  // layer 2
+    input [31:0] data_in_Weight_2_n_state,  // layer 2
+    input [31:0] data_in_Weight_3_n_state,  // layer 2
     //input wr_en_next,                       // controll  layer1_2
 
     //next state pipeline
@@ -30,6 +34,10 @@ module Sub_top_MB_CONV(
     input [31:0] addr_ram_next_wr,
     input [3:0] PE_reset_n_state,
     //input [31:0] addr_w_n_state,
+    output [7:0] OFM_0_DW_layer,
+    output [7:0] OFM_1_DW_layer,
+    output [7:0] OFM_2_DW_layer,
+    output [7:0] OFM_3_DW_layer,
     
 
     //control signal layer 1
@@ -38,16 +46,20 @@ module Sub_top_MB_CONV(
     //control singal layer 2
     output wire [3:0] PE_finish_PE_cluster1x1,
 
-    input  wire [3:0] KERNEL_W,
-    input  wire [7:0] OFM_W,
-    input  wire [7:0] OFM_C,
-    input  wire [7:0] IFM_C,
-    input  wire [7:0] IFM_W,
-    input  wire [1:0] stride,
+    input  wire [3:0] KERNEL_W_layer1,
+    input  wire [7:0] OFM_W_layer1,
+    input  wire [7:0] OFM_C_layer1,
+    input  wire [7:0] IFM_C_layer1,
+    input  wire [7:0] IFM_W_layer1,
+    input  wire [1:0] stride_layer1,
 
+    input  wire [3:0] KERNEL_W_layer2,
     input  wire [7:0] IFM_C_layer2,
     input  wire [7:0] OFM_C_layer2,
+    
+    input  wire [1:0] stride_layer2,
     output wire [15:0] valid,
+    output wire        valid_layer2,
     //output wire [15:0] done_window,
     output wire        done_compute,
     
@@ -82,9 +94,11 @@ module Sub_top_MB_CONV(
 
     // layer 2 signal 
     input wr_rd_req_IFM_layer_2,
-    output [31:0] OFM_data_layer_2,
+    output [31:0] IFM_data_layer_2,
     input [31:0] addr_IFM_layer_2,
-    input [31:0] wr_addr_IFM_layer_2
+    input valid_for_next_pipeline,
+    input [31:0] wr_addr_IFM_layer_2,
+    output       done_compute_layer2
 
 );
 
@@ -137,7 +151,6 @@ module Sub_top_MB_CONV(
     wire [7:0]  OFM_n_CONV_14;
     wire [7:0]  OFM_n_CONV_15;
 
-
     // wire [7:0]  OFM_active_0;
     // wire [7:0]  OFM_active_1;
     // wire [7:0]  OFM_active_2;
@@ -175,18 +188,19 @@ module Sub_top_MB_CONV(
 
     // signal for layer 2
     logic [127:0] data_in_IFM_layer_2;
+    wire finish_for_PE_DW_cluster;
 
     Control_unit Control_unit(
         .clk(clk),
-        .rst_n(reset),
+        .rst_n(rst_n),
         .run(run),
         .instrution(instrution),
-        .KERNEL_W(KERNEL_W),
-        .OFM_W(OFM_W),
-        .OFM_C(OFM_C),
-        .IFM_C(IFM_C),
-        .IFM_W(IFM_W),
-        .stride(stride),
+        .KERNEL_W(KERNEL_W_layer1),
+        .OFM_W(OFM_W_layer1),
+        .OFM_C(OFM_C_layer1),
+        .IFM_C(IFM_C_layer1),
+        .IFM_W(IFM_W_layer1),
+        .stride(stride_layer1),
         .addr_valid(addr_valid),
         .done_compute(done_compute),
         .tile(tile),
@@ -361,7 +375,7 @@ module Sub_top_MB_CONV(
     
     PE_cluster PE_cluster_layer1(
         .clk(clk),
-        .reset_n(reset),
+        .reset_n(rst_n),
         .PE_reset(done_window_for_PE_cluster),
         .PE_finish(PE_finish),
         //.valid(valid),
@@ -404,13 +418,13 @@ module Sub_top_MB_CONV(
     
     address_generator addr_gen(
         .clk(clk),
-        .rst_n(reset),
-        .KERNEL_W(KERNEL_W),
-        .OFM_W(OFM_W),
-        .OFM_C(OFM_C),
-        .IFM_C(IFM_C),
-        .IFM_W(IFM_W),
-        .stride(stride),
+        .rst_n(rst_n),
+        .KERNEL_W(KERNEL_W_layer1),
+        .OFM_W(OFM_W_layer1),
+        .OFM_C(OFM_C_layer1),
+        .IFM_C(IFM_C_layer1),
+        .IFM_W(IFM_W_layer1),
+        .stride(stride_layer1),
         //.ready(cal_start),
         .ready(cal_start_ctl),
         .addr_in(base_addr),
@@ -423,16 +437,146 @@ module Sub_top_MB_CONV(
         .num_of_tiles_for_PE(tile)
     );
 
-    BRAM_IFM_128bit_in IFM_BRAM_layer_2(
-        .clk(clk),
-        .rd_addr(addr_IFM_layer_2),
-        .wr_addr(wr_addr_IFM_layer_2),
-        //.wr_rd_en(wr_rd_en_IFM),
-        .wr_rd_en(wr_rd_req_IFM_layer_2),
-        .data_in(data_in_IFM_layer_2),
-        .data_out(OFM_data_layer_2)
-    );
+    
     assign done_window_for_PE_cluster       =   {16{done_window_one_bit}};
     assign finish_for_PE_cluster            =   (cal_start_ctl) && ( addr_IFM != 'b0 )   ? {16{finish_for_PE}} : 16'b0;
     assign valid                            =   finish_for_PE_cluster;
+
+
+    wire [31:0] req_addr_out_ifm_layer2;
+    wire [31:0] req_addr_out_filter_layer2;
+    
+    wire finish_for_PE_layer2;
+    wire addr_valid_ifm_layer2;
+    wire done_window_layer2;
+    wire addr_valid_filter_layer2;
+    wire [7:0] num_of_tiles_for_PE_layer2;
+    wire [7:0] OFM_W_layer2 ;
+    assign OFM_W_layer2 =( OFM_W_layer1 - KERNEL_W_layer2 )/ stride_layer2 +1;
+    address_generator_dw #(
+        .TOTAL_PE(4),
+        .DATA_WIDTH(32)
+    ) address_generator_dw_inst (
+        .clk(clk),
+        .rst_n(rst_n),
+        .KERNEL_W(KERNEL_W_layer2),
+        .OFM_W(OFM_W_layer2),
+        .OFM_C(OFM_C_layer2),
+        .IFM_C(IFM_C_layer2),
+        .IFM_W(OFM_W_layer1),
+        .stride(stride_layer2),
+        .ready(valid_for_next_pipeline),
+        .addr_in(0),
+        .req_addr_out_ifm(req_addr_out_ifm_layer2),
+        .req_addr_out_filter(req_addr_out_filter_layer2),
+        .done_compute(done_compute_layer2),
+        .finish_for_PE(finish_for_PE_layer2),
+        .addr_valid_ifm(addr_valid_ifm_layer2),
+        .done_window(done_window_layer2),
+        .addr_valid_filter(addr_valid_filter_layer2),
+        .num_of_tiles_for_PE(num_of_tiles_for_PE_layer2)
+    );
+
+    assign valid_layer2 =finish_for_PE_layer2;
+
+    wire wr_en_from_control_padding;
+    wire [31:0] wr_addr_from_control_padding;
+    wire [16*8-1:0] IFM_data_layer_2_from_control_padding;
+    control_padding #( 
+        .PE()
+    ) control_padding_inst (
+        .clk(clk),
+        .rst_n(rst_n),
+        .valid(valid),
+        .start(cal_start_ctl),
+        .data_in({OFM_15,OFM_14,OFM_13,OFM_12,OFM_11,OFM_10,OFM_9,OFM_8,OFM_7,OFM_6,OFM_5,OFM_4,OFM_3,OFM_2,OFM_1,OFM_0}),
+        .OFM_C(OFM_C_layer1),
+        .OFM_W(OFM_W_layer1),
+        .padding(1),
+        .wr_en(wr_en_from_control_padding),
+        .addr_next(wr_addr_from_control_padding),
+        .data_out(IFM_data_layer_2_from_control_padding)
+
+    );
+
+    BRAM_IFM_128bit_in IFM_BRAM_layer_2(
+        .clk(clk),
+        //.rd_addr(addr_IFM_layer_2),
+        .rd_addr(req_addr_out_ifm_layer2),
+        .wr_addr(wr_addr_IFM_layer_2),
+        //.wr_rd_en(wr_rd_en_IFM),
+        .wr_rd_en(wr_rd_req_IFM_layer_2),
+        //.wr_rd_en(wr_en_from_control_padding),
+        .data_in(data_in_IFM_layer_2),
+        .data_out(IFM_data_layer_2)
+    );
+
+    BRAM #(
+    .DATA_WIDTH(8),
+    .off_set_shift(0)
+    )BRam_Weight_0_DW(
+        .clk(clk),
+        .rd_addr(req_addr_out_filter_layer2),
+        .wr_addr(addr_Wei),
+        .wr_rd_en(wr_rd_en_Weight),
+        //.wr_rd_en(wr_rd_req_Weight),
+        .data_in(data_in_Weight_0_n_state),
+        .data_out(Weight_0_n_state)
+    );
+    BRAM #(
+        .DATA_WIDTH(8),
+        .off_set_shift(0)
+    )BRam_Weight_1_DW(
+        .clk(clk),
+        .rd_addr(req_addr_out_filter_layer2),
+        .wr_addr(addr_Wei),
+        .wr_rd_en(wr_rd_en_Weight),
+        //.wr_rd_en(wr_rd_req_Weight),
+        .data_in(data_in_Weight_1_n_state),
+        .data_out(Weight_1_n_state)
+    );
+    BRAM #(
+        .DATA_WIDTH(8),
+        .off_set_shift(0)
+    )BRam_Weight_2_DW(
+        .clk(clk),
+        .rd_addr(req_addr_out_filter_layer2),
+        .wr_addr(addr_Wei),
+        .wr_rd_en(wr_rd_en_Weight),
+        //.wr_rd_en(wr_rd_req_Weight),
+        .data_in(data_in_Weight_2_n_state),
+        .data_out(Weight_2_n_state)
+    );
+    BRAM #(
+        .DATA_WIDTH(8),
+        .off_set_shift(0)
+    )BRam_Weight_3_DW(
+        .clk(clk),
+        .rd_addr(req_addr_out_filter_layer2),
+        .wr_addr(addr_Wei),
+        .wr_rd_en(wr_rd_en_Weight),
+        //.wr_rd_en(wr_rd_req_Weight),
+        .data_in(data_in_Weight_3_n_state),
+        .data_out(Weight_3_n_state)
+    );
+
+
+    PE_DW_cluster PE_DW(
+        .clk(clk),
+        .reset_n(rst_n),
+        .Weight_0(Weight_0_n_state),
+        .Weight_1(Weight_1_n_state),
+        .Weight_2(Weight_2_n_state),
+        .Weight_3(Weight_3_n_state),
+        .IFM(IFM_data_layer_2),
+        .PE_reset(done_window_layer2),
+        .PE_finish(),
+        .OFM_0(OFM_0_DW_layer),
+        .OFM_1(OFM_1_DW_layer),
+        .OFM_2(OFM_2_DW_layer),
+        .OFM_3(OFM_3_DW_layer),
+        .valid()
+    );
+    
+
 endmodule

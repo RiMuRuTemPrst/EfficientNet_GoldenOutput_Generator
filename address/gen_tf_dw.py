@@ -28,9 +28,9 @@ def read_hex_file(filename, shape):
     H, W, C = shape
     reshaped_data = np.zeros((H, W, C), dtype=np.int32)
     index = 0
-    for c in range(C):
-        for h in range(H):
-            for w in range(W):
+    for h in range(H):
+        for w in range(W):
+            for c in range(C):
                 reshaped_data[h, w, c] = data[index]
                 index += 1
     return reshaped_data
@@ -85,4 +85,5 @@ if __name__ == "__main__":
     output_data = output_data.reshape(output_feature_height, output_feature_width, output_feature_channel)
 
     write_hex_file(output_file, output_data)
+    print(f"Kết quả đã được ghi vào {input_file}")
     print(f"Kết quả đã được ghi vào {output_file}")

@@ -9,7 +9,7 @@
 // `define IFM_C_layer1_para 32
 // `define KERNEL_W_layer1_para 3
 // `define OFM_C_layer1_para 128
-// `define Stride_para 2
+// `define stride_layer1_para 2
 
 // `define OFM_C_layer2_para 16
 
@@ -19,9 +19,12 @@ module Sub_top_MB_CONV_tb #(
     parameter IFM_W_layer1_para= 10, 
     parameter IFM_C_layer1_para =16,
     parameter KERNEL_W_layer1_para =1,
-    parameter OFM_C_layer1_para= 32,
-    parameter Stride_para= 1,
-    parameter OFM_C_layer2_para= 16,
+    parameter OFM_C_layer1_para= 192,
+    parameter stride_layer1_para= 1,
+
+    parameter KERNEL_W_layer2_para =3,
+    parameter OFM_C_layer2_para= 192,
+    parameter stride_layer2_para =2,
     
 
     //
@@ -37,12 +40,12 @@ module Sub_top_MB_CONV_tb #(
     reg wr_rd_en_Weight_lay2;
 
 
-    reg [3:0] KERNEL_W;
-    reg [7:0] OFM_C;
-    reg [7:0] OFM_W;
-    reg [7:0] IFM_C;
-    reg [7:0] IFM_W;
-    reg [1:0] stride;
+    reg [3:0] KERNEL_W_layer1;
+    reg [7:0] OFM_C_layer1;
+    reg [7:0] OFM_W_layer1;
+    reg [7:0] IFM_C_layer1;
+    reg [7:0] IFM_W_layer1;
+    reg [1:0] stride_layer1;
 
     reg [31:0] addr, addr_lay2;
     reg [31:0] data_in_IFM;
@@ -83,7 +86,7 @@ module Sub_top_MB_CONV_tb #(
     reg [19:0] addr_IFM;
     reg [15:0] PE_reset;
     reg [15:0] PE_finish;
-    wire       done_compute;
+    wire       done_compute_layer1;
 
     reg       run;
     reg [3:0] instrution;
@@ -92,7 +95,7 @@ module Sub_top_MB_CONV_tb #(
     wire        wr_rd_req_Weight_for_tb;
     wire [31:0] wr_addr_Weight_for_tb;
     reg [31:0] addr_w_n_state;
-    wire [7:0] OFM_n_state [3:0];
+    wire [7:0] OFM_DW [3:0];
     reg [3:0] PE_reset_n_state;
     reg [3:0] PE_reset_n_state_1;
 
@@ -101,9 +104,10 @@ module Sub_top_MB_CONV_tb #(
    
     wire [7:0] OFM_out[15:0];
     
-    integer i,j,k,m,k1=0;
+    integer i,j,k,m,k1,k2k=0;
     integer ofm_file[15:0];  // Mảng để lưu các file handle
     integer ofm_file_2[3:0];
+    integer ofm_file_3;
     int link_inital;
 
     reg [7:0] input_data_mem [0:1076480]; // BRAM input data
@@ -131,7 +135,7 @@ module Sub_top_MB_CONV_tb #(
 
 
     logic wr_rd_req_IFM_layer_2;
-    logic [31:0] OFM_data_layer_2;
+    logic [31:0] IFM_data_layer_2;
     logic [31:0] addr_IFM_layer_2;
     logic [31:0] wr_addr_IFM_layer_2;
     logic write_padding;
@@ -140,15 +144,24 @@ module Sub_top_MB_CONV_tb #(
     logic [31:0] data_addr_layer_2;
     reg cal_start;
     wire [15:0] valid ;
+    wire        valid_layer2;
     reg [7:0] ofm_data;
     reg [7:0] ofm_data_2;
     reg [7:0] ofm_data_byte;
     reg [7:0] ofm_data_byte_2;
+
+
+    reg valid_for_next_pipeline;
+    wire done_compute_layer2;
+    int count_valid_for_dw;
+    int count_line,count_line_pipelined;
+
+
     int count_valid;
     int count_row;
     Sub_top_MB_CONV uut (
         .clk(clk),
-        .reset(reset),
+        .rst_n(reset),
         .wr_rd_en_IFM(wr_rd_en_IFM),
         .wr_rd_en_Weight(wr_rd_en_Weight_lay2),
         .data_in_IFM(data_in_IFM),
@@ -177,18 +190,21 @@ module Sub_top_MB_CONV_tb #(
         .PE_finish(PE_finish),
         .PE_finish_PE_cluster1x1(PE_finish_PE_cluster1x1_wire),
 
-        .KERNEL_W(KERNEL_W),
-        .OFM_C(OFM_C),
-        .OFM_W(OFM_W),
-        .IFM_C(IFM_C),
-        .IFM_W(IFM_W),
-        .stride(stride),
+        .KERNEL_W_layer1(KERNEL_W_layer1),
+        .OFM_C_layer1(OFM_C_layer1),
+        .OFM_W_layer1(OFM_W_layer1),
+        .IFM_C_layer1(IFM_C_layer1),
+        .IFM_W_layer1(IFM_W_layer1),
+        .stride_layer1(stride_layer1),
         .valid(valid),
-        .done_compute(done_compute),
+        .valid_layer2(valid_layer2),
+        .done_compute(done_compute_layer1),
 
         //layer2
-        .IFM_C_layer2(OFM_C_layer1_para),
+        .KERNEL_W_layer2(KERNEL_W_layer2_para),
+        .IFM_C_layer2(OFM_C_layer2_para),
         .OFM_C_layer2(OFM_C_layer2_para),
+        .stride_layer2(stride_layer2_para),
 
         // for Control_unit
         .run(run),
@@ -204,16 +220,22 @@ module Sub_top_MB_CONV_tb #(
         .OFM_8(OFM_out[8]), .OFM_9(OFM_out[9]), .OFM_10(OFM_out[10]), .OFM_11(OFM_out[11]),
         .OFM_12(OFM_out[12]), .OFM_13(OFM_out[13]), .OFM_14(OFM_out[14]), .OFM_15(OFM_out[15]),
 
+        .OFM_0_DW_layer( OFM_DW[0]), .OFM_1_DW_layer( OFM_DW[1]), 
+        .OFM_2_DW_layer( OFM_DW[2]), .OFM_3_DW_layer( OFM_DW[3]), 
+
 
         .PE_reset_n_state(PE_reset_n_state),
        //.addr_w_n_state(addr_w_n_state),
 
        // layer 2
         .wr_rd_req_IFM_layer_2(wr_rd_req_IFM_layer_2),
-        .OFM_data_layer_2(OFM_data_layer_2),
+        .IFM_data_layer_2(IFM_data_layer_2),
         .addr_IFM_layer_2(addr_IFM_layer_2),
         .wr_addr_IFM_layer_2(wr_addr_IFM_layer_2),
-        .write_padding(write_padding)
+        .write_padding(write_padding),
+        .valid_for_next_pipeline(valid_for_next_pipeline),
+        .done_compute_layer2(done_compute_layer2)
+        //.rd_addr(addr_w)
     );
 
     initial begin
@@ -235,14 +257,14 @@ module Sub_top_MB_CONV_tb #(
         wr_rd_en_Weight_lay2=0;
         addr = 0;
 
-        KERNEL_W = KERNEL_W_layer1_para ;
-        OFM_W = ((IFM_W_layer1_para+ 2*0 -KERNEL_W_layer1_para)/ Stride_para )+1;
-        OFM_C = OFM_C_layer1_para;
-        IFM_C = IFM_C_layer1_para;
-        IFM_W = IFM_W_layer1_para;
+        KERNEL_W_layer1 = KERNEL_W_layer1_para ;
+        OFM_W_layer1 = ((IFM_W_layer1_para+ 2*0 -KERNEL_W_layer1_para)/ stride_layer1_para )+1;
+        OFM_C_layer1 = OFM_C_layer1_para;
+        IFM_C_layer1 = IFM_C_layer1_para;
+        IFM_W_layer1 = IFM_W_layer1_para;
 
 
-        stride = Stride_para;
+        stride_layer1 = stride_layer1_para;
 
         cal_start = 0;
         data_in_IFM = 0;
@@ -259,7 +281,7 @@ module Sub_top_MB_CONV_tb #(
         data_in_Weight_10 = 0;
         data_in_Weight_11 = 0;
         data_in_Weight_12 = 0;
-        data_in_Weight_13 = 0;
+        data_in_Weight_13 = 0;       
         data_in_Weight_14 = 0;
         data_in_Weight_15 = 0;
 
@@ -269,12 +291,16 @@ module Sub_top_MB_CONV_tb #(
         data_in_Weight_3_n_state=0;
         
         //wr_rd_req_IFM_layer_2 = 0;
-        //OFM_data_layer_2 = 0;
+        //IFM_data_layer_2 = 0;
         addr_IFM_layer_2 = 0;
         padding_addr = 0;
         data_addr_layer_2 = Start_addr_for_data_layer_2/4;
         count_row = 0;
         wr_rd_req_IFM_layer_2 = 1;
+        count_valid_for_dw = 0;
+        count_line = 0;
+        count_line_pipelined =0;
+        valid_for_next_pipeline = 0;
        // write_padding = 1;
         //addr_ram_next_wr = -1;
         //wr_en_next = 0;
@@ -327,7 +353,6 @@ module Sub_top_MB_CONV_tb #(
         $readmemh("../Fused-Block-CNN/golden_out_fused_block/weight_hex_folder/weight2_PE1.hex", input_data_mem1_n_state);
         $readmemh("../Fused-Block-CNN/golden_out_fused_block/weight_hex_folder/weight2_PE2.hex", input_data_mem2_n_state);
         $readmemh("../Fused-Block-CNN/golden_out_fused_block/weight_hex_folder/weight2_PE3.hex", input_data_mem3_n_state);
-
         run         =   1;
         instrution  =   1;
         fork
@@ -342,7 +367,7 @@ module Sub_top_MB_CONV_tb #(
                 wr_rd_en_IFM = 0;
             end
             begin
-                for (j = 0; j < IFM_C*KERNEL_W*KERNEL_W*tile +1; j = j + 4) begin
+                for (j = 0; j < IFM_C_layer1*KERNEL_W_layer1*KERNEL_W_layer1*tile +1; j = j + 4) begin
 
                     addr <= j >> 2;  // Chia 4 vì mỗi lần lưu 32-bit
                     data_in_Weight_0 = {input_data_mem0 [addr*4], input_data_mem0[addr*4+1], input_data_mem0[addr*4+2], input_data_mem0[addr*4+3]};
@@ -368,7 +393,7 @@ module Sub_top_MB_CONV_tb #(
                 wr_rd_en_Weight = 0;
             end
             begin
-                for (k = 0; k < IFM_C*KERNEL_W*KERNEL_W*tile +1; k = k + 4) begin
+                for (k = 0; k < OFM_C_layer1*KERNEL_W_layer2_para*KERNEL_W_layer2_para*tile +1; k = k + 4) begin
 
                     addr <= k >> 2;  // Chia 4 vì mỗi lần lưu 32-bit
                     data_in_Weight_0_n_state = {input_data_mem0_n_state[i], input_data_mem0_n_state[i+1], input_data_mem0_n_state[i+2], input_data_mem0_n_state[i+3]};
@@ -382,7 +407,7 @@ module Sub_top_MB_CONV_tb #(
             end
         join
 
-        @(posedge done_compute);
+        @(posedge done_compute_layer1);
         PE_finish = 0;
     #100000;
         $finish;
@@ -398,16 +423,23 @@ module Sub_top_MB_CONV_tb #(
         end
 
          for (m = 0; m < 4; m = m + 1) begin
-             ofm_file_2[m] = $fopen($sformatf("../Fused-Block-CNN/golden_out_fused_block/output_hex_folder/OFM%0d_DUT.hex", m), "w");
+             ofm_file_2[m] = $fopen($sformatf("../Fused-Block-CNN/address/OFM%0d_DUT_DW.hex", m), "w");
              if (ofm_file_2[m] == 0) begin
-                 $display("Error opening file OFM_PE%d.hex", k);
+                 $display("Error opening file OFM%d.hex", k);
                  $finish;  
              end
          end
+
+             ofm_file_3= $fopen($sformatf("../Fused-Block-CNN/address/PADDING_control_IFM.hex"), "w");
+             if (ofm_file_3 == 0) begin
+                 $display("Error opening file", k);
+                 $finish;  
+             end
     end
    //assign wr_rd_req_IFM_layer_2 = 1;
    assign write_padding = (valid == 16'hFFFF) ? 1 : 0;
    assign wr_addr_IFM_layer_2 = (valid == 16'hFFFF) ? data_addr_layer_2 : padding_addr/4; 
+
     initial begin
         forever begin
         @ (posedge clk)
@@ -417,6 +449,19 @@ module Sub_top_MB_CONV_tb #(
             end
         if(uut.cal_start_ctl) begin
         if(valid == 16'hFFFF) begin
+            valid_for_next_pipeline = 0;
+            count_valid_for_dw = count_valid_for_dw + 16;
+            if(count_valid_for_dw == OFM_C_layer1_para * IFM_W_layer1_para ) begin
+                count_line = count_line + 1;
+                count_line_pipelined = count_line_pipelined + 1;
+                count_valid_for_dw = 0;
+                if(count_line > 2) begin
+                    if(count_line_pipelined > 1 ) begin
+                        valid_for_next_pipeline = 1;
+                        count_line_pipelined =0;
+                    end
+                end
+            end
             //wr_rd_req_IFM_layer_2 = 1;
             //addr_IFM_layer_2 <= data_addr_layer_2;
             if(count_row < enter_row_data - 16) begin
@@ -465,11 +510,21 @@ always @(posedge clk) begin
     end
 end
 always @(posedge clk) begin
-    if (PE_finish_PE_cluster1x1_wire == 15) begin
+    if (valid == 16'hFFFF) begin
+        // Lưu giá trị OFM vào các file tương ứng
+
+                $fwrite(ofm_file_3, "%h\n", IFM_data_layer_2);  // Ghi giá trị từng byte vào file
+
+    end
+end
+
+
+always @(posedge clk) begin
+    if (valid_layer2 == 1) begin
         // Lưu giá trị OFM vào các file tương ứng
         count_for_layer_2 = count_for_layer_2 + 1;
         for (k1 = 0; k1 < 4; k1 = k1 + 1) begin
-            ofm_data_2 = OFM_n_state[k1];  // Lấy giá trị OFM từ output
+            ofm_data_2 = OFM_DW[k1];  // Lấy giá trị OFM từ output
             // Ghi từng byte của OFM vào các file
             ofm_data_byte_2 = ofm_data_2;
             //if (ofm_file[1] != 0) begin
