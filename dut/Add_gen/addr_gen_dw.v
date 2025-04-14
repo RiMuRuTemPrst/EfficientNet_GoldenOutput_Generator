@@ -245,8 +245,7 @@ always @(*) begin
             if(count_for_a_Window_of_a_tile < num_of_tiles_for_PE*num_of_KERNEL_points -1 )begin
                 next_state_IFM =    FETCH_WINDOW ;
                 addr_valid_ifm  = 1'b1;
-                if ( count_for_a_OFM >= OFM_W*OFM_W-1 ) done_compute    =  1;
-                else done_compute    =  0;
+                
             end else begin
                 if (row_index_OFM == OFM_W-1) begin
                     if(ready) begin
@@ -265,12 +264,19 @@ always @(*) begin
         end
 
         PENDING : begin
-            if(ready) begin
+            if(ready ) begin
                 next_state_IFM  =   NEXT_WINDOW ;
                 addr_valid_ifm  =   1;
             end else begin
-                next_state_IFM  =   PENDING ;
-                addr_valid_ifm  =   0;
+                if ((col_index_OFM < OFM_W-3 )) begin
+                    next_state_IFM  =   PENDING ;
+                    addr_valid_ifm  =   0;
+                end else begin
+                    if (col_index_OFM != OFM_W ) next_state_IFM  = NEXT_WINDOW ;
+                    else next_state_IFM  =   PENDING ;
+                    
+                end
+                
             end
 
         end
@@ -282,6 +288,7 @@ always @(*) begin
                 
             end else begin
                 next_state_IFM  =    START_ADDR_IFM;
+               
                 
             end
             addr_valid_ifm  = 1'b1;
@@ -392,6 +399,7 @@ always @(posedge clk or negedge rst_n) begin
     end else begin
         case (current_state_IFM)
             START_ADDR_IFM: begin
+                done_compute <=0;
                 if ( ready ) begin
                     row_index_KERNEL        <= 8'b0;
                     col_index_KERNEL        <= 8'b0;
@@ -499,6 +507,8 @@ always @(posedge clk or negedge rst_n) begin
                     end
 
                 end else begin    
+                     if ( count_for_a_OFM >= OFM_W*OFM_W-1 ) done_compute    <=  1;
+                        else done_compute    <=  0;
                 end
                 if (count_for_a_OFM >= OFM_W*OFM_W -1 )   begin
                     

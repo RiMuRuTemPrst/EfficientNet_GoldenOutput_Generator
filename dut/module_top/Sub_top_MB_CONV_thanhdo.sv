@@ -1,9 +1,9 @@
 module Sub_top_MB_CONV(
     input clk,
     input rst_n,
-    input [31:0] addr,
+    input [31:0] addr_Wei_layer2,
     input wr_rd_en_IFM,
-    input wr_rd_en_Weight,
+    input wr_rd_en_Weight_layer2,
     input cal_start,
     input [31:0] data_in_IFM,
     input [31:0] data_in_Weight_0,
@@ -452,7 +452,7 @@ module Sub_top_MB_CONV(
     wire addr_valid_filter_layer2;
     wire [7:0] num_of_tiles_for_PE_layer2;
     wire [7:0] OFM_W_layer2 ;
-    assign OFM_W_layer2 =( OFM_W_layer1 - KERNEL_W_layer2 )/ stride_layer2 +1;
+    assign OFM_W_layer2 =( OFM_W_layer1 +2*1 - KERNEL_W_layer2 )/ stride_layer2 +1;
     address_generator_dw #(
         .TOTAL_PE(4),
         .DATA_WIDTH(32)
@@ -463,7 +463,7 @@ module Sub_top_MB_CONV(
         .OFM_W(OFM_W_layer2),
         .OFM_C(OFM_C_layer2),
         .IFM_C(IFM_C_layer2),
-        .IFM_W(OFM_W_layer1),
+        .IFM_W(OFM_W_layer1+2),
         .stride(stride_layer2),
         .ready(valid_for_next_pipeline),
         .addr_in(0),
@@ -501,13 +501,15 @@ module Sub_top_MB_CONV(
 
     BRAM_IFM_128bit_in IFM_BRAM_layer_2(
         .clk(clk),
-        //.rd_addr(addr_IFM_layer_2),
-        .rd_addr(req_addr_out_ifm_layer2),
-        .wr_addr(wr_addr_IFM_layer_2),
+        .rd_addr(addr_IFM_layer_2),
+        //.rd_addr(req_addr_out_ifm_layer2),
+        //.wr_addr(wr_addr_IFM_layer_2),
+        .wr_addr( wr_addr_from_control_padding ),
         //.wr_rd_en(wr_rd_en_IFM),
-        .wr_rd_en(wr_rd_req_IFM_layer_2),
-        //.wr_rd_en(wr_en_from_control_padding),
-        .data_in(data_in_IFM_layer_2),
+        //.wr_rd_en(wr_rd_req_IFM_layer_2),
+        .wr_rd_en(wr_en_from_control_padding),
+        //.data_in(data_in_IFM_layer_2),
+        .data_in( IFM_data_layer_2_from_control_padding ),
         .data_out(IFM_data_layer_2)
     );
 
@@ -517,8 +519,8 @@ module Sub_top_MB_CONV(
     )BRam_Weight_0_DW(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layer2),
-        .wr_addr(addr_Wei),
-        .wr_rd_en(wr_rd_en_Weight),
+        .wr_addr(addr_Wei_layer2),
+        .wr_rd_en(wr_rd_en_Weight_layer2),
         //.wr_rd_en(wr_rd_req_Weight),
         .data_in(data_in_Weight_0_n_state),
         .data_out(Weight_0_n_state)
@@ -529,8 +531,8 @@ module Sub_top_MB_CONV(
     )BRam_Weight_1_DW(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layer2),
-        .wr_addr(addr_Wei),
-        .wr_rd_en(wr_rd_en_Weight),
+        .wr_addr(addr_Wei_layer2),
+        .wr_rd_en(wr_rd_en_Weight_layer2),
         //.wr_rd_en(wr_rd_req_Weight),
         .data_in(data_in_Weight_1_n_state),
         .data_out(Weight_1_n_state)
@@ -541,8 +543,8 @@ module Sub_top_MB_CONV(
     )BRam_Weight_2_DW(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layer2),
-        .wr_addr(addr_Wei),
-        .wr_rd_en(wr_rd_en_Weight),
+        .wr_addr(addr_Wei_layer2),
+        .wr_rd_en(wr_rd_en_Weight_layer2),
         //.wr_rd_en(wr_rd_req_Weight),
         .data_in(data_in_Weight_2_n_state),
         .data_out(Weight_2_n_state)
@@ -553,8 +555,8 @@ module Sub_top_MB_CONV(
     )BRam_Weight_3_DW(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layer2),
-        .wr_addr(addr_Wei),
-        .wr_rd_en(wr_rd_en_Weight),
+        .wr_addr(addr_Wei_layer2),
+        .wr_rd_en(wr_rd_en_Weight_layer2),
         //.wr_rd_en(wr_rd_req_Weight),
         .data_in(data_in_Weight_3_n_state),
         .data_out(Weight_3_n_state)

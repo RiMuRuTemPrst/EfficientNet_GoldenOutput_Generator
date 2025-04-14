@@ -11,18 +11,18 @@ module control_padding#(
     input logic [7:0]                     OFM_W,
     input logic                           padding,
     output logic                         wr_en,
-    output logic [15:0]                  addr_next,
+    output logic [31:0]                  addr_next,
     output logic [PE * 8 - 1 : 0]        data_out
 );
-logic [15:0] count_padd;
-logic [15:0] count_data;
-logic [15:0] count_height;
-logic [15:0] count_height_padd;
-logic [15:0] count_lr;
+logic [31:0] count_padd;
+logic [31:0] count_data;
+logic [31:0] count_height;
+logic [31:0] count_height_padd;
+logic [31:0] count_lr;
 logic [31:0] count_for_OFM ;
 
-logic [15:0] addr_padding = 0;
-reg [15:0] addr_data;// = OFM_C * (OFM_W + 3 * padding) / 4;
+logic [31:0] addr_padding = 0;
+reg [31:0] addr_data;// = OFM_C * (OFM_W + 3 * padding) / 4;
 logic end_signal;
 
 
@@ -127,7 +127,7 @@ always_comb begin
 
     endcase
 end
-wire [15:0] addr_data_base ;
+wire [31:0] addr_data_base ;
 assign  addr_data_base = ( OFM_C * (OFM_W + 3 * padding)) >> 2;
 always_ff @(posedge clk or negedge rst_n)begin
     if (!rst_n) begin
@@ -219,6 +219,10 @@ always_ff @(posedge clk or negedge rst_n)begin
 end
 always_comb begin
     case(next_state)
+        IDLE_0: begin
+            data_out = 0;
+            wr_en    = 0;
+        end
         IDLE: begin
             wr_en = 1;
             addr_next = (valid) ? addr_data : addr_padding;
@@ -238,7 +242,7 @@ always_comb begin
         NEXT_ROW_DATA: begin
             wr_en = 1;
             addr_next = (valid) ? addr_data : addr_padding;
-            data_out = 0;
+            data_out = data_in;
         end
         LEFT_RIGHT_PADDING: begin
             wr_en = 1;
