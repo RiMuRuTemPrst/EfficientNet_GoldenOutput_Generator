@@ -370,11 +370,13 @@ always @(posedge clk or negedge rst_n) begin
             predict_line_addr_fetch_ifm         <= window_start_addr_ifm +num_of_PE+ ( (KERNEL_W-1) *IFM_C ) + stride_offset_for_col + skip_a_pixel;
         end
         if ( ( row_index_KERNEL == 'h0 )&& ( col_index_KERNEL ==  'h0 )  ) begin 
-            done_window <= 'b1;
+            if ( current_state_IFM != PENDING  ) done_window <= 'b1;
+            else done_window <= 'b0;
             if (count_for_a_OFM =='h0 && count_for_a_Window=='h0 && tiles_count=='h0)
                 finish_for_PE <='h0;
-            else
-                finish_for_PE<= 'b1;   
+            else begin
+                if ( current_state_IFM != PENDING  )finish_for_PE<= 'b1;   
+            end
         end else begin
             done_window <= 'b0;
             finish_for_PE<= 'b0; 

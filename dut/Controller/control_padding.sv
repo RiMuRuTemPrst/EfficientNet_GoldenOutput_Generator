@@ -12,12 +12,15 @@ module control_padding#(
     input logic                           padding,
     output logic                         wr_en,
     output logic [31:0]                  addr_next,
-    output logic [PE * 8 - 1 : 0]        data_out
+    output logic [PE * 8 - 1 : 0]        data_out,
+    output logic                         valid_for_next_pipeline
 );
 logic [31:0] count_padd;
 logic [31:0] count_data;
 logic [31:0] count_height;
 logic [31:0] count_height_padd;
+logic [2:0] count_line_pipelined;
+
 logic [31:0] count_lr;
 logic [31:0] count_for_OFM ;
 
@@ -134,8 +137,10 @@ always_ff @(posedge clk or negedge rst_n)begin
         count_padd <= 0;
         count_lr <= 0;
         count_height_padd <= 0;
+        count_line_pipelined <=0;
         count_data <= 0;
         count_height <= 0;
+        valid_for_next_pipeline <=0;
         end_signal <=0;
         count_for_OFM <= 0;
         addr_data  <= 0;
@@ -144,7 +149,18 @@ always_ff @(posedge clk or negedge rst_n)begin
     case (current_state) 
         IDLE_0 : begin
         end
-        IDLE: begin end
+        IDLE: begin
+            if (count_height > 2 ) begin
+                if (count_line_pipelined > padding ) begin
+                    valid_for_next_pipeline <=1;
+                    count_line_pipelined <=0;
+                end else begin
+                     valid_for_next_pipeline <= 0 ;
+                end
+            end else begin 
+                valid_for_next_pipeline <= 0 ;
+            end
+         end
         ROW_PADDING: begin
             if (next_state == LEFT_RIGHT_PADDING) begin
                 addr_padding <= addr_padding + 4;
@@ -156,9 +172,13 @@ always_ff @(posedge clk or negedge rst_n)begin
             count_padd <= count_padd + 1;
             addr_padding <= addr_padding + 4;
             count_height_padd <= 0;
+            count_line_pipelined<=0;
             end
             if (count_data==0) addr_data<= addr_data_base;
             count_for_OFM <= count_for_OFM + 1;
+
+
+            
         end
         ROW_DATA: begin
             if (next_state == NEXT_ROW_DATA)begin
@@ -178,7 +198,11 @@ always_ff @(posedge clk or negedge rst_n)begin
         NEXT_ROW_DATA: begin
             count_data <= 0;
             count_height <= count_height + 1;
+            count_line_pipelined <= count_line_pipelined+1;
             addr_data <= addr_data + 2 * OFM_C * padding / 4 + 4;
+
+            
+
         end
         LEFT_RIGHT_PADDING: begin
             if (next_state == NEXT_LEFT_RIGHT_PADDING ) begin
@@ -204,11 +228,13 @@ always_ff @(posedge clk or negedge rst_n)begin
                 count_lr <= 0;
                 addr_data <= addr_data + 4;
                 count_height_padd <= count_height_padd + 1;
+                
                 addr_padding <= addr_padding + OFM_W * OFM_C / 4 + 4;
             end
             else begin 
                 count_lr <= 0;
                 count_height_padd <= count_height_padd + 1;
+                
                 addr_padding <= addr_padding + OFM_W * OFM_C / 4 + 4;
             end
             count_for_OFM <= count_for_OFM + 1;

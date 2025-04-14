@@ -170,7 +170,8 @@ module Sub_top_MB_CONV(
 
 
     wire [15:0] done_window_for_PE_cluster;
-    wire [15:0] finish_for_PE_cluster;
+    wire [15:0] finish_for_PE_cluster_layer1;
+    wire        finish_for_PE_cluster_layer2;
     wire        done_window_one_bit;
     wire        finish_for_PE;
     wire [7:0] count_for_a_OFM_o;
@@ -439,8 +440,8 @@ module Sub_top_MB_CONV(
 
     
     assign done_window_for_PE_cluster       =   {16{done_window_one_bit}};
-    assign finish_for_PE_cluster            =   (cal_start_ctl) && ( addr_IFM != 'b0 )   ? {16{finish_for_PE}} : 16'b0;
-    assign valid                            =   finish_for_PE_cluster;
+    assign finish_for_PE_cluster_layer1            =   (cal_start_ctl) && ( addr_IFM != 'b0 )   ? {16{finish_for_PE}} : 16'b0;
+    assign valid                            =   finish_for_PE_cluster_layer1;
 
 
     wire [31:0] req_addr_out_ifm_layer2;
@@ -452,6 +453,7 @@ module Sub_top_MB_CONV(
     wire addr_valid_filter_layer2;
     wire [7:0] num_of_tiles_for_PE_layer2;
     wire [7:0] OFM_W_layer2 ;
+    wire valid_for_next_pipeline_from_control_padding;
     assign OFM_W_layer2 =( OFM_W_layer1 +2*1 - KERNEL_W_layer2 )/ stride_layer2 +1;
     address_generator_dw #(
         .TOTAL_PE(4),
@@ -465,7 +467,8 @@ module Sub_top_MB_CONV(
         .IFM_C(IFM_C_layer2),
         .IFM_W(OFM_W_layer1+2),
         .stride(stride_layer2),
-        .ready(valid_for_next_pipeline),
+        //.ready(valid_for_next_pipeline),
+        .ready(valid_for_next_pipeline_from_control_padding),
         .addr_in(0),
         .req_addr_out_ifm(req_addr_out_ifm_layer2),
         .req_addr_out_filter(req_addr_out_filter_layer2),
@@ -476,12 +479,14 @@ module Sub_top_MB_CONV(
         .addr_valid_filter(addr_valid_filter_layer2),
         .num_of_tiles_for_PE(num_of_tiles_for_PE_layer2)
     );
+    assign finish_for_PE_cluster_layer2 = (1) && (req_addr_out_ifm_layer2!= 'b0)  ? finish_for_PE_layer2 : 1'b0;
 
-    assign valid_layer2 =finish_for_PE_layer2;
+    assign valid_layer2 =finish_for_PE_cluster_layer2;
 
     wire wr_en_from_control_padding;
     wire [31:0] wr_addr_from_control_padding;
     wire [16*8-1:0] IFM_data_layer_2_from_control_padding;
+
     control_padding #( 
         .PE()
     ) control_padding_inst (
@@ -495,14 +500,15 @@ module Sub_top_MB_CONV(
         .padding(1),
         .wr_en(wr_en_from_control_padding),
         .addr_next(wr_addr_from_control_padding),
-        .data_out(IFM_data_layer_2_from_control_padding)
+        .data_out(IFM_data_layer_2_from_control_padding),
+        .valid_for_next_pipeline(valid_for_next_pipeline_from_control_padding)
 
     );
 
     BRAM_IFM_128bit_in IFM_BRAM_layer_2(
         .clk(clk),
-        .rd_addr(addr_IFM_layer_2),
-        //.rd_addr(req_addr_out_ifm_layer2),
+        //.rd_addr(addr_IFM_layer_2),
+        .rd_addr(req_addr_out_ifm_layer2),
         //.wr_addr(wr_addr_IFM_layer_2),
         .wr_addr( wr_addr_from_control_padding ),
         //.wr_rd_en(wr_rd_en_IFM),

@@ -449,7 +449,7 @@ module Sub_top_MB_CONV_tb #(
         end
 
          for (m = 0; m < 4; m = m + 1) begin
-             ofm_file_2[m] = $fopen($sformatf("../Fused-Block-CNN/address/OFM%0d_DUT_DW.hex", m), "w");
+             ofm_file_2[m] = $fopen($sformatf("../Fused-Block-CNN/address/OFM_DW_PE%0d_DUT_DW.hex", m), "w");
              if (ofm_file_2[m] == 0) begin
                  $display("Error opening file OFM%d.hex", k);
                  $finish;  
