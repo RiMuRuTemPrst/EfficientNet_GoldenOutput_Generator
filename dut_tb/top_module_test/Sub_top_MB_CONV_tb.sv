@@ -17,8 +17,8 @@
 `define Num_of_layer2_PE_para 4
 
 module Sub_top_MB_CONV_tb #(
-    parameter IFM_W_layer1_para= 28, 
-    parameter IFM_C_layer1_para =48,
+    parameter IFM_W_layer1_para= 10, 
+    parameter IFM_C_layer1_para =16,
     parameter KERNEL_W_layer1_para =1,
     parameter OFM_C_layer1_para= 192,
     parameter stride_layer1_para= 1,
