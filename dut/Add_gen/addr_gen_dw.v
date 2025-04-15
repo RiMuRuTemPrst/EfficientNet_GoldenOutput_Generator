@@ -388,16 +388,17 @@ end
 // FSM Output Logic
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
-        addr_fetch_ifm          <= addr_in;
-        count_for_a_Window      <= 1'b0;
-        count_for_a_Window_of_a_tile      <= 1'b0;
-        row_index_KERNEL        <= 8'b0;
-        count_for_a_OFM         <= 8'b0;
-        col_index_KERNEL        <= 8'b0;
-        row_index_OFM           <= 8'b0;
-        col_index_OFM           <= 8'b0;
-        tiles_count             <= 8'b0;
-        done_compute            <= 1'h0;
+        addr_fetch_ifm                      <= addr_in;
+        count_for_a_Window                  <= 1'b0;
+        count_for_a_Window_of_a_tile        <= 1'b0;
+        row_index_KERNEL                    <= 8'b0;
+        count_for_a_OFM                     <= 8'b0;
+        col_index_KERNEL                    <= 8'b0;
+        row_index_OFM                       <= 8'b0;
+        col_index_OFM                       <= 8'b0;
+        tiles_count                         <= 8'b0;
+        done_compute                        <= 1'h0;
+        window_start_addr_ifm               <= 8'h0;
     end else begin
         case (current_state_IFM)
             START_ADDR_IFM: begin
@@ -409,6 +410,17 @@ always @(posedge clk or negedge rst_n) begin
                     count_for_a_Window      <= 8'b0;
                     window_start_addr_ifm   <= 8'h0;
                 end else begin
+                    addr_fetch_ifm                      <= addr_in;
+                    count_for_a_Window                  <= 1'b0;
+                    count_for_a_Window_of_a_tile        <= 1'b0;
+                    row_index_KERNEL                    <= 8'b0;
+                    count_for_a_OFM                     <= 8'b0;
+                    col_index_KERNEL                    <= 8'b0;
+                    row_index_OFM                       <= 8'b0;
+                    col_index_OFM                       <= 8'b0;
+                    tiles_count                         <= 8'b0;
+                    done_compute                        <= 1'h0;
+                    window_start_addr_ifm               <= 8'h0;
                 end
                 
             end

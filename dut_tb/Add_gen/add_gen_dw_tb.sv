@@ -210,12 +210,12 @@ module address_generator_dw_tb;
 
     
 
-    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/ifm_padded.hex", input_data_mem);
+    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address//DW/ifm_padded.hex", input_data_mem);
 
-    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/weight_PE0.hex", input_data_mem0);
-    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/weight_PE1.hex", input_data_mem1);
-    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/weight_PE2.hex", input_data_mem2);
-    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/weight_PE3.hex", input_data_mem3);
+    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/DW/weight_PE0.hex", input_data_mem0);
+    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/DW/weight_PE1.hex", input_data_mem1);
+    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/DW/weight_PE2.hex", input_data_mem2);
+    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/DW/weight_PE3.hex", input_data_mem3);
 
     fork
             begin
@@ -258,7 +258,7 @@ module address_generator_dw_tb;
   end
   initial begin
         for (k = 0; k < 4; k = k + 1) begin
-             ofm_file[k] = $fopen($sformatf("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/OFM_PE%0d_DUT.hex", k), "w");
+             ofm_file[k] = $fopen($sformatf("/home/thanhdo/questasim/PE/Fused-Block-CNN/address//DW/OFM_PE%0d_DUT.hex", k), "w");
             if (ofm_file[k] == 0) begin
                 $display("Error opening file OFM_PE%d.hex", k); 
                 $finish;  

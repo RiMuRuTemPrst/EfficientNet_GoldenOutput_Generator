@@ -1,12 +1,12 @@
 import argparse
-def read_and_write_file(input_file, output_file, n, m, num_segments, offset, weight_height, weight_channel):
+def read_and_write_file(input_file, output_file, n, m, num_segments, offset, ofm_height):
     try:
         with open(input_file, "r") as in_file:
             lines = in_file.readlines()
 
         start_offset = 0
         if offset != 0:
-            start_offset = weight_height * weight_height  * offset
+            start_offset = ofm_height * ofm_height * offset
 
         current_index = start_offset
         output_lines = []
@@ -31,19 +31,18 @@ def read_and_write_file(input_file, output_file, n, m, num_segments, offset, wei
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--pe", type=int, default=16)
-    parser.add_argument("--filter_count", type=int, required=True)
-    parser.add_argument("--weight_height", type=int, required=True)
-    parser.add_argument("--weight_channel", type=int, required=True)
+    parser.add_argument("--ofm_channel", type=int, required=True)
+    parser.add_argument("--ofm_height", type=int, required=True)
     args = parser.parse_args()
 
-    input_file = "../Fused-Block-CNN/address/weight.hex"
-    weight_size = args.weight_height * args.weight_height 
-    offset = weight_size * (args.pe - 1)
-    num_segments = args.weight_channel // args.pe
+    input_file = "../Fused-Block-CNN/address/DW/ofm.hex"
+    ofm_size = args.ofm_height * args.ofm_height
+    offset = ofm_size * (args.pe - 1)
+    num_segments = args.ofm_channel // args.pe
 
     for pe in range(args.pe):
-        output_file = f"../Fused-Block-CNN/address/weight_PE{pe}.hex"
-        read_and_write_file(input_file, output_file, weight_size, offset, num_segments, pe, args.weight_height, args.weight_channel)
+        output_file = f"../Fused-Block-CNN/address/DW/OFM_PE{pe}.hex"
+        read_and_write_file(input_file, output_file, ofm_size, offset, num_segments, pe, args.ofm_height)
 
 if __name__ == "__main__":
     main()
