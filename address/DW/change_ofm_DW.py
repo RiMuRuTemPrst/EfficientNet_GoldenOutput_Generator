@@ -18,6 +18,7 @@ def process_pe_file(pe_id, OFFSET, tile):
 
     # Đếm số dòng trong file
     total_lines = count_lines(input_file)
+    print(f"⚠️ tile: {tile}")
     if total_lines < OFFSET + 1:
         print(f"⚠️ PE{pe_id}: File không đủ {OFFSET + 1} dòng để ghép!")
         return
@@ -29,17 +30,17 @@ def process_pe_file(pe_id, OFFSET, tile):
         # Mở file output để ghi
         with open(output_file, 'w') as out_file:
             # Ghi các dòng theo thứ tự: dòng i → dòng i + OFFSET → dòng i + a * OFFSET (a từ 1 đến 8)
-            for i in range(total_lines - OFFSET):
+            for i in range( OFFSET):
                 # Chuyển thành chữ thường
                 lines[i] = lines[i].lower()
-                lines[i + OFFSET] = lines[i + OFFSET].lower()
+                #lines[i + OFFSET] = lines[i + OFFSET].lower()
 
                 # Ghi dòng i và dòng i + OFFSET vào file output
                 out_file.write(lines[i])
-                out_file.write(lines[i + OFFSET])
+                #out_file.write(lines[i + OFFSET])
 
                 # Ghi thêm các dòng i + a * OFFSET, với a từ 2 đến 8
-                for a in range(2, tile + 1):
+                for a in range(1, tile ):
                     index = i + a * OFFSET
                     if index < total_lines:
                         lines[index] = lines[index].lower()
@@ -54,11 +55,12 @@ def process_pe_file(pe_id, OFFSET, tile):
 
 def main():
     parser = argparse.ArgumentParser()
+    parser.add_argument("--ofm_channel", type=int, required=True)
     parser.add_argument("--ofm_width", type=int, required=True)
     parser.add_argument("--max_pe", type=int, default=16)
     parser.add_argument("--weight_filter", type = int, required=True)
     args = parser.parse_args()
-    tile = args.weight_filter // args.max_pe
+    tile = args.ofm_channel // args.max_pe #args.weight_filter // 
     OFFSET = args.ofm_width * args.ofm_width   # Khoảng cách dòng
     for pe in range(args.max_pe):
         process_pe_file(pe, OFFSET, tile)

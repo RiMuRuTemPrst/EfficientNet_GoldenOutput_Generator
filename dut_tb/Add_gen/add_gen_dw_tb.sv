@@ -149,8 +149,8 @@ module address_generator_dw_tb;
   wire [7:0]  OFM_2;
   wire [7:0]  OFM_3;
 
-  assign finish_for_PE_cluster            =   (ready) && ( req_addr_out_ifm != 'b0 )   ? done_compute : 1'b0;
-  assign valid                            =   finish_for_PE_cluster;
+  assign finish_for_PE_cluster            =   ( req_addr_out_ifm != 'b0 )   ? finish_for_PE : 1'b0;
+  assign valid                            =   finish_for_PE;
 
   PE_DW_cluster PE_DW(
     .clk(clk),
@@ -246,12 +246,23 @@ module address_generator_dw_tb;
     // Start simulation
     repeat (10) @(posedge clk);
     ready = 1;
-    repeat (100) @(posedge clk);
+    repeat (50) @(posedge clk);
     ready = 0;
-    repeat (100) @(posedge clk);
+    repeat (140) @(posedge clk);
     ready = 1;
+    repeat (20) @(posedge clk);
+    ready = 0;
+    repeat (140) @(posedge clk);
+    ready = 1;
+    repeat (50) @(posedge clk);
+    ready = 0;
+    repeat (140) @(posedge clk);
+    ready = 1;
+    
     @(posedge done_compute);
-
+    ready = 0;
+    repeat (140) @(posedge clk);
+    repeat (140) @(posedge clk);
     // Finish simulation
     #50;
     $stop;
@@ -269,7 +280,7 @@ module address_generator_dw_tb;
     end
 
     always @(posedge clk) begin
-      if (valid == 16'hFFFF) begin
+      if (valid == 1) begin
           // Lưu giá trị OFM vào các file tương ứng
           //count_for_layer_1 = count_for_layer_1 + 1;
           for (k = 0; k < 4; k = k + 1) begin
