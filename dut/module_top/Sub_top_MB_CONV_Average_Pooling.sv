@@ -34,10 +34,6 @@ module Sub_top_MB_CONV_Average_Pooling(
     input [31:0] addr_ram_next_wr,
     input [3:0] PE_reset_n_state,
     //input [31:0] addr_w_n_state,
-    output [7:0] OFM_0_DW_layer,
-    output [7:0] OFM_1_DW_layer,
-    output [7:0] OFM_2_DW_layer,
-    output [7:0] OFM_3_DW_layer,
     
 
     //control signal layer 1
@@ -98,8 +94,13 @@ module Sub_top_MB_CONV_Average_Pooling(
     input [31:0] addr_IFM_layer_2,
     input valid_for_next_pipeline,
     input [31:0] wr_addr_IFM_layer_2,
-    output       done_compute_layer2
+    output       done_compute_layer2,
 
+    //signal for pooling average
+    output [7:0] data_average,
+    input [10:0] pixel_index,
+    input [10:0] read_pixel_index,
+    output finish
 );
 
     //wire for Weight connect to PE_1x1 from BRAM
@@ -192,8 +193,11 @@ module Sub_top_MB_CONV_Average_Pooling(
     wire finish_for_PE_DW_cluster;
 
     //signal_for_average_Pooling
+    logic [7:0] OFM_0_DW_layer;
+    logic [7:0] OFM_1_DW_layer;
+    logic [7:0] OFM_2_DW_layer;
+    logic [7:0] OFM_3_DW_layer;
     logic [3:0] valid_of_DW;
-    logic [7:0] data_average;
     logic [3:0] valid_from_average;
     Control_unit Control_unit(
         .clk(clk),
@@ -593,11 +597,18 @@ module Sub_top_MB_CONV_Average_Pooling(
     Pooling_average Pooling_average(
         .clk(clk),
         .reset_n(rst_n),
-        .valid(valid_of_DW[0]),
-        .data_in(OFM_0_DW_layer),
-        .data_average(data_average),
+        .valid(valid_layer2),
+        .data_in_0(OFM_0_DW_layer),
+        .data_in_1(OFM_1_DW_layer),
+        .data_in_2(OFM_2_DW_layer),
+        .data_in_3(OFM_3_DW_layer),
+        //.data_average(data_average),
         .valid_data_out(valid_from_average[0]),
-        .size(196)
+        .size(2'b01),
+        .OFM_C(OFM_C_layer2),
+        .pixel_index(pixel_index),
+        .read_pixel_index(read_pixel_index),
+        .finish(finish)
     );
 
 endmodule
