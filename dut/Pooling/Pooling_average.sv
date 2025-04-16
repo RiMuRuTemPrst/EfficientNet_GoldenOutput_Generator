@@ -4,7 +4,7 @@ module Pooling_average(
     input [8:0] data_in,
     input valid,
     input size,
-    output [8:0] data,
+    output [8:0] dadata_averageta,
     output valid_data_out
 );
     parameter SIZE28_28 = 784;
@@ -21,7 +21,7 @@ module Pooling_average(
     always_ff @( posedge clk or negedge reset_n ) begin
         if(~reset_n) begin
             //valid_data_out <= 0;
-            data <= 0;
+            data_average <= 0;
             accumulate <= 0; 
             count_data <= 0;
         end
@@ -50,7 +50,7 @@ module Pooling_average(
             else valid_data_out <=0;
         end
     end
-    assign data = valid_sum * div_param;
+    assign data_average = valid_sum * div_param;
     always_comb begin 
         case(size)
             SIZE28_28: if( count_data == SIZE28_28) begin
