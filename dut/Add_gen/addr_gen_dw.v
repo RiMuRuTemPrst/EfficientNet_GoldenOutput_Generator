@@ -55,6 +55,7 @@ reg [2:0] current_state_IFM, next_state_IFM;
 parameter START_ADDR_FILTER     = 1'b0;
 parameter FETCH_FILTER          = 1'b1;
 reg current_state_FILTER, next_state_FILTER;
+reg finish_for_PE_one_more_time;
 
 wire [2:0] stride_shift;
 assign stride_shift = (stride == 1 ) ? 0 : (stride == 2 ? 1 : 0);
@@ -370,12 +371,21 @@ always @(posedge clk or negedge rst_n) begin
             predict_line_addr_fetch_ifm         <= window_start_addr_ifm +num_of_PE+ ( (KERNEL_W-1) *IFM_C ) + stride_offset_for_col + skip_a_pixel;
         end
         if ( ( row_index_KERNEL == 'h0 )&& ( col_index_KERNEL ==  'h0 )  ) begin 
-            if ( current_state_IFM != PENDING  ) done_window <= 'b1;
-            else done_window <= 'b0;
-            if (count_for_a_OFM =='h0 && count_for_a_Window=='h0 && tiles_count=='h0)
+            if ( current_state_IFM != PENDING) done_window <= 'b1;
+            else done_window <= 'b1;
+            if (count_for_a_OFM =='h0 && count_for_a_Window=='h0 && req_addr_out_ifm=='h0)
                 finish_for_PE <='h0;
             else begin
-                if ( current_state_IFM != PENDING  )finish_for_PE<= 'b1;   
+                //if ( current_state_IFM != PENDING  )
+                  
+                if ( current_state_IFM == PENDING ) begin
+                    if (finish_for_PE_one_more_time==0) finish_for_PE <= 'b1;
+                    else finish_for_PE<= 'b0;   
+                end
+                else begin
+                    if ( finish_for_PE_one_more_time ==1 ) finish_for_PE <= 'b0;
+                    else finish_for_PE<= 'b1; 
+                end
             end
         end else begin
             done_window <= 'b0;
@@ -385,19 +395,38 @@ always @(posedge clk or negedge rst_n) begin
     end
 end
 
+// always @(posedge clk or negedge rst_n) begin
+//     if (!rst_n) begin
+//         finish_for_PE_one_more_time         <=  'h0;
+//     end else begin
+//         case (next_state_IFM) 
+//             PENDING :begin
+//                 finish_for_PE_one_more_time <= finish_for_PE_one_more_time+1;
+//                 if ( finish_for_PE_one_more_time ==1 )begin
+//                      finish_for_PE_one_more_time <= 1;
+//                 end
+//             end
+//             default: begin
+//                 finish_for_PE_one_more_time         <=  'h0;
+//             end
+//         endcase
+//     end
+// end
 // FSM Output Logic
 always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
-        addr_fetch_ifm          <= addr_in;
-        count_for_a_Window      <= 1'b0;
-        count_for_a_Window_of_a_tile      <= 1'b0;
-        row_index_KERNEL        <= 8'b0;
-        count_for_a_OFM         <= 8'b0;
-        col_index_KERNEL        <= 8'b0;
-        row_index_OFM           <= 8'b0;
-        col_index_OFM           <= 8'b0;
-        tiles_count             <= 8'b0;
-        done_compute            <= 1'h0;
+        addr_fetch_ifm                      <= addr_in;
+        count_for_a_Window                  <= 1'b0;
+        count_for_a_Window_of_a_tile        <= 1'b0;
+        row_index_KERNEL                    <= 8'b0;
+        count_for_a_OFM                     <= 8'b0;
+        col_index_KERNEL                    <= 8'b0;
+        row_index_OFM                       <= 8'b0;
+        col_index_OFM                       <= 8'b0;
+        tiles_count                         <= 8'b0;
+        done_compute                        <= 1'h0;
+        window_start_addr_ifm               <= 8'h0;
+        finish_for_PE_one_more_time         <=  'h0;
     end else begin
         case (current_state_IFM)
             START_ADDR_IFM: begin
@@ -409,6 +438,17 @@ always @(posedge clk or negedge rst_n) begin
                     count_for_a_Window      <= 8'b0;
                     window_start_addr_ifm   <= 8'h0;
                 end else begin
+                    addr_fetch_ifm                      <= addr_in;
+                    count_for_a_Window                  <= 1'b0;
+                    count_for_a_Window_of_a_tile        <= 1'b0;
+                    row_index_KERNEL                    <= 8'b0;
+                    count_for_a_OFM                     <= 8'b0;
+                    col_index_KERNEL                    <= 8'b0;
+                    row_index_OFM                       <= 8'b0;
+                    col_index_OFM                       <= 8'b0;
+                    tiles_count                         <= 8'b0;
+                    done_compute                        <= 1'h0;
+                    window_start_addr_ifm               <= 8'h0;
                 end
                 
             end
@@ -474,12 +514,17 @@ always @(posedge clk or negedge rst_n) begin
 
             PENDING : begin
                 //addr_fetch_ifm          <= addr_fetch_ifm ;
+                finish_for_PE_one_more_time <= finish_for_PE_one_more_time+1;
+                if ( finish_for_PE_one_more_time ==1 )begin
+                     finish_for_PE_one_more_time <= 1;
+                end
+               
 
             end
 
 
             NEXT_WINDOW: begin
-                
+                finish_for_PE_one_more_time <=0;
                 count_for_a_OFM             <= count_for_a_OFM + 'b1;
                 //tiles_count                 <= 0;
 

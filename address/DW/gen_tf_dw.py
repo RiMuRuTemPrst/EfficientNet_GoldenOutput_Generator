@@ -63,9 +63,9 @@ if __name__ == "__main__":
     output_feature_width = (args.ifm_width - args.weight_width + 2 * args.padding) // args.stride + 1
     output_feature_channel = args.ifm_channel * args.depth_multiplier
 
-    input_file = "../Fused-Block-CNN/address/ifm_padded.hex"
-    weight_file = "../Fused-Block-CNN/address/weight.hex"
-    output_file = "../Fused-Block-CNN/address/ofm.hex"
+    input_file = "../Fused-Block-CNN/address/DW/ifm_padded.hex"
+    weight_file = "../Fused-Block-CNN/address/DW/weight.hex"
+    output_file = "../Fused-Block-CNN/address/DW/ofm.hex"
 
     input_data = read_hex_file(input_file, (args.ifm_height, args.ifm_width, args.ifm_channel))
     weight_data = read_hex_file_weight(weight_file, (args.weight_height, args.weight_width, args.ifm_channel, args.depth_multiplier))

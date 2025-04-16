@@ -37,9 +37,9 @@ def compare_files(file1, file2, pe_id=None):
 
 
 if __name__ == "__main__":
-    for pe in range(1):  # PE0 → PE15
-        # file1 = f"address/OFM_PE{pe}_DUT.hex"
-        # file2 = f"address/OFM_PE{pe}_change.hex"
-        file1 = f"/home/thanhdo/questasim/PE/Fused-Block-CNN/address/padded_ofm.hex"
-        file2 = f"/home/thanhdo/questasim/PE/Fused-Block-CNN/address/PADDING_control_IFM.hex"
+    for pe in range(16):  # PE0 → PE15
+        file1 = f"address/OFM_PE{pe}_DUT.hex"
+        file2 = f"address/OFM_PE{pe}_change.hex"
+        # file1 = f"/home/thanhdo/questasim/PE/Fused-Block-CNN/address/padded_ofm.hex"
+        # file2 = f"/home/thanhdo/questasim/PE/Fused-Block-CNN/address/PADDING_control_IFM.hex"
         compare_files(file1, file2, pe_id=pe)

@@ -24,7 +24,7 @@ logic [2:0] count_line_pipelined;
 logic [31:0] count_lr;
 logic [31:0] count_for_OFM ;
 
-logic [31:0] addr_padding = 0;
+logic [31:0] addr_padding ;
 reg [31:0] addr_data;// = OFM_C * (OFM_W + 3 * padding) / 4;
 logic end_signal;
 
@@ -144,10 +144,22 @@ always_ff @(posedge clk or negedge rst_n)begin
         end_signal <=0;
         count_for_OFM <= 0;
         addr_data  <= 0;
+        addr_padding <=0;
     end
     else begin
     case (current_state) 
         IDLE_0 : begin
+            count_padd <= 0;
+            count_lr <= 0;
+            count_height_padd <= 0;
+            count_line_pipelined <=0;
+            count_data <= 0;
+            count_height <= 0;
+            valid_for_next_pipeline <=0;
+            end_signal <=0;
+            count_for_OFM <= 0;
+            addr_data  <= 0;
+            addr_padding <=0;
         end
         IDLE: begin
             if (count_height > 2 ) begin
@@ -239,15 +251,29 @@ always_ff @(posedge clk or negedge rst_n)begin
             end
             count_for_OFM <= count_for_OFM + 1;
         end
-
+        default : begin
+            addr_data  <= 'hf;
+            count_padd <= 0;
+            count_lr <= 0;
+            count_height_padd <= 0;
+            count_line_pipelined <=0;
+            count_data <= 0;
+            count_height <= 0;
+            valid_for_next_pipeline <=0;
+            end_signal <=0;
+            count_for_OFM <= 0;
+            addr_padding <='hf;
+        end
     endcase
+    
     end
 end
 always_comb begin
     case(next_state)
         IDLE_0: begin
-            data_out = 0;
             wr_en    = 0;
+            addr_next= 0;
+            data_out = 0;
         end
         IDLE: begin
             wr_en = 1;

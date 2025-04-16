@@ -298,6 +298,7 @@ always @(posedge clk or negedge rst_n) begin
         predict_line_addr_fetch_ifm         <= 'h0;
         predict_window_addr_fetch_ifm       <= 'h0;
         predict_window_OFM_addr_fetch_ifm   <= 'h0;
+        done_window                         <= 'h0;
 
     end
     else begin
@@ -352,6 +353,7 @@ always @(posedge clk or negedge rst_n) begin
         col_index_OFM           <= 8'b0;
         tiles_count             <= 8'b0;
         done_compute            <= 1'h0;
+        window_start_addr_ifm   <= 8'h0;
     end else begin
         case (current_state_IFM)
             START_ADDR_IFM: begin
@@ -364,6 +366,17 @@ always @(posedge clk or negedge rst_n) begin
                     window_start_addr_ifm   <= 8'h0;
                     count_for_a_OFM         <=  'h0;
                 end else begin
+                    addr_fetch_ifm          <= addr_in;
+                    count_for_a_Window      <= 1'b0;
+                    row_index_KERNEL        <= 8'b0;
+                    count_for_a_OFM         <= 8'b0;
+                    col_index_KERNEL        <= 8'b0;
+                    row_index_OFM           <= 8'b0;
+                    col_index_OFM           <= 8'b0;
+                    tiles_count             <= 8'b0;
+                    done_compute            <= 1'h0;
+                    window_start_addr_ifm   <= 8'h0;
+
                 end
                 
             end
@@ -488,7 +501,11 @@ always @(*) begin
          
             if (count_for_a_Window <  num_of_KERNEL_points * num_of_tiles * num_of_tiles_for_PE  -1) begin
             //if ( count_for_a_Window < (num_of_KERNEL_points <<  (IFM_C_shift - num_of_mul_in_PE_shift + OFM_C_shift - total_PE_shift))   -1) begin
-                next_state_FILTER   = FETCH_FILTER;
+                if (ready) begin
+                    next_state_FILTER   = FETCH_FILTER;
+                end else begin
+                    next_state_FILTER   = START_ADDR_FILTER;
+                end
             end else begin
                 next_state_FILTER   = START_ADDR_FILTER;
             end
@@ -510,6 +527,9 @@ always @(posedge clk or negedge rst_n) begin
                     window_start_addr_filter    <=  addr_fetch_filter;
                     if ( addr_valid_ifm ==1 )  addr_fetch_filter    <=  addr_fetch_filter + 'h4; 
                 end 
+                else begin
+                    addr_fetch_filter <= 'h0;
+                end
             end
 
             FETCH_FILTER: begin

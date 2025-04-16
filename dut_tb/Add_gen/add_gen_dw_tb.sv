@@ -149,8 +149,8 @@ module address_generator_dw_tb;
   wire [7:0]  OFM_2;
   wire [7:0]  OFM_3;
 
-  assign finish_for_PE_cluster            =   (ready) && ( req_addr_out_ifm != 'b0 )   ? done_compute : 1'b0;
-  assign valid                            =   finish_for_PE_cluster;
+  assign finish_for_PE_cluster            =   ( req_addr_out_ifm != 'b0 )   ? finish_for_PE : 1'b0;
+  assign valid                            =   finish_for_PE;
 
   PE_DW_cluster PE_DW(
     .clk(clk),
@@ -210,12 +210,12 @@ module address_generator_dw_tb;
 
     
 
-    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/ifm_padded.hex", input_data_mem);
+    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address//DW/ifm_padded.hex", input_data_mem);
 
-    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/weight_PE0.hex", input_data_mem0);
-    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/weight_PE1.hex", input_data_mem1);
-    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/weight_PE2.hex", input_data_mem2);
-    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/weight_PE3.hex", input_data_mem3);
+    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/DW/weight_PE0.hex", input_data_mem0);
+    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/DW/weight_PE1.hex", input_data_mem1);
+    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/DW/weight_PE2.hex", input_data_mem2);
+    $readmemh("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/DW/weight_PE3.hex", input_data_mem3);
 
     fork
             begin
@@ -246,19 +246,30 @@ module address_generator_dw_tb;
     // Start simulation
     repeat (10) @(posedge clk);
     ready = 1;
-    repeat (100) @(posedge clk);
+    repeat (50) @(posedge clk);
     ready = 0;
-    repeat (100) @(posedge clk);
+    repeat (140) @(posedge clk);
     ready = 1;
+    repeat (20) @(posedge clk);
+    ready = 0;
+    repeat (140) @(posedge clk);
+    ready = 1;
+    repeat (50) @(posedge clk);
+    ready = 0;
+    repeat (140) @(posedge clk);
+    ready = 1;
+    
     @(posedge done_compute);
-
+    ready = 0;
+    repeat (140) @(posedge clk);
+    repeat (140) @(posedge clk);
     // Finish simulation
     #50;
     $stop;
   end
   initial begin
         for (k = 0; k < 4; k = k + 1) begin
-             ofm_file[k] = $fopen($sformatf("/home/thanhdo/questasim/PE/Fused-Block-CNN/address/OFM_PE%0d_DUT.hex", k), "w");
+             ofm_file[k] = $fopen($sformatf("/home/thanhdo/questasim/PE/Fused-Block-CNN/address//DW/OFM_PE%0d_DUT.hex", k), "w");
             if (ofm_file[k] == 0) begin
                 $display("Error opening file OFM_PE%d.hex", k); 
                 $finish;  
@@ -269,7 +280,7 @@ module address_generator_dw_tb;
     end
 
     always @(posedge clk) begin
-      if (valid == 16'hFFFF) begin
+      if (valid == 1) begin
           // Lưu giá trị OFM vào các file tương ứng
           //count_for_layer_1 = count_for_layer_1 + 1;
           for (k = 0; k < 4; k = k + 1) begin

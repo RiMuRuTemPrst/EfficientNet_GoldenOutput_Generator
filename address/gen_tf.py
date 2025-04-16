@@ -40,9 +40,9 @@ def read_hex_file(filename, shape):
 def write_hex_file(filename, data):
     H, W, C = data.shape
     with open(filename, "w") as file:
-        for h in range(H):
-            for w in range(W):
-                for c in range(C):
+        for c in range(C):
+            for h in range(H):
+                for w in range(W):
                     int_value = int(round(data[h, w, c]))
                     hex_value = int_value & 0xFF
                     file.write(f"{hex_value:02X}\n")
