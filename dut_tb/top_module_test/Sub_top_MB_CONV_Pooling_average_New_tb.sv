@@ -169,6 +169,7 @@ module Sub_top_MB_CONV_Pooling_average_New_tb #(
     logic init_phase_pooling;
     logic [1:0] control_data_pooling;
     logic we_pooling;
+    int count_init_for_pooling;
     Sub_top_MB_CONV_Average_Pooling_New uut (
         .clk(clk),
         .rst_n(reset),
@@ -325,11 +326,12 @@ module Sub_top_MB_CONV_Pooling_average_New_tb #(
         valid_for_next_pipeline = 0;
 
         //pooling 
-        read_addr_pooling = 0;
-        write_addr_pooling = 0;
-        init_phase_pooling = 0;
-        control_data_pooling = 0;
+        read_addr_pooling = -1;
+        write_addr_pooling = -1;
+        init_phase_pooling = 1;
+        control_data_pooling = 1;
         we_pooling = 0;
+        count_init_for_pooling = 0;
 
         num_of_tiles_for_PE_layer2 = OFM_C_layer2_para/ `Num_of_layer2_PE_para;
        // write_padding = 1;
@@ -597,9 +599,30 @@ end
     initial begin
         forever begin
             @(posedge clk) begin
-                if(valid_layer2 == 1)
+                if((valid_layer2 == 1) && (done_compute_layer2 == 0)) begin
+                count_init_for_pooling = count_init_for_pooling + 1;
+                 if(count_init_for_pooling > 48  ) init_phase_pooling = 0;
+                 @(posedge clk);
+                 we_pooling = 1;
                  read_addr_pooling = read_addr_pooling + 1;
                  write_addr_pooling = read_addr_pooling - 1;
+                 control_data_pooling = 0;
+                 @(posedge clk);
+                 read_addr_pooling = read_addr_pooling + 1;
+                 write_addr_pooling = read_addr_pooling - 1;
+                 control_data_pooling = 1;
+                 @(posedge clk);
+                 read_addr_pooling = read_addr_pooling + 1;
+                 write_addr_pooling = read_addr_pooling - 1;
+                 control_data_pooling = 2;
+                 @(posedge clk);
+                 read_addr_pooling = read_addr_pooling + 1;
+                 write_addr_pooling = read_addr_pooling - 1;
+                 control_data_pooling = 3;
+                 @(posedge clk);
+                 we_pooling = 0;
+                 if(read_addr_pooling == 191) read_addr_pooling = 0;
+                end
             end
         end
     end

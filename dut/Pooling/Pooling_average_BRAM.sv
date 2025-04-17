@@ -16,19 +16,17 @@ module Pooling_average_BRAM(
     logic [31:0] data_for_write;
     logic [31:0] data_for_read;
     logic [31:0] add_data;
-    logic [8:0] IFM_data;
+    logic [7:0] IFM_data;
     logic [31:0] IFM_reg_data;
 
     always_ff @(posedge clk or negedge reset_n) begin
         if(~reset_n) begin
             IFM_reg_data <= 0;
         end
-        else 
-            if(valid) begin
-                IFM_reg_data <= data_in;
-            end
+        else if(valid) begin
+            IFM_reg_data <= data_in;
     end
-
+    end
     //mux for init phase
     assign add_data = (init_phase) ? 0 : data_for_read;
 
@@ -45,7 +43,7 @@ module Pooling_average_BRAM(
     //division
     assign data_for_write = add_data + IFM_data;
 
-    BRAM_IFM_128bit_in IFM_BRAM_layer_2(
+    BRAM_Pooling IFM_BRAM_layer_2(
         .clk(clk),
         //.rd_addr(addr_IFM_layer_2),
         .rd_addr(read_addr),

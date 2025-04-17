@@ -192,7 +192,10 @@ module Sub_top_MB_CONV_Average_Pooling_New(
     // signal for layer 2
     logic [127:0] data_in_IFM_layer_2;
     wire finish_for_PE_DW_cluster;
-
+    logic [7:0] OFM_0_DW_layer;
+    logic [7:0] OFM_1_DW_layer;
+    logic [7:0] OFM_2_DW_layer;
+    logic [7:0] OFM_3_DW_layer;
     //signal_for_average_Pooling
     logic [31:0] data_in_pooling;
 
@@ -591,10 +594,10 @@ module Sub_top_MB_CONV_Average_Pooling_New(
         .OFM_3(OFM_3_DW_layer),
         .valid(valid_of_DW)
     );
-    
+    assign data_in_pooling = {OFM_3_DW_layer,OFM_2_DW_layer,OFM_1_DW_layer,OFM_0_DW_layer}  ;
     Pooling_average_BRAM pooling(
     .clk(clk),
-    
+    .reset_n(rst_n),
     //data signal
     .data_in(data_in_pooling),
 
