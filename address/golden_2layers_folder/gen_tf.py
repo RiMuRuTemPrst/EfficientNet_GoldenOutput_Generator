@@ -40,9 +40,9 @@ def read_hex_file(filename, shape):
 def write_hex_file(filename, data):
     H, W, C = data.shape
     with open(filename, "w") as file:
-        for h in range(H):
-            for w in range(W):
-                for c in range(C):
+        for c in range(C):
+            for h in range(H):
+                for w in range(W):
                     int_value = int(round(data[h, w, c]))
                     hex_value = int_value & 0xFF
                     file.write(f"{hex_value:02X}\n")
@@ -68,7 +68,7 @@ if __name__ == "__main__":
     # File paths cố định
     input_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/ifm.hex"
     weight_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/weight.hex"
-    output_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/ofm.hex"
+    output_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/ofm_layer1.hex"
 
     # Đọc dữ liệu
     input_data = read_hex_file(input_file, (args.ifm_height, args.ifm_width, args.ifm_channel))

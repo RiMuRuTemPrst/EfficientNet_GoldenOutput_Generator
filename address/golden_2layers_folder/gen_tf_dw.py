@@ -28,9 +28,9 @@ def read_hex_file(filename, shape):
     H, W, C = shape
     reshaped_data = np.zeros((H, W, C), dtype=np.int32)
     index = 0
-    for h in range(H):
-        for w in range(W):
-            for c in range(C):
+    for c in range(C):
+        for h in range(H):
+            for w in range(W):
                 reshaped_data[h, w, c] = data[index]
                 index += 1
     return reshaped_data
@@ -39,9 +39,9 @@ def read_hex_file(filename, shape):
 def write_hex_file(filename, data):
     H, W, C = data.shape
     with open(filename, "w") as file:
-        for h in range(H):
-            for w in range(W):
-                for c in range(C):
+        for c in range(C):
+            for h in range(H):
+                for w in range(W):
                     int_value = int(round(data[h, w, c]))
                     hex_value = int_value & 0xFF
                     file.write(f"{hex_value:02X}\n")
@@ -60,16 +60,45 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     output_feature_height = (args.ifm_height - args.weight_height + 2 * args.padding2) // args.stride2 + 1
-    output_feature_width = output_feature_height
+    output_feature_width = (args.ifm_width - args.weight_width + 2 * args.padding2) // args.stride2 + 1
     output_feature_channel = args.ifm_channel * args.depth_multiplier
 
-    input_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/ofm.hex"
+    input_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/ofm_layer1.hex"
     weight_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/weight_2.hex"
     output_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/ofm_2.hex"
 
     input_data = read_hex_file(input_file, (args.ifm_height, args.ifm_width, args.ifm_channel))
     weight_data = read_hex_file_weight(weight_file, (args.weight_height, args.weight_width, args.ifm_channel, args.depth_multiplier))
-    
+
+# In 10 giá trị đầu tiên của input_data ở dạng hex
+print("10 giá trị đầu tiên của input_data (hex):")
+flat_input = input_data.flatten()
+for i in range(min(10, flat_input.shape[0])):
+    hex_val = flat_input[i] & 0xFF  # chỉ lấy 8 bit thấp
+    print(f"input_data[{i}] = 0x{hex_val:02X}")
+
+# In 10 giá trị đầu tiên của weight_data ở dạng hex
+print("\n10 giá trị đầu tiên của weight_data (hex):")
+flat_weight = weight_data.flatten()
+for i in range(min(10, flat_weight.shape[0])):
+    hex_val = flat_weight[i] & 0xFF  # chỉ lấy 8 bit thấp
+    print(f"weight_data[{i}] = 0x{hex_val:02X}")
+
+
+
+     # In 10 giá trị đầu tiên của input_data
+    print("10 giá trị đầu tiên của input_data:")
+    flat_input = input_data.flatten()
+    for i in range(min(10, flat_input.shape[0])):
+        print(f"input_data[{i}] = {flat_input[i]}")
+
+    # In 10 giá trị đầu tiên của weight_data
+    print("\n10 giá trị đầu tiên của weight_data:")
+    flat_weight = weight_data.flatten()
+    for i in range(min(10, flat_weight.shape[0])):
+        print(f"weight_data[{i}] = {flat_weight[i]}")
+
+
     tf_padding = "same" if args.padding2 > 0 else "valid"
 
     input_layer = tf.keras.layers.Input(shape=(args.ifm_height, args.ifm_width, args.ifm_channel))

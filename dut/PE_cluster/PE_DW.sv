@@ -23,8 +23,8 @@ module PE_DW_cluster(
     .clk(clk),
     .reset_n(reset_n),
     .IFM(IFM[31:24]),
-    .Weight(Weight_0),
-    .OFM(OFM_0),
+    .Weight(Weight_3),
+    .OFM(OFM_3),
     .PE_reset(PE_reset),
     .PE_finish(PE_finish)
     );
@@ -32,8 +32,8 @@ module PE_DW_cluster(
     .clk(clk),
     .reset_n(reset_n),
     .IFM(IFM[23:16]),
-    .Weight(Weight_1),
-    .OFM(OFM_1),
+    .Weight(Weight_2),
+    .OFM(OFM_2),
     .PE_reset(PE_reset),
     .PE_finish(PE_finish)
     );
@@ -41,8 +41,8 @@ module PE_DW_cluster(
     .clk(clk),
     .reset_n(reset_n),
     .IFM(IFM[15:7]),
-    .Weight(Weight_2),
-    .OFM(OFM_2),
+    .Weight(Weight_1),
+    .OFM(OFM_1),
     .PE_reset(PE_reset),
     .PE_finish(PE_finish)
     );
@@ -50,8 +50,8 @@ module PE_DW_cluster(
     .clk(clk),
     .reset_n(reset_n),
     .IFM(IFM[7:0]),
-    .Weight(Weight_3),
-    .OFM(OFM_3),
+    .Weight(Weight_0),
+    .OFM(OFM_0),
     .PE_reset(PE_reset),
     .PE_finish(PE_finish)
     );
