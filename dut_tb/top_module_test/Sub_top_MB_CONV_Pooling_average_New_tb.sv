@@ -16,7 +16,7 @@
 `define Num_of_layer1_PE_para 16
 `define Num_of_layer2_PE_para 4
 
-module Sub_top_MB_CONV_Pooling_average_tb #(
+module Sub_top_MB_CONV_Pooling_average_New_tb #(
     parameter IFM_W_layer1_para= 28, 
     parameter IFM_C_layer1_para =48,
     parameter KERNEL_W_layer1_para =1,
@@ -164,10 +164,12 @@ module Sub_top_MB_CONV_Pooling_average_tb #(
     int num_of_tiles_for_PE_layer2;
 
     //pooling
-    int pixel_index = 0;
-    logic [10:0] read_pixel_index ;
-    logic finish;
-    Sub_top_MB_CONV_Average_Pooling uut (
+    logic [31:0] read_addr_pooling;
+    logic [31:0] write_addr_pooling;
+    logic init_phase_pooling;
+    logic [1:0] control_data_pooling;
+    logic we_pooling;
+    Sub_top_MB_CONV_Average_Pooling_New uut (
         .clk(clk),
         .rst_n(reset),
         .wr_rd_en_IFM(wr_rd_en_IFM),
@@ -249,9 +251,11 @@ module Sub_top_MB_CONV_Pooling_average_tb #(
         //.rd_addr(addr_w)
 
         //pooling average
-        .pixel_index(pixel_index),
-        .read_pixel_index(read_pixel_index),
-        .finish(finish)
+        .read_addr_pooling(read_addr_pooling),
+        .write_addr_pooling(write_addr_pooling),
+        .init_phase_pooling(init_phase_pooling),
+        .control_data_pooling(control_data_pooling),
+        .we_pooling(we_pooling)
     );
 
     initial begin
@@ -321,7 +325,11 @@ module Sub_top_MB_CONV_Pooling_average_tb #(
         valid_for_next_pipeline = 0;
 
         //pooling 
-        read_pixel_index = 0;
+        read_addr_pooling = 0;
+        write_addr_pooling = 0;
+        init_phase_pooling = 0;
+        control_data_pooling = 0;
+        we_pooling = 0;
 
         num_of_tiles_for_PE_layer2 = OFM_C_layer2_para/ `Num_of_layer2_PE_para;
        // write_padding = 1;
@@ -564,32 +572,35 @@ always @(posedge clk) begin
 end
 
 
-always @(posedge clk) begin
-    if (valid_layer2 == 1) begin
-        pixel_index = pixel_index + 4;
-        if( pixel_index > OFM_C_layer2_para - 4) pixel_index = 0;
-        // Lưu giá trị OFM vào các file tương ứng
-        count_for_layer_2 = count_for_layer_2 + 1;
-        for (k1 = 0; k1 < 4; k1 = k1 + 1) begin
-            ofm_data_2 = OFM_DW[k1];  // Lấy giá trị OFM từ output
-            // Ghi từng byte của OFM vào các file
-            ofm_data_byte_2 = ofm_data_2;
-            //if (ofm_file[1] != 0) begin
-            //$display("check");
-                $fwrite(ofm_file_2[k1], "%h\n", ofm_data_byte_2);  // Ghi giá trị từng byte vào file
-                //$display("check");
+// always @(posedge clk) begin
+//     if (valid_layer2 == 1) begin
+//         pixel_index = pixel_index + 4;
+//         if( pixel_index > OFM_C_layer2_para - 4) pixel_index = 0;
+//         // Lưu giá trị OFM vào các file tương ứng
+//         count_for_layer_2 = count_for_layer_2 + 1;
+//         for (k1 = 0; k1 < 4; k1 = k1 + 1) begin
+//             ofm_data_2 = OFM_DW[k1];  // Lấy giá trị OFM từ output
+//             // Ghi từng byte của OFM vào các file
+//             ofm_data_byte_2 = ofm_data_2;
+//             //if (ofm_file[1] != 0) begin
+//             //$display("check");
+//                 $fwrite(ofm_file_2[k1], "%h\n", ofm_data_byte_2);  // Ghi giá trị từng byte vào file
+//                 //$display("check");
                 
-           // end
-            ofm_data_2 = ofm_data_2 >> 8;  // Dịch 8 bit cho đến khi hết 32-bit
-        end
-    end
-end
+//            // end
+//             ofm_data_2 = ofm_data_2 >> 8;  // Dịch 8 bit cho đến khi hết 32-bit
+//         end
+//     end
+// end
 
-
+    //initial for pooling
     initial begin
         forever begin
-        @ (posedge clk)
-        if(finish) read_pixel_index = read_pixel_index + 1;
+            @(posedge clk) begin
+                if(valid_layer2 == 1)
+                 read_addr_pooling = read_addr_pooling + 1;
+                 write_addr_pooling = read_addr_pooling - 1;
+            end
         end
     end
 endmodule
