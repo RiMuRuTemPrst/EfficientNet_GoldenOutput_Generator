@@ -101,7 +101,8 @@ module Sub_top_MB_CONV_Average_Pooling_New(
     input [31:0] write_addr_pooling,
     input init_phase_pooling,
     input [1:0] control_data_pooling,
-    input we_pooling
+    input we_pooling,
+    output [31:0] data_pooling_average
 );
 
     //wire for Weight connect to PE_1x1 from BRAM
@@ -607,7 +608,8 @@ module Sub_top_MB_CONV_Average_Pooling_New(
     .we(we_pooling),
     .init_phase(init_phase_pooling),
     .control_data(control_data_pooling),
-    .valid(valid_layer2)
+    .valid(valid_layer2),
+    .data_pooling_average(data_pooling_average)
 );
 
 endmodule

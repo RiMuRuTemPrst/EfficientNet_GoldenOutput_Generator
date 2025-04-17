@@ -170,6 +170,7 @@ module Sub_top_MB_CONV_Pooling_average_New_tb #(
     logic [1:0] control_data_pooling;
     logic we_pooling;
     int count_init_for_pooling;
+    logic [31:0] data_pooling_average;
     Sub_top_MB_CONV_Average_Pooling_New uut (
         .clk(clk),
         .rst_n(reset),
@@ -256,7 +257,8 @@ module Sub_top_MB_CONV_Pooling_average_New_tb #(
         .write_addr_pooling(write_addr_pooling),
         .init_phase_pooling(init_phase_pooling),
         .control_data_pooling(control_data_pooling),
-        .we_pooling(we_pooling)
+        .we_pooling(we_pooling),
+        .data_pooling_average(data_pooling_average)
     );
 
     initial begin
@@ -326,8 +328,8 @@ module Sub_top_MB_CONV_Pooling_average_New_tb #(
         valid_for_next_pipeline = 0;
 
         //pooling 
-        read_addr_pooling = -1;
-        write_addr_pooling = -1;
+        read_addr_pooling = 0;
+        write_addr_pooling = 0;
         init_phase_pooling = 1;
         control_data_pooling = 1;
         we_pooling = 0;
@@ -599,7 +601,7 @@ end
     initial begin
         forever begin
             @(posedge clk) begin
-                if((valid_layer2 == 1) && (done_compute_layer2 == 0)) begin
+                if((valid_layer2 == 1)) begin
                 count_init_for_pooling = count_init_for_pooling + 1;
                  if(count_init_for_pooling > 48  ) init_phase_pooling = 0;
                  @(posedge clk);
@@ -621,9 +623,28 @@ end
                  control_data_pooling = 3;
                  @(posedge clk);
                  we_pooling = 0;
-                 if(read_addr_pooling == 191) read_addr_pooling = 0;
+                 if(read_addr_pooling == 192) read_addr_pooling = 0;
                 end
             end
         end
     end
+
+    initial begin
+        forever begin
+            @(posedge clk) begin
+                if(done_compute_layer2 == 1) begin
+                    repeat(10) @(posedge clk);
+                    read_addr_pooling = 0;
+                repeat(192)  
+                begin   @(posedge clk) 
+                     read_addr_pooling = read_addr_pooling + 1;
+                     $display("check");
+                end
+            end
+            end
+        end
+    end
+
+
+                
 endmodule

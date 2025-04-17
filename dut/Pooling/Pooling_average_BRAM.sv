@@ -11,8 +11,11 @@ module Pooling_average_BRAM(
     input we,
     input init_phase,
     input [1:0] control_data,
-    input valid
+    input valid,
+
+    output [63:0] data_pooling_average
 );
+    parameter DIV_14x14 = 31'h0000014e;
     logic [31:0] data_for_write;
     logic [31:0] data_for_read;
     logic [31:0] add_data;
@@ -29,7 +32,7 @@ module Pooling_average_BRAM(
     end
     //mux for init phase
     assign add_data = (init_phase) ? 0 : data_for_read;
-
+    assign data_pooling_average = ((data_for_read << 16) * DIV_14x14);
     //mux for divide data_in 128
     always_comb begin
         case(control_data)
