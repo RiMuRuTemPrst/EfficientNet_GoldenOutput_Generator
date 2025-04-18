@@ -70,33 +70,33 @@ if __name__ == "__main__":
     input_data = read_hex_file(input_file, (args.ifm_height, args.ifm_width, args.ifm_channel))
     weight_data = read_hex_file_weight(weight_file, (args.weight_height, args.weight_width, args.ifm_channel, args.depth_multiplier))
 
-# In 10 giá trị đầu tiên của input_data ở dạng hex
-print("10 giá trị đầu tiên của input_data (hex):")
-flat_input = input_data.flatten()
-for i in range(min(10, flat_input.shape[0])):
-    hex_val = flat_input[i] & 0xFF  # chỉ lấy 8 bit thấp
-    print(f"input_data[{i}] = 0x{hex_val:02X}")
+# # In 10 giá trị đầu tiên của input_data ở dạng hex
+# print("10 giá trị đầu tiên của input_data (hex):")
+# flat_input = input_data.flatten()
+# for i in range(min(10, flat_input.shape[0])):
+#     hex_val = flat_input[i] & 0xFF  # chỉ lấy 8 bit thấp
+#     print(f"input_data[{i}] = 0x{hex_val:02X}")
 
-# In 10 giá trị đầu tiên của weight_data ở dạng hex
-print("\n10 giá trị đầu tiên của weight_data (hex):")
-flat_weight = weight_data.flatten()
-for i in range(min(10, flat_weight.shape[0])):
-    hex_val = flat_weight[i] & 0xFF  # chỉ lấy 8 bit thấp
-    print(f"weight_data[{i}] = 0x{hex_val:02X}")
+# # In 10 giá trị đầu tiên của weight_data ở dạng hex
+# print("\n10 giá trị đầu tiên của weight_data (hex):")
+# flat_weight = weight_data.flatten()
+# for i in range(min(10, flat_weight.shape[0])):
+#     hex_val = flat_weight[i] & 0xFF  # chỉ lấy 8 bit thấp
+#     print(f"weight_data[{i}] = 0x{hex_val:02X}")
 
 
 
-     # In 10 giá trị đầu tiên của input_data
-    print("10 giá trị đầu tiên của input_data:")
-    flat_input = input_data.flatten()
-    for i in range(min(10, flat_input.shape[0])):
-        print(f"input_data[{i}] = {flat_input[i]}")
+#      # In 10 giá trị đầu tiên của input_data
+#     print("10 giá trị đầu tiên của input_data:")
+#     flat_input = input_data.flatten()
+#     for i in range(min(10, flat_input.shape[0])):
+#         print(f"input_data[{i}] = {flat_input[i]}")
 
-    # In 10 giá trị đầu tiên của weight_data
-    print("\n10 giá trị đầu tiên của weight_data:")
-    flat_weight = weight_data.flatten()
-    for i in range(min(10, flat_weight.shape[0])):
-        print(f"weight_data[{i}] = {flat_weight[i]}")
+#     # In 10 giá trị đầu tiên của weight_data
+#     print("\n10 giá trị đầu tiên của weight_data:")
+#     flat_weight = weight_data.flatten()
+#     for i in range(min(10, flat_weight.shape[0])):
+#         print(f"weight_data[{i}] = {flat_weight[i]}")
 
 
     tf_padding = "same" if args.padding2 > 0 else "valid"

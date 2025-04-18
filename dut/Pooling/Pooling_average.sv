@@ -9,13 +9,13 @@ module Pooling_average(
     input [1:0] size,
     input [10:0] pixel_index,
     input [7:0] OFM_C,
+    input [10:0] read_pixel_index,
     output logic valid_data_out,
     output [18:0] sign_output_0,
     output [18:0] sign_output_1,
     output [18:0] sign_output_2,
     output [18:0] sign_output_3,
     output logic finish,
-    input [10:0] read_pixel_index,
     output logic [18:0] data_out
 );
     parameter SIZE28_28 = 784;
@@ -122,7 +122,10 @@ module Pooling_average(
             end 
             //else acc_reset = 0;
             //SIZE28_28: if( count_data == SIZE28_28) acc_reset = 1;
-            default : acc_reset = 0;
+            default : begin
+                acc_reset = 0;
+                div_param = 0;
+            end
         endcase
     end
     assign sign_output_0 = accumulate[ pixel_index - 4];

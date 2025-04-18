@@ -26,9 +26,12 @@ module Sub_top_MB_CONV_tb #(
     parameter KERNEL_W_layer2_para =3,
     parameter OFM_C_layer2_para= 192,
     parameter stride_layer2_para =2,
+
+    parameter OFM_C_se_reduce_para =12,
     
 
     //
+    parameter OFM_W_layer2_para = IFM_W_layer1_para / stride_layer2_para,
     parameter Start_addr_for_data_layer_2 = (IFM_W_layer1_para + 3) * OFM_C_layer1_para,
     parameter enter_row_data = (IFM_W_layer1_para) * OFM_C_layer1_para,
     parameter inc_addr_for_enter_row = 2*OFM_C_layer1_para,
@@ -162,6 +165,15 @@ module Sub_top_MB_CONV_tb #(
     int count_valid;
     int count_row;
     int num_of_tiles_for_PE_layer2;
+
+    //pooling
+    logic [31:0] read_addr_pooling;
+    logic [31:0] write_addr_pooling;
+    logic init_phase_pooling;
+    logic [1:0] control_data_pooling;
+    logic we_pooling;
+    int count_init_for_pooling;
+    logic [31:0] data_pooling_average;
     Sub_top_MB_CONV uut (
         .clk(clk),
         .rst_n(reset),
@@ -215,6 +227,10 @@ module Sub_top_MB_CONV_tb #(
         .OFM_C_layer2(OFM_C_layer2_para),
         .stride_layer2(stride_layer2_para),
 
+        // SE layer
+        .OFM_C_se_reduce(OFM_C_se_reduce_para),
+        
+
         // for Control_unit
         .run(run),
         .instrution(instrution),
@@ -243,8 +259,17 @@ module Sub_top_MB_CONV_tb #(
         .wr_addr_IFM_layer_2(wr_addr_IFM_layer_2),
         .write_padding(write_padding),
         .valid_for_next_pipeline(valid_for_next_pipeline),
-        .done_compute_layer2(done_compute_layer2)
+        .done_compute_layer2(done_compute_layer2),
         //.rd_addr(addr_w)
+
+        //pooling average
+        .read_addr_pooling_tb(read_addr_pooling),
+        .write_addr_pooling(write_addr_pooling),
+        .init_phase_pooling(init_phase_pooling),
+        .control_data_pooling(control_data_pooling),
+        .we_pooling(we_pooling),
+        .data_pooling_average(data_pooling_average),
+        .count_init_for_pooling(count_init_for_pooling)
     );
 
     initial begin
@@ -286,7 +311,6 @@ module Sub_top_MB_CONV_tb #(
         data_in_Weight_6 = 0;
         data_in_Weight_7 = 0;
         data_in_Weight_8 = 0;   
-
         data_in_Weight_9 = 0;
         data_in_Weight_10 = 0;
         data_in_Weight_11 = 0;
@@ -313,6 +337,14 @@ module Sub_top_MB_CONV_tb #(
         count_line = 0;
         count_line_pipelined =0;
         valid_for_next_pipeline = 0;
+
+        //pooling 
+        read_addr_pooling = 0;
+        write_addr_pooling = 0;
+        init_phase_pooling = 1;
+        control_data_pooling = 1;
+        we_pooling = 0;
+        count_init_for_pooling = 0;
 
         num_of_tiles_for_PE_layer2 = OFM_C_layer2_para/ `Num_of_layer2_PE_para;
        // write_padding = 1;
@@ -479,7 +511,7 @@ module Sub_top_MB_CONV_tb #(
         if(valid == 16'hFFFF) begin
             valid_for_next_pipeline = 0;
             count_valid_for_dw = count_valid_for_dw + 16;
-            if(count_valid_for_dw == OFM_C_layer1_para * (IFM_W_layer1_para+2) ) begin
+            if(count_valid_for_dw == OFM_C_layer1_para * (IFM_W_layer1_para + 2) ) begin
                 count_line = count_line + 1;
                 count_line_pipelined = count_line_pipelined + 1;
                 count_valid_for_dw = 0;
@@ -573,4 +605,66 @@ always @(posedge clk) begin
         end
     end
 end
-endmodule
+
+//initial for pooling
+    initial begin
+        forever begin
+            @(posedge clk) begin
+                if((valid_layer2 == 1)) begin
+                    
+                   // if ( count_init_for_pooling < OFM_W_layer2_para *OFM_W_layer2_para *OFM_C_layer2_para / 4) begin
+                        count_init_for_pooling = count_init_for_pooling + 1;
+                        if(count_init_for_pooling > 48  ) init_phase_pooling = 0;
+                        @(posedge clk);
+                        we_pooling = 1;
+                        read_addr_pooling = read_addr_pooling + 1;
+                        write_addr_pooling = read_addr_pooling - 1;
+                        control_data_pooling = 0;
+                        @(posedge clk);
+                        read_addr_pooling = read_addr_pooling + 1;
+                        write_addr_pooling = read_addr_pooling - 1;
+                        control_data_pooling = 1;
+                        @(posedge clk);
+                        read_addr_pooling = read_addr_pooling + 1;
+                        write_addr_pooling = read_addr_pooling - 1;
+                        control_data_pooling = 2;
+                        @(posedge clk);
+                        read_addr_pooling = read_addr_pooling + 1;
+                        write_addr_pooling = read_addr_pooling - 1;
+                        control_data_pooling = 3;
+                        @(posedge clk);
+                        we_pooling = 0;
+                        if(read_addr_pooling == 192) read_addr_pooling = 0;
+
+                    // end else begin
+                    //     count_init_for_pooling =0;
+                    // end
+                end else begin
+                    if ( count_init_for_pooling >(OFM_W_layer2_para *OFM_W_layer2_para *OFM_C_layer2_para / 4) -1) begin
+                         if (init_phase_pooling) count_init_for_pooling =0;
+                    end
+                end
+            end
+        end
+    end
+
+    initial begin
+        forever begin
+            @(posedge clk) begin
+                if(done_compute_layer2 == 1) begin
+                    repeat(10) @(posedge clk);
+                    read_addr_pooling = 0;
+                    init_phase_pooling<=1;
+                repeat(192)  
+                begin   @(posedge clk) 
+                     read_addr_pooling = read_addr_pooling + 1;
+                     $display("check");
+                end
+            end
+            end
+        end
+    end
+    
+    
+    
+    endmodule

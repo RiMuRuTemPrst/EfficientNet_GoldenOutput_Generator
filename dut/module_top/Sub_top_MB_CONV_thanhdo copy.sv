@@ -38,11 +38,6 @@ module Sub_top_MB_CONV(
     output [7:0] OFM_1_DW_layer,
     output [7:0] OFM_2_DW_layer,
     output [7:0] OFM_3_DW_layer,
-
-    output [7:0] OFM_0_SE_layer,
-    output [7:0] OFM_1_SE_layer,
-    output [7:0] OFM_2_SE_layer,
-    output [7:0] OFM_3_SE_layer,
     
 
     //control signal layer 1
@@ -61,9 +56,6 @@ module Sub_top_MB_CONV(
     input  wire [3:0] KERNEL_W_layer2,
     input  wire [7:0] IFM_C_layer2,
     input  wire [7:0] OFM_C_layer2,
-
-    input  wire [7:0] OFM_C_se_reduce,
-    input       [31:0]  count_init_for_pooling,
     
     input  wire [1:0] stride_layer2,
     output wire [15:0] valid,
@@ -106,15 +98,8 @@ module Sub_top_MB_CONV(
     input [31:0] addr_IFM_layer_2,
     input valid_for_next_pipeline,
     input [31:0] wr_addr_IFM_layer_2,
-    output       done_compute_layer2,
+    output       done_compute_layer2
 
-    //signal for pooling average
-    input [31:0] read_addr_pooling_tb,
-    input [31:0] write_addr_pooling,
-    input init_phase_pooling,
-    input [1:0] control_data_pooling,
-    input we_pooling,
-    output [31:0] data_pooling_average
 );
 
     //wire for Weight connect to PE_1x1 from BRAM
@@ -206,8 +191,6 @@ module Sub_top_MB_CONV(
     logic [127:0] data_in_IFM_layer_2;
     wire finish_for_PE_DW_cluster;
 
-    //signal_for_average_Pooling
-    logic [31:0] data_in_pooling;
     Control_unit Control_unit(
         .clk(clk),
         .rst_n(rst_n),
@@ -600,263 +583,56 @@ module Sub_top_MB_CONV(
         .OFM_1(OFM_1_DW_layer),
         .OFM_2(OFM_2_DW_layer),
         .OFM_3(OFM_3_DW_layer),
-        .valid(valid_of_DW)
+        .valid()
     );
 
+    // address_generator addr_gen(
+    //     .clk(clk),
+    //     .rst_n(rst_n),
+    //     .KERNEL_W(),
+    //     .OFM_W(),
+    //     .OFM_C(),
+    //     .IFM_C(),
+    //     .IFM_W(),
+    //     .stride(),
+    //     //.ready(cal_start),
+    //     .ready(),
+    //     .addr_in(),
+    //     .req_addr_out_filter(),
+    //     .req_addr_out_ifm(),
+    //     .done_compute(),
+    //     .done_window(),
+    //     .finish_for_PE(),
+    //     .addr_valid_filter(),
+    //     .num_of_tiles_for_PE()
+    // );
 
-    wire se_layer;
-    reg [7:0] IFM_C_se;
-    reg [7:0] OFM_C_se;
-    wire       done_window_for_SE;
-    wire [31:0] req_addr_out_ifm_layerSE;
-    wire [31:0] req_addr_out_filter_layerSE;
-    wire        finish_for_PE_SE_cluster;
-    wire        done_compute_SE;
-    reg done_compute_pooling;
-
-    assign data_in_pooling = {OFM_3_DW_layer,OFM_2_DW_layer,OFM_1_DW_layer,OFM_0_DW_layer}  ;
-
-
-
-//----------------------------------------------------_FSM_FOR_POOLING------------------------------------//
-
-    reg excute_average ;
-    reg [31:0] read_addr_pooling ;
-    assign read_addr_pooling = excute_average ? read_addr_pooling_tb: req_addr_out_ifm_layerSE  ;
-
-    parameter POOLING_IDLE      = 1'b0;
-    parameter POOLING_EXCUTE    = 1'b1;
-    reg current_state_POOLING , next_state_POOLING ;
-    //-------------------------------------------------POOLING---------------------------------------------------------//
-    // FSM State Register
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n)
-            current_state_POOLING <= POOLING_IDLE;
-        else
-            current_state_POOLING <= next_state_POOLING;
-    end
-    always @(*) begin
-    case (current_state_POOLING)
-
-        POOLING_IDLE: begin
-            if ( valid_layer2 ) begin
-                next_state_POOLING =    POOLING_EXCUTE ;
-            end else begin
-                next_state_POOLING =    POOLING_IDLE;
-                
-            end
-        end
-
-        POOLING_EXCUTE: begin
-            if ( done_compute_pooling ) begin
-                next_state_POOLING =    POOLING_IDLE ;
-            end else begin
-                next_state_POOLING =    POOLING_EXCUTE;
-                
-            end
-        end
-        
-        default: begin
-            next_state_POOLING  = POOLING_IDLE;
-        end
-
-    endcase
-    end
-
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            excute_average <= 0;
-        end else begin
-            case (next_state_POOLING)
-                POOLING_IDLE: begin
-                    excute_average<=0;
-                end
-
-                POOLING_EXCUTE: begin
-                    excute_average<=1;
-                end
-                                  
-                default: begin
-                    
-                end
-            endcase
-        end
-    end
-
-    // assign se_layer =0;
-
-    // assign IFM_C_se = se_layer ? OFM_C_se_reduce : OFM_C_layer2;
-
-    // assign OFM_C_se = se_layer ? OFM_C_layer2 : OFM_C_se_reduce;
-
-//----------------------------------------------------_FSM_FOR_REDUCE_EXPAND------------------------------------//
-
-    parameter REDUCE_CONV      = 1'b0;
-    parameter EXPAND_CONV    = 1'b1;
-    reg current_state_SE_layer , next_state_SE_layer ;
-    reg [31:0] req_addr_out_ifm_layerSE_for_IFM_BRAM ;
-    wire ready_addr_gen_SE ;
-
-    //-------------------------------------------------POOLING---------------------------------------------------------//
-    // FSM State Register
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n)
-            current_state_SE_layer <= REDUCE_CONV;
-        else
-            current_state_SE_layer <= next_state_SE_layer;
-    end
-    always @(*) begin
-        case (current_state_SE_layer)
-
-            REDUCE_CONV: begin
-                if ( done_compute_SE ) begin
-                    next_state_SE_layer =    EXPAND_CONV ;
-                end else begin
-                    next_state_SE_layer =    REDUCE_CONV;
-                    
-                end
-            end
-
-            EXPAND_CONV: begin
-                if ( done_compute_SE ) begin
-                    next_state_SE_layer =    REDUCE_CONV ;
-                end else begin
-                    next_state_SE_layer =    EXPAND_CONV;
-                    
-                end
-            end
-            
-            default: begin
-                current_state_SE_layer  = REDUCE_CONV;
-            end
-
-        endcase
-    end
-    reg done_compute_reduce;
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            IFM_C_se <=  0;
-            done_compute_reduce <=0;
-        end else begin
-            case (current_state_SE_layer)
-                REDUCE_CONV: begin
-                    IFM_C_se <=  OFM_C_layer2;
-                    OFM_C_se <=  OFM_C_se_reduce;
-                    req_addr_out_ifm_layerSE_for_IFM_BRAM <=    0;
-                    if (next_state_SE_layer  == EXPAND_CONV) done_compute_reduce <=1;
-                    else done_compute_reduce <=0;
-                end
-
-                EXPAND_CONV: begin
-
-                    IFM_C_se <=  OFM_C_se_reduce;
-                    OFM_C_se <=  OFM_C_layer2;
-                    req_addr_out_ifm_layerSE_for_IFM_BRAM <= req_addr_out_ifm_layerSE;
-                    done_compute_reduce <=0;
-                end
-                                  
-                default: begin
-                    
-                end
-            endcase
-        end
-    end
-
-
-    Pooling_average_BRAM pooling(
-    .clk(clk),
-    .reset_n(rst_n),
-    //data signal
-    .data_in(data_in_pooling),
-
-    //control signal
-    .read_addr(read_addr_pooling),
-    .write_addr(write_addr_pooling),
-    .we(we_pooling),
-    .init_phase(init_phase_pooling),
-    .control_data(control_data_pooling),
-    .valid(valid_layer2),
-    .data_pooling_average(data_pooling_average)
-    );
-
-    
-
-    always_ff @(posedge clk or negedge rst_n) begin
-        if(~rst_n) begin
-            done_compute_pooling    <=  0;
-        end
-        else begin
-        if( (count_init_for_pooling == 9408 ) && (init_phase_pooling)  ) 
-            done_compute_pooling <= 1 ;
-        else 
-            done_compute_pooling <= 0 ;
-        end
-            
-    end
-
-    assign ready_addr_gen_SE = next_state_SE_layer ? done_compute_reduce :done_compute_pooling  ; 
-    
-    address_generator_SE addr_gen_SE(
-        .clk(clk),
-        .rst_n(rst_n),
-        .KERNEL_W(1),
-        .OFM_W(1),
-        .OFM_C(OFM_C_se),
-        .IFM_C(IFM_C_se),
-        .IFM_W(1),
-        .stride(1),
-        //.ready(cal_start),
-        .ready(ready_addr_gen_SE),
-        .addr_in(0),
-        .req_addr_out_filter(req_addr_out_filter_layerSE),
-        .req_addr_out_ifm(req_addr_out_ifm_layerSE),
-        .done_compute(done_compute_SE),
-        .done_window(done_window_for_SE),
-        .finish_for_PE(finish_for_PE_SE_cluster),
-        .addr_valid_filter(),
-        .num_of_tiles_for_PE()
-    );
-
-    PE_cluster_1x1 PE_SE_cluster(
-        .clk(clk),
-        .reset_n(rst_n),
-        .PE_reset({4{done_window_for_SE}}),
-        .Weight_0('hffffffff),
-        .Weight_1('hffffffff),
-        .Weight_2('hffffffff),
-        .Weight_3('hffffffff),
-        .IFM(data_pooling_average),
-        .OFM_0(OFM_0_SE_layer),
-        .OFM_1(OFM_1_SE_layer),
-        .OFM_2(OFM_2_SE_layer),
-        .OFM_3(OFM_3_SE_layer)
-    );
-    wire [31:0] addr_ram_next_wr_wire;
-    Data_controller #(
-        .control_mux_para(0)
-    ) Data_controller_inst(
-        .clk(clk),
-        .rst_n(rst_n),
-        .OFM_data_out_valid({16{finish_for_PE_SE_cluster}}),
-        //.control_mux(control_mux_wire),
-        .addr_ram_next_wr(addr_ram_next_wr_wire),
-        .wr_en_next(wr_en_next_write),
-        .wr_data_valid(wr_data_valid)
-    );
-    wire [31:0] IFM_data_expand_layer;
-    BRAM_IFM IFM_BRAM_SE(
-        .clk(clk),
-        .rd_addr(req_addr_out_ifm_layerSE_for_IFM_BRAM),
-        .wr_addr(addr_ram_next_wr_wire),
-        //.wr_rd_en(wr_rd_en_IFM),
-        .wr_rd_en(finish_for_PE_SE_cluster),
-        .data_in({OFM_3_SE_layer,OFM_2_SE_layer,OFM_1_SE_layer,OFM_0_SE_layer}),
-        .data_out( IFM_data_expand_layer )
-    );
+    // BRAM_IFM IFM_BRAM(
+    //     .clk(clk),
+    //     .rd_addr(),
+    //     .wr_addr(),
+    //     //.wr_rd_en(wr_rd_en_IFM),
+    //     .wr_rd_en(),
+    //     .data_in(),
+    //     .data_out()
+    // );
     
 
 
-    
+    // PE_cluster_1x1 PE_cluster_1x1(
+    //     .clk(clk),
+    //     .reset_n(reset),
+    //     .PE_reset(),
+    //     .Weight_0(),
+    //     .Weight_1(),
+    //     .Weight_2(),
+    //     .Weight_3(),
+    //     .IFM(),
+    //     .OFM_0(),
+    //     .OFM_1(),
+    //     .OFM_2(),
+    //     .OFM_3()
+    // );
 
     
     

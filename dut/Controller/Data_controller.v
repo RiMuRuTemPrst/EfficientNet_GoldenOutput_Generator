@@ -1,4 +1,7 @@
-module Data_controller (
+module Data_controller #(
+    parameter control_mux_para = 'h3
+)
+ (
     input   wire          clk,
     input   wire          rst_n,
     input   wire  [15:0]  OFM_data_out_valid,
@@ -28,7 +31,7 @@ always@(*) begin
         else                                 next_state = START;
     end
     DATA_FETCH : begin
-        if (control_mux=='h3)           next_state = START;
+        if (control_mux==control_mux_para)           next_state = START;
         else                            next_state = DATA_FETCH;
     end
     endcase
@@ -51,7 +54,7 @@ always@(posedge clk or negedge rst_n) begin
     DATA_FETCH : begin
         control_mux          <= control_mux + 'h1;
         addr_ram_next_wr     <= addr_ram_next_wr + 'h1;
-        if (control_mux=='h3)   wr_data_valid   <=  'h1;
+        if (control_mux==control_mux_para)   wr_data_valid   <=  'h1;
         else                    wr_data_valid   <=  'h0;
     end
     endcase
