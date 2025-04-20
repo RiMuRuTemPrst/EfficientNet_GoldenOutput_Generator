@@ -13,7 +13,8 @@ module Pooling_average_BRAM(
     input [1:0] control_data,
     input valid,
 
-    output [63:0] data_pooling_average
+    output [63:0] data_pooling_average,
+    output [31:0] data_pooling_average_32bit
 );
     parameter DIV_14x14 = 31'h0000014e;
     logic [31:0] data_for_write;
@@ -21,6 +22,17 @@ module Pooling_average_BRAM(
     logic [31:0] add_data;
     logic [7:0] IFM_data;
     logic [31:0] IFM_reg_data;
+
+    logic [31:0] data_out_0_for_SE;
+    logic [31:0] data_out_1_for_SE;
+    logic [31:0] data_out_2_for_SE;
+    logic [31:0] data_out_3_for_SE;
+
+    logic [63:0] divide_data_out_0_for_SE;
+    logic [63:0] divide_data_out_1_for_SE;
+    logic [63:0] divide_data_out_2_for_SE;
+    logic [63:0] divide_data_out_3_for_SE;
+
 
     always_ff @(posedge clk or negedge reset_n) begin
         if(~reset_n) begin
@@ -33,6 +45,17 @@ module Pooling_average_BRAM(
     //mux for init phase
     assign add_data = (init_phase) ? 0 : data_for_read;
     assign data_pooling_average = ((data_for_read << 16) * DIV_14x14);
+
+    assign divide_data_out_0_for_SE = ((data_out_0_for_SE << 16) * DIV_14x14);
+    assign divide_data_out_1_for_SE = ((data_out_1_for_SE << 16) * DIV_14x14);
+    assign divide_data_out_2_for_SE = ((data_out_2_for_SE << 16) * DIV_14x14);
+    assign divide_data_out_3_for_SE = ((data_out_3_for_SE << 16) * DIV_14x14);
+    
+    assign data_pooling_average_32bit ={divide_data_out_3_for_SE[39:32],
+                                        divide_data_out_2_for_SE[39:32],
+                                        divide_data_out_1_for_SE[39:32],
+                                        divide_data_out_0_for_SE[39:32]};
+
     //mux for divide data_in 128
     always_comb begin
         case(control_data)
@@ -57,6 +80,11 @@ module Pooling_average_BRAM(
         .wr_rd_en(we),
         //.data_in(data_in_IFM_layer_2),
         .data_in( data_for_write ),
-        .data_out(data_for_read)
+        .data_out(data_for_read),
+        .data_out_0_for_SE(data_out_0_for_SE),
+        .data_out_1_for_SE(data_out_1_for_SE),
+        .data_out_2_for_SE(data_out_2_for_SE),
+        .data_out_3_for_SE(data_out_3_for_SE)
+
     );
 endmodule

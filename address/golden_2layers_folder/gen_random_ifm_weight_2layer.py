@@ -28,7 +28,7 @@ if __name__ == "__main__":
     # padded_height = args.ifm_height + 2 * args.padding
     # padded_width = args.ifm_width + 2 * args.padding
 
-    save_to_hex_file(IFM ,"../Fused-Block-CNN/address/golden_2layers_folder/hex/ifm.hex")
-    save_to_hex_file(Weight, "../Fused-Block-CNN/address/golden_2layers_folder/hex/weight.hex")
-    save_to_hex_file(Weight_2, "../Fused-Block-CNN/address/golden_2layers_folder/hex/weight_2.hex")    
+    save_to_hex_file(IFM ,"../Fused-Block-CNN/address/golden_2layers_folder/hex/Layer1/ifm.hex")
+    save_to_hex_file(Weight, "../Fused-Block-CNN/address/golden_2layers_folder/hex/Layer1/weight.hex")
+    save_to_hex_file(Weight_2, "../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/weight_2.hex")    
     print("✅ Đã lưu IFM (padded) và Weight.")

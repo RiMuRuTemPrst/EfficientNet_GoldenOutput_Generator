@@ -501,11 +501,13 @@ always @(*) begin
          
             if (count_for_a_Window <  num_of_KERNEL_points * num_of_tiles * num_of_tiles_for_PE  -1) begin
             //if ( count_for_a_Window < (num_of_KERNEL_points <<  (IFM_C_shift - num_of_mul_in_PE_shift + OFM_C_shift - total_PE_shift))   -1) begin
-                if (ready) begin
-                    next_state_FILTER   = FETCH_FILTER;
-                end else begin
-                    next_state_FILTER   = START_ADDR_FILTER;
-                end
+                // if (ready) begin
+                //     next_state_FILTER   = FETCH_FILTER;
+                // end else begin
+                //     next_state_FILTER   = START_ADDR_FILTER;
+                // end
+
+                next_state_FILTER   = FETCH_FILTER;
             end else begin
                 next_state_FILTER   = START_ADDR_FILTER;
             end

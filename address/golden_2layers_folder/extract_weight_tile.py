@@ -36,14 +36,14 @@ def main():
     parser.add_argument("--weight_channel", type=int, required=True)
     args = parser.parse_args()
 
-    input_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/weight.hex"
+    input_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/Layer1/weight.hex"
     tile = args.filter_count // args.pe
     weight_size = args.weight_height * args.weight_height * args.weight_channel
     offset = weight_size * (args.pe - 1)
     num_segments = args.filter_count // args.pe
 
     for pe in range(args.pe):
-        output_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/weight1_PE{pe}.hex"
+        output_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/Layer1/weight1_PE{pe}.hex"
         read_and_write_file(input_file, output_file, weight_size, offset, num_segments, pe, args.weight_height, args.weight_channel)
 
 if __name__ == "__main__":

@@ -13,8 +13,8 @@ def count_lines(filename):
 
 # Hàm xử lý 1 PE
 def process_pe_file(pe_id, OFFSET, tile):
-    input_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/OFM1_PE{pe_id}.hex"
-    output_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/OFM1_PE{pe_id}_change.hex"
+    input_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/Layer1/OFM1_PE{pe_id}.hex"
+    output_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/Layer1/OFM1_PE{pe_id}_change.hex"
 
     # Đếm số dòng trong file
     total_lines = count_lines(input_file)

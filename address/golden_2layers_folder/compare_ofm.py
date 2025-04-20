@@ -44,6 +44,7 @@ if __name__ == "__main__":
         # file2 = f"/home/thanhdo/questasim/PE/Fused-Block-CNN/address/PADDING_control_IFM.hex"
         compare_files(file1, file2, pe_id=pe)
 
-    file1 = f"/home/thanhdo/questasim/PE/Fused-Block-CNN/address/golden_2layers_folder/hex/OFM2_PE0_change.hex"
+    file1 = f"/home/thanhdo/questasim/PE/Fused-Block-CNN/address/golden_2layers_folder/hex/DW/OFM2_PE0_change.hex"
     file2 = f"/home/thanhdo/questasim/PE/Fused-Block-CNN/address/golden_2layers_folder/hex/OFM2_PE0_DUT_DW.hex"
+
     compare_files(file1, file2, pe_id=1)

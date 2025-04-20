@@ -13,8 +13,8 @@ def count_lines(filename):
 
 # Hàm xử lý 1 PE
 def process_pe_file(pe_id, OFFSET, tile):
-    input_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/OFM2_PE{pe_id}.hex"
-    output_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/OFM2_PE{pe_id}_change.hex"
+    input_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/OFM2_PE{pe_id}.hex"
+    output_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/OFM2_PE{pe_id}_change.hex"
 
     # Đếm số dòng trong file
     total_lines = count_lines(input_file)
@@ -62,6 +62,8 @@ def main():
     args = parser.parse_args()
     tile = args.ofm_channel // args.max_pe
     OFFSET = args.ofm_width * args.ofm_width   # Khoảng cách dòng
+    print (args.ofm_width)
+    print(args.ofm_channel)
     for pe in range(args.max_pe):
         process_pe_file(pe, OFFSET, tile)
 

@@ -40,7 +40,7 @@ module PE_DW_cluster(
     mono_PE PE_inst_2(
     .clk(clk),
     .reset_n(reset_n),
-    .IFM(IFM[15:7]),
+    .IFM(IFM[15:8]),
     .Weight(Weight_1),
     .OFM(OFM_1),
     .PE_reset(PE_reset),
