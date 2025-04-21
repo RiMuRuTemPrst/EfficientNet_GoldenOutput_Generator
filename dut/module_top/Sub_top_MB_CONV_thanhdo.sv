@@ -1,4 +1,4 @@
-module Sub_top_MB_CONV(
+module Sub_top_MB_CONV_thanhdo(
     input clk,
     input rst_n,
     
@@ -964,26 +964,40 @@ module Sub_top_MB_CONV(
         .OFM_3(OFM_3_SE_layer)
     );
     wire [31:0] addr_ram_next_wr_wire;
-    Data_controller #(
+    Data_controller_MBblock #(
         .control_mux_para(0)
     ) Data_controller_inst(
         .clk(clk),
         .rst_n(rst_n),
         .OFM_data_out_valid({16{finish_for_PE_SE_cluster}}),
         //.control_mux(control_mux_wire),
+        .done_compute( done_compute_SE ),
         .addr_ram_next_wr(addr_ram_next_wr_wire),
         .wr_en_next(wr_en_next_write),
         .wr_data_valid(wr_data_valid)
     );
-    
+    wire  wr_rd_en_IFM_BRAM_SE;
+    assign wr_rd_en_IFM_BRAM_SE = current_state_SE_layer? 0: finish_for_PE_SE_cluster;
     BRAM_IFM IFM_BRAM_SE(
         .clk(clk),
         .rd_addr(req_addr_out_ifm_layerSE_for_IFM_BRAM),
         .wr_addr(addr_ram_next_wr_wire),
         //.wr_rd_en(wr_rd_en_IFM),
-        .wr_rd_en(finish_for_PE_SE_cluster),
+        .wr_rd_en(wr_rd_en_IFM_BRAM_SE),
         .data_in({OFM_3_SE_layer,OFM_2_SE_layer,OFM_1_SE_layer,OFM_0_SE_layer}),
         .data_out( IFM_data_expand_layer )
+    );
+    
+    wire  wr_rd_en_IFM_BRAM_Multiple;
+    assign wr_rd_en_IFM_BRAM_Multiple = current_state_SE_layer? finish_for_PE_SE_cluster :0;
+    BRAM_IFM IFM_BRAM_Multiple(
+        .clk(clk),
+        .rd_addr(req_addr_out_ifm_layerSE_for_IFM_BRAM),
+        .wr_addr(addr_ram_next_wr_wire),
+        //.wr_rd_en(wr_rd_en_IFM),
+        .wr_rd_en(wr_rd_en_IFM_BRAM_Multiple),
+        .data_in({OFM_3_SE_layer,OFM_2_SE_layer,OFM_1_SE_layer,OFM_0_SE_layer}),
+        .data_out(  )
     );
     
 

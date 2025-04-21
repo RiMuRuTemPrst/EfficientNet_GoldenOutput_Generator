@@ -30,9 +30,9 @@ if __name__ == "__main__":
     # padded_height = args.ifm_height + 2 * args.padding
     # padded_width = args.ifm_width + 2 * args.padding
 
-    save_to_hex_file(IFM ,"../Fused-Block-CNN/address/golden_2layers_folder/hex/Layer1/ifm.hex")
-    save_to_hex_file(Weight, "../Fused-Block-CNN/address/golden_2layers_folder/hex/Layer1/weight.hex")
-    save_to_hex_file(Weight_2, "../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/weight_2.hex")    
-    save_to_hex_file(Weight_4, "../Fused-Block-CNN/address/golden_2layers_folder/hex/Reduce/weight_4.hex")
-    save_to_hex_file(Weight_5, "../Fused-Block-CNN/address/golden_2layers_folder/hex/Expand/weight_5.hex")  
+    save_to_hex_file(IFM ,"../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/ifm.hex")
+    save_to_hex_file(Weight, "../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight.hex")
+    save_to_hex_file(Weight_2, "../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/weight_2.hex")    
+    save_to_hex_file(Weight_4, "../Fused-Block-CNN/address/golden_5layers_folder/hex/Reduce/weight_4.hex")
+    save_to_hex_file(Weight_5, "../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/weight_5.hex")  
     print("✅ Đã lưu IFM (padded) và Weight.")

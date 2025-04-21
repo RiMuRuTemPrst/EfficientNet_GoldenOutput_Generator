@@ -1,4 +1,4 @@
-module Data_controller #(
+module Data_controller_MBblock #(
     parameter control_mux_para = 'h3
 )
  (
@@ -13,7 +13,8 @@ module Data_controller #(
 );
 
 parameter START        = 2'b00;
-parameter DATA_FETCH    = 2'b01;
+parameter DATA_FETCH   = 2'b01;
+parameter RESET        = 2'b10;
 reg [1:0] current_state, next_state;
 
 
@@ -28,12 +29,14 @@ end
 always@(*) begin
     case ( current_state )
     START : begin
-        if (OFM_data_out_valid == 16'hFFFF)  next_state = DATA_FETCH;
+        if ( (OFM_data_out_valid == 16'hFFFF) && (done_compute !=1) )  next_state = DATA_FETCH;
         else                                 next_state = START;
     end
     DATA_FETCH : begin
         if (control_mux==control_mux_para)           next_state = START;
         else                            next_state = DATA_FETCH;
+    end
+    RESET: begin
     end
     endcase
 end
@@ -48,16 +51,19 @@ always@(posedge clk or negedge rst_n) begin
     end else begin
     case ( current_state )
 
-    START : begin
-        control_mux         <= 'h0;
-        wr_data_valid       <= 'h0;
-    end
-    DATA_FETCH : begin
-        control_mux          <= control_mux + 'h1;
-        addr_ram_next_wr     <= addr_ram_next_wr + 'h1;
-        if (control_mux==control_mux_para)   wr_data_valid   <=  'h1;
-        else                    wr_data_valid   <=  'h0;
-    end
+        START : begin
+            control_mux         <= 'h0;
+            wr_data_valid       <= 'h0;
+            if (done_compute ==1 ) addr_ram_next_wr <= 'h0;
+        end
+        DATA_FETCH : begin
+            control_mux          <= control_mux + 'h1;
+            if (done_compute ==1 ) addr_ram_next_wr <= 'h0;
+            else addr_ram_next_wr     <= addr_ram_next_wr + 'h1;
+            if (control_mux==control_mux_para)   wr_data_valid   <=  'h1;
+            else                    wr_data_valid   <=  'h0;
+            
+        end
     endcase
 
     end
