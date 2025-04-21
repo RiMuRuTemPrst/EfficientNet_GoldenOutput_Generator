@@ -10,7 +10,20 @@ def count_lines(filename):
     except FileNotFoundError:
         print(f"❌ File '{filename}' không tồn tại!")
         return -1
+def trim_output_file_to_match_input(output_file, target_line_count):
+    try:
+        with open(output_file, 'r') as f:
+            lines = f.readlines()
 
+        if len(lines) > target_line_count:
+            with open(output_file, 'w') as f:
+                f.writelines(lines[:target_line_count])
+            print(f"✂️ Đã cắt file '{output_file}' từ {len(lines)} dòng về {target_line_count} dòng.")
+        else:
+            print(f"✅ File '{output_file}' đã có đúng {len(lines)} dòng.")
+
+    except Exception as e:
+        print(f"❌ Lỗi khi cắt file '{output_file}': {e}")
 # Hàm xử lý 1 PE
 def process_pe_file(pe_id, OFFSET, tile):
     input_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/Layer1/OFM1_PE{pe_id}.hex"
@@ -44,7 +57,7 @@ def process_pe_file(pe_id, OFFSET, tile):
                     if index < total_lines:
                         lines[index] = lines[index].lower()
                         out_file.write(lines[index])
-
+        trim_output_file_to_match_input(output_file, total_lines)
         print(f"✅ PE{pe_id}: Đã ghi xong vào '{output_file}'")
 
     except FileNotFoundError:

@@ -85,6 +85,7 @@ module Sub_top_MB_CONV(
     input  wire [1:0] stride_layer2,
     output wire [15:0] valid,
     output wire        valid_layer2,
+    output wire        valid_layer_reduce,
     //output wire [15:0] done_window,
     output wire        done_compute,
     
@@ -725,7 +726,7 @@ module Sub_top_MB_CONV(
     parameter REDUCE_CONV      = 1'b0;
     parameter EXPAND_CONV    = 1'b1;
     reg current_state_SE_layer , next_state_SE_layer ;
-    reg [31:0] req_addr_out_ifm_layerSE_for_IFM_BRAM ;
+    wire [31:0] req_addr_out_ifm_layerSE_for_IFM_BRAM ;
     wire ready_addr_gen_SE ;
 
     //-------------------------------------------------POOLING---------------------------------------------------------//
@@ -773,7 +774,7 @@ module Sub_top_MB_CONV(
                 REDUCE_CONV: begin
                     IFM_C_se <=  OFM_C_layer2;
                     OFM_C_se <=  OFM_C_se_reduce;
-                    req_addr_out_ifm_layerSE_for_IFM_BRAM <=    0;
+                    //req_addr_out_ifm_layerSE_for_IFM_BRAM <=    0;
                     if (next_state_SE_layer  == EXPAND_CONV) done_compute_reduce <=1;
                     else done_compute_reduce <=0;
                 end
@@ -782,7 +783,7 @@ module Sub_top_MB_CONV(
 
                     IFM_C_se <=  OFM_C_se_reduce;
                     OFM_C_se <=  OFM_C_layer2;
-                    req_addr_out_ifm_layerSE_for_IFM_BRAM <= req_addr_out_ifm_layerSE;
+                    //req_addr_out_ifm_layerSE_for_IFM_BRAM <= req_addr_out_ifm_layerSE;
                     done_compute_reduce <=0;
                 end
                                   
@@ -792,6 +793,8 @@ module Sub_top_MB_CONV(
             endcase
         end
     end
+
+    assign req_addr_out_ifm_layerSE_for_IFM_BRAM = current_state_SE_layer ? req_addr_out_ifm_layerSE : 'h0;
 
     wire [31:0] data_pooling_average_32bit;
     Pooling_average_BRAM pooling(
@@ -932,6 +935,8 @@ module Sub_top_MB_CONV(
         .addr_valid_filter(),
         .num_of_tiles_for_PE()
     );
+
+    assign valid_layer_reduce = finish_for_PE_SE_cluster;
     wire [31:0] IFM_data_expand_layer;
     wire [31:0] IFM_SE_layer;
     wire [31:0] Weight_0_SE_layer;

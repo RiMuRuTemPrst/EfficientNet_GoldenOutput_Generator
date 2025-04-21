@@ -117,6 +117,7 @@ module Sub_top_MB_CONV_tb #(
     wire [31:0] wr_addr_Weight_for_tb;
     reg [31:0] addr_w_n_state;
     wire [7:0] OFM_DW [3:0];
+    wire [7:0] OFM_SE [3:0];
     reg [3:0] PE_reset_n_state;
     reg [3:0] PE_reset_n_state_1;
 
@@ -130,6 +131,8 @@ module Sub_top_MB_CONV_tb #(
     integer ofm_file_2[3:0];
     integer padding_data;
     integer ofm_file_3;
+    integer ofm_file_4;
+    integer ofm_file_5;
     int link_inital;
 
     reg [7:0] input_data_mem [0:1076480]; // BRAM input data
@@ -177,6 +180,7 @@ module Sub_top_MB_CONV_tb #(
     reg cal_start;
     wire [15:0] valid ;
     wire        valid_layer2;
+    wire        valid_layer_reduce;
     reg [7:0] ofm_data;
     reg [7:0] ofm_data_2;
     reg [7:0] ofm_data_byte;
@@ -270,6 +274,7 @@ module Sub_top_MB_CONV_tb #(
 
         // SE layer
         .OFM_C_se_reduce(OFM_C_se_reduce_para),
+        .valid_layer_reduce(valid_layer_reduce),
         
 
         // for Control_unit
@@ -288,6 +293,9 @@ module Sub_top_MB_CONV_tb #(
 
         .OFM_0_DW_layer( OFM_DW[0]), .OFM_1_DW_layer( OFM_DW[1]), 
         .OFM_2_DW_layer( OFM_DW[2]), .OFM_3_DW_layer( OFM_DW[3]), 
+
+        .OFM_0_SE_layer( OFM_SE[0]), .OFM_1_SE_layer( OFM_SE[1]),
+        .OFM_2_SE_layer( OFM_SE[2]), .OFM_3_SE_layer( OFM_SE[3]),
 
 
         .PE_reset_n_state(PE_reset_n_state),
@@ -451,15 +459,15 @@ module Sub_top_MB_CONV_tb #(
         $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/weight2_PE2.hex", input_data_mem2_n_state);
         $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/weight2_PE3.hex", input_data_mem3_n_state);
         
-        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/weight2_PE0.hex", input_data_mem0_reduce);
-        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/weight2_PE1.hex", input_data_mem1_reduce);
-        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/weight2_PE2.hex", input_data_mem2_reduce);
-        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/weight2_PE3.hex", input_data_mem3_reduce);
+        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/Reduce/weight4_PE0.hex", input_data_mem0_reduce);
+        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/Reduce/weight4_PE1.hex", input_data_mem1_reduce);
+        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/Reduce/weight4_PE2.hex", input_data_mem2_reduce);
+        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/Reduce/weight4_PE3.hex", input_data_mem3_reduce);
 
-        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/weight2_PE0.hex", input_data_mem0_expand);
-        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/weight2_PE1.hex", input_data_mem1_expand);
-        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/weight2_PE2.hex", input_data_mem2_expand);
-        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/weight2_PE3.hex", input_data_mem3_expand);
+        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/Expand/weight5_PE0.hex", input_data_mem0_expand);
+        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/Expand/weight5_PE1.hex", input_data_mem1_expand);
+        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/Expand/weight5_PE2.hex", input_data_mem2_expand);
+        $readmemh("../Fused-Block-CNN/address/golden_2layers_folder/hex/Expand/weight5_PE3.hex", input_data_mem3_expand);
         run         =   1;
         instrution  =   1;
         fork
@@ -513,17 +521,30 @@ module Sub_top_MB_CONV_tb #(
                 wr_rd_en_Weight_layer2 = 0;
             end
             begin
-                for (k4 = 0; k4 < OFM_C_layer2_para +1; k4 = k4 + 1) begin
+                for (k4 = 0; k4 < OFM_C_layer2_para* (OFM_C_se_reduce_para/`Num_of_layer2_PE_para) +1; k4 = k4 + 4) begin
 
-                    addr_Wei_layer_reduce   <= k4;  // Chia 4 vì mỗi lần lưu 32-bit
-                    data_in_Weight_0_reduce = {input_data_mem0_reduce [k4],input_data_mem0_reduce [k4+1],input_data_mem0_reduce [k4+2],input_data_mem0_reduce [k4+3]};
-                    data_in_Weight_1_reduce = {input_data_mem1_reduce [k4],input_data_mem1_reduce [k4+1],input_data_mem1_reduce [k4+2],input_data_mem1_reduce [k4+3]};
-                    data_in_Weight_2_reduce = {input_data_mem2_reduce [k4],input_data_mem2_reduce [k4+1],input_data_mem2_reduce [k4+2],input_data_mem2_reduce [k4+3]};
-                    data_in_Weight_3_reduce = {input_data_mem3_reduce [k4],input_data_mem3_reduce [k4+1],input_data_mem3_reduce [k4+2],input_data_mem3_reduce [k4+3]};
+                    addr_Wei_layer_reduce   <= k4 >>2;  // Chia 4 vì mỗi lần lưu 32-bit
+                    data_in_Weight_0_reduce = {input_data_mem0_reduce [k4+3],input_data_mem0_reduce [k4+2],input_data_mem0_reduce [k4+1],input_data_mem0_reduce [k4+0]};
+                    data_in_Weight_1_reduce = {input_data_mem1_reduce [k4+3],input_data_mem1_reduce [k4+2],input_data_mem1_reduce [k4+1],input_data_mem1_reduce [k4+0]};
+                    data_in_Weight_2_reduce = {input_data_mem2_reduce [k4+3],input_data_mem2_reduce [k4+2],input_data_mem2_reduce [k4+1],input_data_mem2_reduce [k4+0]};
+                    data_in_Weight_3_reduce = {input_data_mem3_reduce [k4+3],input_data_mem3_reduce [k4+2],input_data_mem3_reduce [k4+1],input_data_mem3_reduce [k4+0]};
                     wr_rd_en_Weight_layer_reduce = 1;
                     #10;
                 end
                 wr_rd_en_Weight_layer_reduce = 0;
+            end
+            begin
+                for (k5 = 0; k5 < OFM_C_layer2_para* (OFM_C_se_reduce_para/`Num_of_layer2_PE_para) +1; k5 = k5 + 4) begin
+
+                    addr_Wei_layer_expand   <= k5 >>2;  // Chia 4 vì mỗi lần lưu 32-bit
+                    data_in_Weight_0_expand = {input_data_mem0_expand [k5+3],input_data_mem0_expand [k5+2],input_data_mem0_expand [k5+1],input_data_mem0_expand [k5+0]};
+                    data_in_Weight_1_expand = {input_data_mem1_expand [k5+3],input_data_mem1_expand [k5+2],input_data_mem1_expand [k5+1],input_data_mem1_expand [k5+0]};
+                    data_in_Weight_2_expand = {input_data_mem2_expand [k5+3],input_data_mem2_expand [k5+2],input_data_mem2_expand [k5+1],input_data_mem2_expand [k5+0]};
+                    data_in_Weight_3_expand = {input_data_mem3_expand [k5+3],input_data_mem3_expand [k5+2],input_data_mem3_expand [k5+1],input_data_mem3_expand [k5+0]};
+                    wr_rd_en_Weight_layer_expand = 1;
+                    #10;
+                end
+                wr_rd_en_Weight_layer_expand = 0;
             end
             
         join
@@ -577,6 +598,15 @@ module Sub_top_MB_CONV_tb #(
             $display("Error opening file", k);
             $finish;  
         end
+
+
+        ofm_file_4 = $fopen($sformatf("../Fused-Block-CNN/address/golden_2layers_folder/hex/Reduce/OFM_4_DUT_SE.hex"), "w");
+        if (ofm_file_4== 0) begin
+            $display("Error opening file OFM%d.hex", k);
+            $finish;  
+            
+        end
+
     end
    //assign wr_rd_req_IFM_layer_2 = 1;
    assign write_padding = (valid == 16'hFFFF) ? 1 : 0;
@@ -685,6 +715,19 @@ always @(posedge clk) begin
            // end
             ofm_data_2 = ofm_data_2 >> 8;  // Dịch 8 bit cho đến khi hết 32-bit
         end
+    end
+end
+
+
+
+
+always @(posedge clk) begin
+    if (valid_layer_reduce == 1) begin
+        // Lưu giá trị OFM vào các file tương ứng
+        $fwrite(ofm_file_4, "%h\n", OFM_SE[0]);  // Ghi giá trị từng byte vào file
+        $fwrite(ofm_file_4, "%h\n", OFM_SE[1]);  // Ghi giá trị từng byte vào file
+        $fwrite(ofm_file_4, "%h\n", OFM_SE[2]);  // Ghi giá trị từng byte vào file
+        $fwrite(ofm_file_4, "%h\n", OFM_SE[3]);  // Ghi giá trị từng byte vào file
     end
 end
 

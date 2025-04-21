@@ -24,10 +24,11 @@ def trim_output_file_to_match_input(output_file, target_line_count):
 
     except Exception as e:
         print(f"❌ Lỗi khi cắt file '{output_file}': {e}")
+
 # Hàm xử lý 1 PE
 def process_pe_file(pe_id, OFFSET, tile):
-    input_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/OFM2_PE{pe_id}.hex"
-    output_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/OFM2_PE{pe_id}_change.hex"
+    input_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/Reduce/OFM4_PE{pe_id}.hex"
+    output_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/Reduce/OFM4_PE{pe_id}_change.hex"
 
     # Đếm số dòng trong file
     total_lines = count_lines(input_file)
@@ -55,11 +56,10 @@ def process_pe_file(pe_id, OFFSET, tile):
                 for a in range(2, tile + 1):
                     index = i + a * OFFSET
                     if index < total_lines:
-
-                        
                         lines[index] = lines[index].lower()
                         out_file.write(lines[index])
         trim_output_file_to_match_input(output_file, total_lines)
+
         print(f"✅ PE{pe_id}: Đã ghi xong vào '{output_file}'")
 
     except FileNotFoundError:
@@ -71,9 +71,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--ofm_width", type=int, required=True)
     parser.add_argument("--max_pe", type=int, default=16)
-    parser.add_argument("--ofm_channel", type = int, required=True)
+    parser.add_argument("--weight_filter", type = int, required=True)
     args = parser.parse_args()
-    tile = args.ofm_channel // args.max_pe
+    tile = args.weight_filter // args.max_pe
     OFFSET = args.ofm_width * args.ofm_width   # Khoảng cách dòng
     for pe in range(args.max_pe):
         process_pe_file(pe, OFFSET, tile)
