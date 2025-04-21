@@ -45,7 +45,7 @@ def write_hex_file(filename, data):
                 for w in range(W):
                     int_value = int(round(data[h, w, c]))
                     hex_value = int_value & 0xFF
-                    file.write(f"{hex_value:02X}\n")
+                    file.write(f"{hex_value:02x}\n")
 
 # === Main ===
 if __name__ == "__main__":
@@ -66,9 +66,9 @@ if __name__ == "__main__":
     output_feature_channel = args.weight_filter
 
     # File paths cố định
-    input_file = "../Fused-Block-CNN/address/golden_5layers_folder/hex/ofm_4.hex"
-    weight_file = "../Fused-Block-CNN/address/golden_5layers_folder/hex/weight_5.hex"
-    output_file = "../Fused-Block-CNN/address/golden_5layers_folder/hex/ofm_5.hex"
+    input_file  = "../Fused-Block-CNN/address/golden_2layers_folder/hex/Reduce/ofm_4.hex"
+    weight_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/Expand/weight_5.hex"
+    output_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/Expand/ofm_5.hex"
 
     # Đọc dữ liệu
     input_data = read_hex_file(input_file, (args.ifm_height, args.ifm_width, args.ifm_channel))

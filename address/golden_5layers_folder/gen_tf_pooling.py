@@ -36,8 +36,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # File input/output
-    input_file = "../Fused-Block-CNN/address/golden_5layers_folder/hex/ofm_2_stride.hex"
-    output_file = "../Fused-Block-CNN/address/golden_5layers_folder/hex/ofm_3.hex"
+    input_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/ofm_2_stride.hex"
+    output_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/Average_Pooling/ofm_3.hex"
 
     # Đọc IFM
     input_data = read_hex_file(input_file, (args.ifm_height, args.ifm_width, args.ifm_channel))

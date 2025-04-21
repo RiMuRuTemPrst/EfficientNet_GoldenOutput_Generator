@@ -1,0 +1,220 @@
+#!/bin/bash
+reset
+
+#--------------------------------------------------------------------------------------
+# QuestaSim Tool
+export MTI_HOME=/tools/mentor/questasim-2023.4
+export PATH=/home/thanhdo/questasim/linux_x86_64/:$PATH
+
+# NC Tool
+export PATH=$PATH:/tools/cadence/XCELIUMX/CELIUM21.03/tools.lnx86/bin
+
+# License
+export LM_LICENSE_FILE=/home/thanhdo/questasim/LICENSE.dat
+
+#--------------------------------------------------------------------------------------
+# UVM HOME
+# UVMLIB=uvm-1.1d
+export UVM_HOME=/home/thanhdo/Downloads/UVM_Training/dti_uart/sim/libs/uvm-1.1d
+
+# Generate uvm lib
+ccflags_dyn="-fPIC"
+ldflags_dyn="-shared"
+echo "c++ -Wno-deprecated ${ccflags_dyn} ${ldflags_dyn} -DQUESTA -I ${MTI_HOME}/include -o uvm_dpi.so ${UVM_HOME}/src/dpi/uvm_dpi.cc"
+c++ -Wno-deprecated ${ccflags_dyn} ${ldflags_dyn} -DQUESTA -I ${MTI_HOME}/include -o uvm_dpi.so ${UVM_HOME}/src/dpi/uvm_dpi.cc
+
+# export TEST_NAME="dti_uart_base_test" # Test name for running simulation with UVM
+
+TOP_TB=Sub_top_MB_CONV_tb # name top testbench
+
+#--------------------------------------------------------------------------------------
+# Prepare workspace
+alias vlb='reset; rm -rf work; mkdir -p log; rm -rf log/*; vlib work'
+alias vlgr='vlog -64 -f filelist_com.f -f filelist_rtl.f +cover=bcefs -l ./log/vlogr.log'
+alias vlgt='vlog -64 -f filelist_com.f -f filelist_vsim.f -f filelist_tb.f -l ./log/vlogt.log'
+# Compile VHDL files using vcom
+# alias vcv='vcom -2008 -f filelist_vhd.f -l ./log/vcom.log'
+# alias vcv='vcom -2008 -f filelist_vhd.f -l ./log/vcom.log -work /home/phuong/DigitalDesign/EDABK_Resnet50_GEMM_16x16/Hardware/hdl/blk_mem_gen_v8_4_7'
+
+# Compile rtl and testbench
+alias vlg='vlgr; vlgt'
+
+
+# Run simulation without UVM lib
+alias vsm='vsim -64 -c ${TOP_TB} -wlf vsim.wlf -solvefaildebug -assertdebug -sva -coverage -voptargs=+acc -l ./log/vsim.log -do "coverage save -onexit -assert -code bcefs -directive -cvg coverage.ucdb; add wave -r /${TOP_TB}/*; run -all; quit"'
+
+alias run='vlb;vlg;vsm'
+
+alias vsm_opt='vsim -64 -c ${TOP_TB} -solvefaildebug -assertdebug -sva -coverage -voptargs=+acc -l ./log/vsim.log -do "coverage save -onexit -assert -code bcefs -directive -cvg coverage.ucdb; run -all; quit"'
+
+#--------------------------------------------------------------------------------------
+# View wave form
+alias viw='vsim -view vsim.wlf -do wave.do &'
+
+# View coverage
+alias viwcov='vsim -viewcov coverage.ucdb &'
+
+# Custom script to run tb  
+alias gen_sti='python3 ../sw/code_gen/gen_stimulus_v2.py'
+alias source_compare_file='source compare_outputs.sh'
+
+
+
+alias run_tb0='python3 ../sw/code_gen/auto_gen_ifm_weight_bram_golden_output.py --ifm_shape 7x7x64 --kernel_shape 3x3x64x32 --stride 1x1 --padding 0; \
+vlb; vlg; \
+vsim -64 -c ${TOP_TB} -wlf vsim.wlf \
++INPUT_SIZE=7 +KERNEL_SIZE=3 +STRIDE=1 \
++CHANNEL_NUM=64 +FILTER_NUM=32 +PADDING=0 \
+-solvefaildebug -assertdebug -sva -coverage -voptargs=+acc -l ./log/vsim.log \
+-do "coverage save -onexit -assert -code bcefs -directive -cvg coverage.ucdb; add wave -r /${TOP_TB}/*; run -all; quit"; \
+source_compare_file'
+
+alias run_tb0_padding='python3 ../sw/code_gen/auto_gen_ifm_weight_bram_golden_output.py --ifm_shape 7x7x64 --kernel_shape 3x3x64x32 --stride 1x1 --padding 1; \
+vlb; vlg; \
+vsim -64 -c ${TOP_TB} -wlf vsim.wlf \
++INPUT_SIZE=7 +KERNEL_SIZE=3 +STRIDE=1 \
++CHANNEL_NUM=64 +FILTER_NUM=32 +PADDING=1 \
+-solvefaildebug -assertdebug -sva -coverage -voptargs=+acc -l ./log/vsim.log \
+-do "coverage save -onexit -assert -code bcefs -directive -cvg coverage.ucdb; add wave -r /${TOP_TB}/*; run -all; quit"; \
+source_compare_file'
+
+
+alias test_run='bash -c "\
+python3 ../Fused-Block-CNN/address/gen_random_ifm_weight.py --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding \$7; \
+python3 ../Fused-Block-CNN/address/gen_tf.py --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding \$7 --stride \$8; \
+python3 ../Fused-Block-CNN/address/extract_weight_tile.py --pe 16 --filter_count \$6 --weight_height \$4 --weight_channel \$3; \
+python3 ../Fused-Block-CNN/address/extract_ofm_tile.py --pe 16 --ofm_channel \$6 --ofm_height \$(( (\$1 - \$4 + 2 * \$7) / \$8 + 1 )); \
+python3 ../Fused-Block-CNN/address/change_ofm.py --ofm_width \$(( (\$2 - \$5 + 2 * \$7) / \$8 + 1 )) --max_pe 16 --weight_filter \$6" --
+vlb; vlg; \
+vsim -64 -c ${TOP_TB} -wlf vsim.wlf \
++IFM_W_layer1_para=\$1 \
++IFM_C_layer1_para=\$3 \
++KERNEL_W_layer1_para=\$4 \
++OFM_C_layer1_para=\$6 \
++Stride_para=\$8 +OFM_C_layer2_para=16 \
+-solvefaildebug -assertdebug -sva -coverage -voptargs=+acc -l ./log/vsim.log \
+-do "coverage save -onexit -assert -code bcefs -directive -cvg coverage.ucdb; add wave -r /${TOP_TB}/*; run -all; quit"; \'
+
+alias py_run='bash -c "\
+python3 ../Fused-Block-CNN/address/gen_random_ifm_weight.py --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding \$7; \
+python3 ../Fused-Block-CNN/address/gen_tf.py --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding \$7 --stride \$8; \
+python3 ../Fused-Block-CNN/address/extract_weight_tile.py --pe 16 --filter_count \$6 --weight_height \$4 --weight_channel \$3; \
+python3 ../Fused-Block-CNN/address/extract_ofm_tile.py --pe 16 --ofm_channel \$6 --ofm_height \$(( (\$1 - \$4 + 2 * \$7) / \$8 + 1 )); \
+python3 ../Fused-Block-CNN/address/change_ofm.py --ofm_width \$(( (\$2 - \$5 + 2 * \$7) / \$8 + 1 )) --max_pe 16 --weight_filter \$6" --'
+
+
+alias py_run_padding='bash -c "\
+python3 ../Fused-Block-CNN/address/gen_random_ifm_weight.py --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding \$7; \
+python3 ../Fused-Block-CNN/address/gen_tf.py --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding \$7 --stride \$8; \
+ofm_h=\$(( (\$1 - \$4 + 2 * \$7) / \$8 + 1 ))
+python3 ../Fused-Block-CNN/address/Add_padding.py --ifm_height \${ofm_h} --ifm_width \${ofm_h} --ifm_channel \$6 --padding 1" --'
+
+alias py_run1='bash -c "\
+python3 ../Fused-Block-CNN/address/gen_random_ifm_weight.py --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding \$7; \
+python3 ../Fused-Block-CNN/address/gen_tf.py --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding \$7 --stride \$8; \
+python3 ../Fused-Block-CNN/address/extract_weight_tile.py --pe 16 --filter_count \$6 --weight_height \$4 --weight_channel \$3; \
+python3 ../Fused-Block-CNN/address/extract_ofm_tile.py --pe 16 --ofm_channel \$6 --ofm_height \$(( (\$1 - \$4 + 2 * \$7) / \$8 + 1 )); \
+python3 ../Fused-Block-CNN/address/change_ofm.py --ofm_width \$(( (\$2 - \$5 + 2 * \$7) / \$8 + 1 )) --max_pe 16 --weight_filter \$6" --'
+
+alias gen_dw='bash -c "\
+python3 ../Fused-Block-CNN/address/DW/gen_random_ifm_weight_DW.py \
+  --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 \
+  --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding \$7; \
+
+python3 ../Fused-Block-CNN/address/DW/gen_tf_dw.py \
+  --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 \
+  --weight_height \$4 --weight_width \$5 --depth_multiplier \$6 \
+  --padding \$7 --stride \$8; \
+
+python3 ../Fused-Block-CNN/address/DW/extract_weight_tile_dw.py \
+  --pe 4 --filter_count \$6 --weight_height \$4 --weight_channel \$3; \
+
+ofm_h=\$(( (\$1 - \$4 + 2 * \$7) / \$8 + 1 ))
+python3 ../Fused-Block-CNN/address/DW/extract_ofm_tile_DW.py \
+  --pe 4 --ofm_channel \$3 --ofm_height \${ofm_h}
+python3 ../Fused-Block-CNN/address/DW/change_ofm_DW.py --ofm_channel \$3 --ofm_width \$(( (\$2 - \$5 + 2 * \$7) / \$8 + 1 )) --max_pe 4 --weight_filter \$6" --'
+
+
+
+alias py_run_2layers='bash -c "\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_random_ifm_weight_2layer.py --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding1 \$7 --weight_height_2 \$9 --weight_width_2 \${10} --weight_filter_2 1; \		
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf.py --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding1 \$7 --stride1 \$8; \
+ofm_h1=\$(( (\$1 - \$5 + 2 * \$7) / \$8 + 1 ))
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_dw.py --ifm_height \${ofm_h1} --ifm_width \${ofm_h1} --ifm_channel \$6 --weight_height \$9 --weight_width \${10} --depth_multiplier 1 --padding2 \${12} --stride2 \${13}; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_weight_tile.py --pe 16 --filter_count \$6 --weight_height \$4 --weight_channel \$3; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_weight_tile_dw.py --pe 4 --filter_count \${11} --weight_height \$9 --weight_channel \$6; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_ofm_tile.py --pe 16 --ofm_channel \$6 --ofm_height \$(( (\$1 - \$4 + 2 * \$7) / \$8 + 1 )); \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_ofm_tile_dw.py --pe 4 --ofm_channel \$6 --ofm_height \$(( (\${ofm_h1} - \${10} + 2 * \${12}) / \${13} + 1 )); \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm.py --ofm_width \${ofm_h1} --max_pe 16 --weight_filter \$6; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm_DW.py --ofm_width \$(( (\${ofm_h1} - \${10} + 2 * \${12}) / \${13} + 1 )) --max_pe 4 --ofm_channel \$6" --'
+alias py_run_2layers_stride2='bash -c "\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_random_ifm_weight_2layer.py --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding1 \$7 --weight_height_2 \$9 --weight_width_2 \${10} --weight_filter_2 1; \		
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf.py --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding1 \$7 --stride1 \$8; \
+ofm_h1=\$(( (\$1 - \$4 + 2 * \$7) / \$8 + 1 ))
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_dw.py --ifm_height \${ofm_h1} --ifm_width \${ofm_h1} --ifm_channel \$6 --weight_height \$9 --weight_width \${10} --depth_multiplier 1 --padding2 \${12} --stride2 \${13}; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_weight_tile.py --pe 16 --filter_count \$6 --weight_height \$4 --weight_channel \$3; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_weight_tile_dw.py --pe 4 --filter_count \${11} --weight_height \$9 --weight_channel \${6}; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_ofm_tile.py --pe 16 --ofm_channel \$6 --ofm_height \$(( (\$1 - \$4 + 2 * \$7) / \$8 + 1 )); \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/process_stride_2.py --weight_filter \$6 --ofm_width \$(( (\${ofm_h1} - \${10} + 2 * \${12}) / \${13} + 1 )); \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_pooling.py --ifm_height \$(( (\${ofm_h1} - \${10} + 2 * \${12}) / 2  + 1 )) --ifm_width \$(( (\${ofm_h1} - \${10} + 2 * \${12}) / 2 + 1 )) --ifm_channel \$6; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_ofm_tile_dw.py --pe 4 --ofm_channel \$6 --ofm_height \$(( (\${ofm_h1} - \${10} + 2 * \${12}) /2 + 1 )); \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm.py --ofm_width \${ofm_h1} --max_pe 16 --weight_filter \$6; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm_DW.py --ofm_width \$(( (\${ofm_h1} - \${10} + 2 * \${12}) / 2 + 1 )) --max_pe 4 --ofm_channel \$6" --'
+
+
+alias py_run_5layers='bash -c "\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_random_ifm_weight_2layer.py --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding1 \$7 --weight_height_2 \$9 --weight_width_2 \${10} --weight_filter_2 1; \		
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf.py --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding1 \$7 --stride1 \$8; \
+ofm_h1=\$(( (\$1 - \$4 + 2 * \$7) / \$8 + 1 ))
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_dw.py --ifm_height \${ofm_h1} --ifm_width \${ofm_h1} --ifm_channel \$6 --weight_height \$9 --weight_width \${10} --depth_multiplier 1 --padding2 \${12} --stride2 \${13}; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_weight_tile.py --pe 16 --filter_count \$6 --weight_height \$4 --weight_channel \$3; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_weight_tile_dw.py --pe 4 --filter_count \${11} --weight_height \$9 --weight_channel \${6}; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_weight_tile_4.py --pe 4 --filter_count 12 --weight_height 1 --weight_channel 192; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_weight_tile_5.py --pe 4 --filter_count 192 --weight_height 2 --weight_channel 12; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_ofm_tile.py --pe 16 --ofm_channel \$6 --ofm_height \$(( (\$1 - \$4 + 2 * \$7) / \$8 + 1 )); \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_ofm_tile_dw.py --pe 4 --ofm_channel \$6 --ofm_height \$(( (\${ofm_h1} - \${10} + 2 * \${12}) /2 + 1 )); \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/process_stride_2.py --weight_filter \$6 --ofm_width \$(( (\${ofm_h1} - \${10} + 2 * \${12}) / \${13} + 1 )); \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_pooling.py --ifm_height \$(( (\${ofm_h1} - \${10} + 2 * \${12}) / 2  + 1 )) --ifm_width \$(( (\${ofm_h1} - \${10} + 2 * \${12}) / 2 + 1 )) --ifm_channel \$6; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_layer_4.py --ifm_height 1 --ifm_width 1 --ifm_channel 192 --weight_height 1 --weight_width 1 --weight_filter 12 --padding1 0 --stride1 1; \	
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_layer_5.py --ifm_height 1 --ifm_width 1 --ifm_channel 12 --weight_height 1 --weight_width 1 --weight_filter 192 --padding1 0 --stride1 1; \	
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm.py --ofm_width \${ofm_h1} --max_pe 16 --weight_filter \$6; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm_4.py --ofm_width 1 --max_pe 4 --weight_filter 12; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm_5.py --ofm_width 1 --max_pe 4 --weight_filter 192; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm_DW.py --ofm_width \$(( (\${ofm_h1} - \${10} + 2 * \${12}) / 2 + 1 )) --max_pe 4 --ofm_channel \$6" --'
+
+
+
+
+alias py_run_dw_10='bash -c "\
+python3 ../Fused-Block-CNN/address/gen_random_ifm_weight.py \
+  --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 \
+  --weight_height \$4 --weight_width \$5 --weight_filter \$6 --padding \$7; \
+
+python3 ../Fused-Block-CNN/address/gen_tf_dw.py \
+  --ifm_height \$1 --ifm_width \$2 --ifm_channel \$3 \
+  --weight_height \$4 --weight_width \$5 --depth_multiplier \$6 \
+  --padding \$7 --stride \$8; \
+
+python3 ../Fused-Block-CNN/address/extract_weight_tile_dw.py \
+  --pe 4 --filter_count \$6 --weight_height \$4 --weight_channel \$3; \
+
+ofm_h=\$(( (\$1 - \$4 + 2 * \$7) / \$8 + 1 ))
+python3 ../Fused-Block-CNN/address/extract_ofm_tile.py \
+  --pe 4 --ofm_channel \$3 --ofm_height \${ofm_h}; \
+python3 ../Fused-Block-CNN/address/change_ofm.py --ofm_width \$(( (\$2 - \$5 + 2 * \$7) / \$8 + 1 )) --max_pe 4 --weight_filter \$3" --'
+
+###############################################################################
+# Các alias run_tbX với tham số từ Python và override testbench:
+# Các override ở đây bao gồm:
+#   +INPUT_SIZE, +KERNEL_SIZE, +STRIDE, +CHANNEL_NUM, +FILTER_NUM, +PADDING
+# (Ở Verilog, parameter PADDING được định nghĩa và có thể override qua dòng lệnh)
+###############################################################################
+alias run_tb1='python3 ../sw/code_gen/auto_gen_ifm_weight_bram_golden_output.py --ifm_shape 224x224x3 --kernel_shape 7x7x3x64 --stride 2x2 --padding 3; \
+vlb; vlg; \
+vsim -64 -c ${TOP_TB} -wlf vsim.wlf \
++INPUT_SIZE=224 +KERNEL_SIZE=7 +STRIDE=2 \
++CHANNEL_NUM=3 +FILTER_NUM=64 +PADDING=3 \
+-solvefaildebug -assertdebug -sva -coverage -voptargs=+acc -l ./log/vsim.log \
+-do "coverage save -onexit -assert -code bcefs -directive -cvg coverage.ucdb; add wave -r /${TOP_TB}/*; run -all; quit"; \
+source_compare_file'
+
