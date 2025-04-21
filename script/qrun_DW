@@ -177,6 +177,8 @@ python3 ../Fused-Block-CNN/address/golden_5layers_folder/process_stride_2.py --w
 python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_pooling.py --ifm_height \$(( (\${ofm_h1} - \${10} + 2 * \${12}) / 2  + 1 )) --ifm_width \$(( (\${ofm_h1} - \${10} + 2 * \${12}) / 2 + 1 )) --ifm_channel \$6; \
 python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_layer_4.py --ifm_height 1 --ifm_width 1 --ifm_channel 192 --weight_height 1 --weight_width 1 --weight_filter 12 --padding1 0 --stride1 1; \	
 python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_layer_5.py --ifm_height 1 --ifm_width 1 --ifm_channel 12 --weight_height 1 --weight_width 1 --weight_filter 192 --padding1 0 --stride1 1; \	
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_ofm_tile_4.py --pe 4 --ofm_channel 12 --ofm_height 1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_ofm_tile_5.py --pe 4 --ofm_channel 192 --ofm_height 1; \
 python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm.py --ofm_width \${ofm_h1} --max_pe 16 --weight_filter \$6; \
 python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm_4.py --ofm_width 1 --max_pe 4 --weight_filter 12; \
 python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm_5.py --ofm_width 1 --max_pe 4 --weight_filter 192; \

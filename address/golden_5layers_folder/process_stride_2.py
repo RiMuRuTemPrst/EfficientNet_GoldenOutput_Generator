@@ -63,8 +63,8 @@ def main():
     args = parser.parse_args()
 
     # Đường dẫn file input và output được chỉ định trực tiếp trong mã nguồn
-    input_file = '../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/ofm_2.hex'  # Đường dẫn tới file hex đầu vào
-    output_file = '../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/ofm_2_stride.hex'  # Đường dẫn tới file hex đầu ra
+    input_file = '../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/ofm_2.hex'  # Đường dẫn tới file hex đầu vào
+    output_file = '../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/ofm_2_stride.hex'  # Đường dẫn tới file hex đầu ra
 
     # Gọi hàm xử lý file hex
     process_conv_with_stride(input_file, output_file, args.weight_filter, args.ofm_width, args.ofm_width)

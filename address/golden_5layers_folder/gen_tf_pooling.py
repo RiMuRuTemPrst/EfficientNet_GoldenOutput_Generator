@@ -23,9 +23,9 @@ def write_hex_file(filename, data):
     _, _, C = data.shape
     with open(filename, "w") as file:
         for c in range(C):
-            int_value = int(round(data[0, 0, c]))
-            hex_value = int_value & 0xFF
-            file.write(f"{hex_value:02X}\n")
+            int_value = int(np.floor(data[0, 0, c]))  # 👈 Làm tròn xuống
+            hex_value = int_value & 0xFF              # Giới hạn trong 8-bit
+            file.write(f"{hex_value:02x}\n")          # Ghi dạng HEX 2 chữ số
 
 # === Main ===
 if __name__ == "__main__":
@@ -36,8 +36,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     # File input/output
-    input_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/ofm_2_stride.hex"
-    output_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/Average_Pooling/ofm_3.hex"
+    input_file = "../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/ofm_2_stride.hex"
+    output_file = "../Fused-Block-CNN/address/golden_5layers_folder/hex/Average_Pooling/ofm_3.hex"
 
     # Đọc IFM
     input_data = read_hex_file(input_file, (args.ifm_height, args.ifm_width, args.ifm_channel))

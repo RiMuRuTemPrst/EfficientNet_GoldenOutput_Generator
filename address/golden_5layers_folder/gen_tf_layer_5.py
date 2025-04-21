@@ -66,9 +66,9 @@ if __name__ == "__main__":
     output_feature_channel = args.weight_filter
 
     # File paths cố định
-    input_file  = "../Fused-Block-CNN/address/golden_2layers_folder/hex/Reduce/ofm_4.hex"
-    weight_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/Expand/weight_5.hex"
-    output_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/Expand/ofm_5.hex"
+    input_file  = "../Fused-Block-CNN/address/golden_5layers_folder/hex/Reduce/ofm_4.hex"
+    weight_file = "../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/weight_5.hex"
+    output_file = "../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/ofm_5.hex"
 
     # Đọc dữ liệu
     input_data = read_hex_file(input_file, (args.ifm_height, args.ifm_width, args.ifm_channel))

@@ -35,13 +35,13 @@ def main():
     parser.add_argument("--ofm_height", type=int, required=True)
     args = parser.parse_args()
 
-    input_file = "../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/ofm_2_stride.hex"
+    input_file = "../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/ofm_2_stride.hex"
     ofm_size = args.ofm_height * args.ofm_height
     offset = ofm_size * (args.pe - 1)
     num_segments = args.ofm_channel // args.pe
 
     for pe in range(args.pe):
-        output_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/DW/OFM2_PE{pe}.hex"
+        output_file = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/OFM2_PE{pe}.hex"
         read_and_write_file(input_file, output_file, ofm_size, offset, num_segments, pe, args.ofm_height)
         print(1)
 

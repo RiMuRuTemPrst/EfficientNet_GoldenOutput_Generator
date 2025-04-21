@@ -27,8 +27,8 @@ def trim_output_file_to_match_input(output_file, target_line_count):
 
 # Hàm xử lý 1 PE
 def process_pe_file(pe_id, OFFSET, tile):
-    input_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/Expand/OFM5_PE{pe_id}.hex"
-    output_file = f"../Fused-Block-CNN/address/golden_2layers_folder/hex/Expand/OFM5_PE{pe_id}_change.hex"
+    input_file = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/OFM5_PE{pe_id}.hex"
+    output_file = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/OFM5_PE{pe_id}_change.hex"
 
     # Đếm số dòng trong file
     total_lines = count_lines(input_file)
