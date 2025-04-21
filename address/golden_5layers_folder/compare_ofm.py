@@ -37,14 +37,23 @@ def compare_files(file1, file2, pe_id=None):
 
 
 if __name__ == "__main__":
-    for pe in range(1):  # PE0 → PE15
-        file1 = f"address/golden_2layers_folder/hex/OFM1_PE{pe}_DUT.hex"
-        file2 = f"address/golden_2layers_folder/hex/OFM1_PE{pe}_change.hex"
-        # file1 = f"/home/thanhdo/questasim/PE/Fused-Block-CNN/address/padded_ofm.hex"
-        # file2 = f"/home/thanhdo/questasim/PE/Fused-Block-CNN/address/PADDING_control_IFM.hex"
+    for pe in range(16):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
+        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/OFM1_PE{pe}.hex"
+        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/OFM1_PE{pe}_DUT.hex"
         compare_files(file1, file2, pe_id=pe)
-
-    file1 = f"/home/thanhdo/questasim/PE/Fused-Block-CNN/address/golden_2layers_folder/hex/DW/OFM2_PE0_change.hex"
-    file2 = f"/home/thanhdo/questasim/PE/Fused-Block-CNN/address/golden_2layers_folder/hex/OFM2_PE0_DUT_DW.hex"
-
-    compare_files(file1, file2, pe_id=1)
+    for pe in range(1):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
+        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/OFM2_PE{pe}.hex"
+        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/OFM2_PE{pe}_DUT.hex"
+        compare_files(file1, file2, pe_id=pe)
+    for pe in range(1):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
+        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/OFM3_PE.hex"
+        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/OFM3_PE_DUT.hex"
+        compare_files(file1, file2, pe_id=pe)
+    for pe in range(1):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
+        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/OFM4_PE{pe}.hex"
+        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/OFM4_PE{pe}_DUT.hex"
+        compare_files(file1, file2, pe_id=pe)
+    for pe in range(1):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
+        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/OFM5_PE{pe}.hex"
+        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/OFM5_PE{pe}_DUT.hex"
+        compare_files(file1, file2, pe_id=pe)
