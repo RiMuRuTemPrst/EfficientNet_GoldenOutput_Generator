@@ -215,7 +215,7 @@ module Sub_top_MB_CONV(
         .data_out(IFM_data)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_0_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -226,7 +226,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_0)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_1_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -237,7 +237,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_1)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_2_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -248,7 +248,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_2)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_3_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -259,7 +259,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_3)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_4_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -270,7 +270,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_4)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_5_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -281,7 +281,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_5)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_6_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -292,7 +292,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_6)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_7_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -303,7 +303,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_7)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_8_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -314,7 +314,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_8)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_9_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -325,7 +325,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_9)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_10_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -336,7 +336,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_10)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_11_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -347,7 +347,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_11)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_12_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -358,7 +358,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_12)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_13_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -369,7 +369,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_13)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_14_layer1(
         .clk(clk),
         .rd_addr(addr_w),
@@ -380,7 +380,7 @@ module Sub_top_MB_CONV(
         .data_out(Weight_14)
     );
     BRAM_Weight#(
-        .DEPTH(576)
+        .DEPTH(144)
     ) BRam_Weight_15_layer1(
         .clk(clk),
         .rd_addr(addr_w),

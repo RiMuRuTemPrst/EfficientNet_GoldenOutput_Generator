@@ -118,10 +118,7 @@ end
             end
 
             START_PIXEL:begin
-                PE_reset <=4'b1111;
-                if (count_filter!=0) PE_finish <=4'b1111;
-                else                 PE_finish <=4'b0;
-                if(valid == 1) valid_count <= valid_count + Num_of_PE_x4;
+
                 if(next_state == START_PIXEL) begin
                 end
                 if(next_state == DEEP_FETCH) begin
