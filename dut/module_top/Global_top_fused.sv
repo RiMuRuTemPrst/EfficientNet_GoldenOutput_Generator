@@ -19,6 +19,7 @@ module Global_top_fused (
 
     //signal for infor of size
     input [31:0] base_addr_IFM,
+    input [31:0] size_IFM,
     input [31:0] base_addr_Weight_layer_1,
     input [31:0] size_Weight_layer_1,
     input [31:0] base_addr_Weight_layer_2,
@@ -31,6 +32,8 @@ parameter LOAD_IFM_CACULATE_STORE    = 3'b010;
 parameter END_PIXEL     = 3'b100;
 
 // value for count
+logic [1:0] load_count;
+
 parameter NO_LOAD     = 0 ;
 parameter LOAD_WEIGHT_C     = 2 ;
 parameter LOAD_IFM_C     = 1 ;
@@ -68,28 +71,23 @@ always_comb begin
         end
 
         // ST_START_BIT
-        START_PIXEL : begin
-            if((valid_count >= weight_c - 'h8) || (next_filter) ) begin
-                next_state =  DEEP_FETCH;
+        LOAD_WEIGHT : begin
+            if(wr_addr_fused < size_Weight_layer_1) begin
+                next_state =  LOAD_WEIGHT;
             end
-            else next_state =  START_PIXEL;
+            else next_state =  LOAD_IFM_CACULATE_STORE;
         end
 
         // ST_DATA_BIT
-        DEEP_FETCH : begin
-            if(count_deep_pixel < weight_c - 'h4) begin
-                next_state = DEEP_FETCH ;
+        LOAD_IFM_CACULATE_STORE : begin
+            if(wr_addr_fused < size_IFM) begin
+                next_state = LOAD_IFM_CACULATE_STORE ;
             end
             else begin
-                if(count_filter < num_filter - 'h4) next_state =  START_PIXEL;
-                else next_state =  END_PIXEL;
+                next_state = IDLE ;
             end
         end
-
-        // ST_END_TRAN 
-        END_PIXEL : begin
-            next_state = START_PIXEL ;
-        end
+        
     endcase
 end
 
@@ -104,6 +102,7 @@ end
             rd_addr_fused <= 0;
             we_fused <= 0;
             control_load <= NO_LOAD;
+            load_count <= 0;
         end
         else begin
             unique case(curr_state)
@@ -117,49 +116,32 @@ end
                 end
             end
 
-            START_PIXEL:begin
+            LOAD_WEIGHT:begin
 
-                if(next_state == START_PIXEL) begin
+                if(next_state == LOAD_WEIGHT) begin
+                    wr_addr_fused <= wr_addr_fused + 4;
+                    rd_addr_global <= rd_addr_global + 4;
                 end
-                if(next_state == DEEP_FETCH) begin
-                    addr_ifm <= addr_ifm + 'h4 ;
-                    addr_weight <= addr_weight + 'h4 ;
-                    if(~next_filter)
-                    valid_count <= 0;
-                    count_deep_pixel <= count_deep_pixel + 4;
+                if(next_state == LOAD_IFM_CACULATE_STORE) begin
+                    rd_addr_global <= base_addr_IFM ;
+                    wr_addr_fused <= 0;
+                    control_load <= LOAD_IFM_C;
+                    we_fused <= 0;
                 end
             end
-            DEEP_FETCH: begin
-                PE_reset <=0;
-                PE_finish <=0;
-                if(valid == 1) valid_count <= valid_count + Num_of_PE_x4;
-                if(next_state == DEEP_FETCH) begin
-                    addr_ifm <= addr_ifm + 'h4 ;
-                    addr_weight <= addr_weight + 'h4 ;
-                    count_deep_pixel <= count_deep_pixel + 'h4;
-                end
 
-                if(next_state == START_PIXEL) begin
-                    addr_ifm <= addr_ifm - (weight_c-'h4) ;
-                    addr_weight <= addr_weight + 'h4 ;
-                    count_deep_pixel <= 0;
-                    count_filter <= count_filter + 'h4;
-                    next_filter <= 1;
-                end
-
-                if(next_state == END_PIXEL) begin
-                    count_deep_pixel <= 0;
-                    count_filter <= 0;
-                end
-            end
-            END_PIXEL: begin
-                PE_reset <=4'b1111;
-                PE_finish <=4'b1111;
-                if(valid == 1) valid_count <= valid_count + 16;
-                if(next_state == START_PIXEL) begin
-                    addr_ifm <= addr_ifm + 4 ;
-                    addr_weight <= 0 ;
-                    next_filter <= 0;
+            LOAD_IFM_CACULATE_STORE: begin
+                    if(next_state == LOAD_IFM_CACULATE_STORE) begin
+                    rd_addr_global <= rd_addr_global + 4 ;
+                    wr_addr_fused <= wr_addr_fused + 4 ;
+                    load_count <= load_count + 1;
+                    if(load_count == 2) begin
+                        ready <= 1;
+                    end
+                    if(valid_layer2) begin
+                        wr_addr_global = wr_addr_global + 4;
+                        we_global <= 1;
+                    end
                 end
             end
         endcase
