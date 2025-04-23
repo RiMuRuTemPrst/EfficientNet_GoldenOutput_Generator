@@ -277,7 +277,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_IFM),
         .data_out(IFM_data)
     );
-    BRAM BRam_Weight_0_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_0_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -286,7 +288,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_0),
         .data_out(Weight_0)
     );
-    BRAM BRam_Weight_1_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_1_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -295,7 +299,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_1),
         .data_out(Weight_1)
     );
-    BRAM BRam_Weight_2_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_2_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -304,7 +310,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_2),
         .data_out(Weight_2)
     );
-    BRAM BRam_Weight_3_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_3_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -313,7 +321,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_3),
         .data_out(Weight_3)
     );
-    BRAM BRam_Weight_4_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_4_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -322,7 +332,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_4),
         .data_out(Weight_4)
     );
-    BRAM BRam_Weight_5_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_5_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -331,7 +343,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_5),
         .data_out(Weight_5)
     );
-    BRAM BRam_Weight_6_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_6_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -340,7 +354,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_6),
         .data_out(Weight_6)
     );
-    BRAM BRam_Weight_7_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_7_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -349,7 +365,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_7),
         .data_out(Weight_7)
     );
-    BRAM BRam_Weight_8_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_8_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -358,7 +376,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_8),
         .data_out(Weight_8)
     );
-    BRAM BRam_Weight_9_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_9_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -367,7 +387,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_9),
         .data_out(Weight_9)
     );
-    BRAM BRam_Weight_10_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_10_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -376,7 +398,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_10),
         .data_out(Weight_10)
     );
-    BRAM BRam_Weight_11_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_11_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -385,7 +409,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_11),
         .data_out(Weight_11)
     );
-    BRAM BRam_Weight_12_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_12_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -394,7 +420,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_12),
         .data_out(Weight_12)
     );
-    BRAM BRam_Weight_13_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_13_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -403,7 +431,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_13),
         .data_out(Weight_13)
     );
-    BRAM BRam_Weight_14_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_14_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -412,7 +442,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_in(data_in_Weight_14),
         .data_out(Weight_14)
     );
-    BRAM BRam_Weight_15_layer1(
+    BRAM_Weight#(
+        .DEPTH(144)
+    ) BRam_Weight_15_layer1(
         .clk(clk),
         .rd_addr(addr_w),
         .wr_addr(wr_addr_Weight),
@@ -568,7 +600,7 @@ module Sub_top_MB_CONV_thanhdo(
     );
 
     BRAM #(
-    .DATA_WIDTH(8),
+    .DATA_WIDTH(8),    
     .off_set_shift(0)
     )BRam_Weight_0_DW(
         .clk(clk),
@@ -817,7 +849,9 @@ module Sub_top_MB_CONV_thanhdo(
 
     wire [31:0] IFM_data_reduce_layer;
     assign IFM_data_reduce_layer = data_pooling_average_32bit;
-    BRAM BRam_Weight_0_SE_reduce(
+    BRAM_Weight#(
+        .DEPTH(576)
+    ) BRam_Weight_0_SE_reduce(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -827,7 +861,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_out(Weight_0_reduce)
     );
     
-    BRAM BRam_Weight_1_SE_reduce(
+    BRAM_Weight#(
+        .DEPTH(576)
+    ) BRam_Weight_1_SE_reduce(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -837,7 +873,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_out(Weight_1_reduce)
     );
     
-    BRAM BRam_Weight_2_SE_reduce(
+    BRAM_Weight#(
+        .DEPTH(576)
+    ) BRam_Weight_2_SE_reduce(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -847,7 +885,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_out(Weight_2_reduce)
     );
 
-    BRAM BRam_Weight_3_SE_reduce(
+    BRAM_Weight#(
+        .DEPTH(576)
+    ) BRam_Weight_3_SE_reduce(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -857,7 +897,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_out(Weight_3_reduce)
     );
 //BRAM for SE expand layer 
-    BRAM BRam_Weight_0_SE_expand(
+    BRAM_Weight#(
+        .DEPTH(576)
+    ) BRam_Weight_0_SE_expand(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -867,7 +909,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_out(Weight_0_expand)
     );
 
-    BRAM BRam_Weight_1_SE_expand(
+    BRAM_Weight#(
+        .DEPTH(576)
+    ) BRam_Weight_1_SE_expand(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -877,7 +921,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_out(Weight_1_expand)
     );
 
-    BRAM BRam_Weight_2_SE_expand(
+    BRAM_Weight#(
+        .DEPTH(576)
+    ) BRam_Weight_2_SE_expand(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -887,7 +933,9 @@ module Sub_top_MB_CONV_thanhdo(
         .data_out(Weight_2_expand)
     );
 
-    BRAM BRam_Weight_3_SE_expand(
+    BRAM_Weight#(
+        .DEPTH(576)
+    ) BRam_Weight_3_SE_expand(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -978,7 +1026,9 @@ module Sub_top_MB_CONV_thanhdo(
     );
     wire  wr_rd_en_IFM_BRAM_SE;
     assign wr_rd_en_IFM_BRAM_SE = current_state_SE_layer? 0: finish_for_PE_SE_cluster;
-    BRAM_IFM IFM_BRAM_SE(
+    BRAM_IFM #(
+        .DEPTH(256)
+    )  IFM_BRAM_SE(
         .clk(clk),
         .rd_addr(req_addr_out_ifm_layerSE_for_IFM_BRAM),
         .wr_addr(addr_ram_next_wr_wire),
@@ -990,7 +1040,9 @@ module Sub_top_MB_CONV_thanhdo(
     
     wire  wr_rd_en_IFM_BRAM_Multiple;
     assign wr_rd_en_IFM_BRAM_Multiple = current_state_SE_layer? finish_for_PE_SE_cluster :0;
-    BRAM_IFM IFM_BRAM_Multiple(
+    BRAM_IFM #(
+        .DEPTH(40000)
+    ) IFM_BRAM_Multiple(
         .clk(clk),
         .rd_addr(req_addr_out_ifm_layerSE_for_IFM_BRAM),
         .wr_addr(addr_ram_next_wr_wire),
