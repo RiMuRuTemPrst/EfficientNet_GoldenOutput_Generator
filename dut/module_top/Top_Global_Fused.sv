@@ -10,6 +10,7 @@ module Top_Global_Fused(
 
     input [31:0] wr_addr_global_intial;
     input [31:0] rd_addr_global_intial;
+    input [127:0] data_load_in_global;
     input we_global_initial;
     input load_phase;
 );
@@ -141,7 +142,7 @@ module Top_Global_Fused(
     .wr_rd_en(we_global),                               // Write enable
     .wr_addr(wr_addr_global),            // Địa chỉ ghi
     .rd_addr(rd_addr_global),  // Địa chỉ đọc (địa chỉ byte → cần dịch)
-    .data_in(),               // Dữ liệu vào
+    .data_in(data_load_in_global),               // Dữ liệu vào
     .data_out()               // Dữ liệu ra
     );
 
