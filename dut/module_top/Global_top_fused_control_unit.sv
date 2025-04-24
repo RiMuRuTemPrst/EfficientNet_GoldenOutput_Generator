@@ -1,4 +1,4 @@
-module Global_top_fused (
+module Global_top_fused_control_unit (
     input clk,
     input reset_n,
     input start,
