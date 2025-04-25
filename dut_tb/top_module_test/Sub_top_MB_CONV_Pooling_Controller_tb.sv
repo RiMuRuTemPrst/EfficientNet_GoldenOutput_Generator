@@ -16,7 +16,7 @@
 `define Num_of_layer1_PE_para 16
 `define Num_of_layer2_PE_para 4
 
-module Sub_top_MB_CONV_Pooling_average_New_tb #(
+module Sub_top_MB_CONV_Pooling_Controller_tb #(
     parameter IFM_W_layer1_para= 28, 
     parameter IFM_C_layer1_para =48,
     parameter KERNEL_W_layer1_para =1,
