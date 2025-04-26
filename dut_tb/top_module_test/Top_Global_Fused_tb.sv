@@ -17,6 +17,8 @@ module Top_Global_Fused_tb;
     logic load_phase;
     logic start;
 
+    int sw_index_load_mem;
+    reg [7:0] input_data_mem [0:107647];
     // Instantiate DUT
     Top_Global_Fused dut (
         .clk(clk),
@@ -54,7 +56,8 @@ module Top_Global_Fused_tb;
         we_global_initial = 0;
         load_phase = 0;
         start = 0;
-
+        sw_index_load_mem = 0;
+        $readmemh("../Fused-Block-CNN/address/golden_2block_fused/hex/global_ram.hex", input_data_mem);
         // Apply reset
         #20;
         reset_n = 1;
@@ -66,6 +69,8 @@ module Top_Global_Fused_tb;
         repeat(1000) begin 
             @(posedge clk) 
             wr_addr_global_initial = wr_addr_global_initial + 1;
+            data_load_in_global = {input_data_mem[sw_index_load_mem],input_data_mem[sw_index_load_mem + 1],input_data_mem[sw_index_load_mem + 2],input_data_mem[sw_index_load_mem + 3],input_data_mem[sw_index_load_mem + 4],input_data_mem[sw_index_load_mem + 5],input_data_mem[sw_index_load_mem + 6],input_data_mem[sw_index_load_mem + 7],input_data_mem[sw_index_load_mem + 7],input_data_mem[sw_index_load_mem + 8],input_data_mem[sw_index_load_mem + 9],input_data_mem[sw_index_load_mem + 10],input_data_mem[sw_index_load_mem + 11],input_data_mem[sw_index_load_mem + 12],input_data_mem[sw_index_load_mem + 13],input_data_mem[sw_index_load_mem + 14],input_data_mem[sw_index_load_mem + 15]};
+            sw_index_load_mem = sw_index_load_mem + 16;
         end
         // Pulse write enable for 1 cycle
         #10;
