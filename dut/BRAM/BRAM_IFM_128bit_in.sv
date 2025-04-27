@@ -9,12 +9,15 @@ module BRAM_IFM_128bit_in(
 );
 
     // Dùng 32 khối BRAM chạy song song, mỗi khối lưu 64-bit
-    reg [127:0] bram [0:10000];  // Dùng 1 mảng một chiều
+    reg [31:0] bram [0:100352];  // Dùng 1 mảng một chiều
     
     //integer i;
     always @(posedge clk) begin
         if (wr_rd_en) begin
-            bram[wr_addr]     <= data_in[127:0];  // Ghi dữ liệu vào BRAM
+            bram[wr_addr]     <= data_in[31:0];  // Ghi dữ liệu vào BRAM
+            bram[wr_addr + 1] <= data_in[63:32];  // Ghi dữ liệu vào BRAM
+            bram[wr_addr + 2] <= data_in[95:64];  // Ghi dữ liệu vào BRAM
+            bram[wr_addr + 3] <= data_in[127:96];  // Ghi dữ liệu vào BRAM
         end
         data_out <= bram[ rd_addr >> 2 ];
         // addr <= rd_addr; 
