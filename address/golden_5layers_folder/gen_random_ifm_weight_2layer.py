@@ -27,6 +27,8 @@ if __name__ == "__main__":
     Weight_2 = np.random.randint(0, 256, size=(1, args.weight_height_2, args.weight_width_2, args.weight_filter), dtype=np.uint8)
     Weight_4 = np.random.randint(0, 256, size=(192, 1, 1, 12), dtype=np.uint8)
     Weight_5 = np.random.randint(0, 256, size=(12, 1, 1, 192), dtype=np.uint8)
+    Weight_6 = np.random.randint(0, 256, size=(192, 1, 1, 96), dtype=np.uint8)
+
     # padded_height = args.ifm_height + 2 * args.padding
     # padded_width = args.ifm_width + 2 * args.padding
 
@@ -35,4 +37,6 @@ if __name__ == "__main__":
     save_to_hex_file(Weight_2, "../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/weight_2.hex")    
     save_to_hex_file(Weight_4, "../Fused-Block-CNN/address/golden_5layers_folder/hex/Reduce/weight_4.hex")
     save_to_hex_file(Weight_5, "../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/weight_5.hex")  
+    save_to_hex_file(Weight_6, "../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight_6.hex")  
+
     print("✅ Đã lưu IFM (padded) và Weight.")

@@ -15,6 +15,7 @@ module address_generator #(
 
     output wire [31:0] req_addr_out_ifm,
     output wire [31:0] req_addr_out_filter,
+    output reg  [31:0] coef_for_multiply_addr,
     output reg done_compute,
     output reg finish_for_PE,
     output reg addr_valid_ifm,
@@ -25,6 +26,7 @@ module address_generator #(
 
 wire in_progress;
 reg [15:0] count_for_a_Window;
+reg [15:0] count_for_multiply;
 reg [15:0] count_for_a_OFM;
 reg [15:0] row_index_KERNEL;
 reg [15:0] col_index_KERNEL;
@@ -52,6 +54,11 @@ reg [2:0] current_state_IFM, next_state_IFM;
 parameter START_ADDR_FILTER     = 1'b0;
 parameter FETCH_FILTER          = 1'b1;
 reg current_state_FILTER, next_state_FILTER;
+
+// FSM state encoding for coef_for_mutltiply
+parameter START_ADDR_MULTIPLY     = 1'b0;
+parameter FETCH__MULTIPLY          = 1'b1;
+reg current_state_MULTIPLY, next_state_MULTIPLY;
 
 wire [2:0] stride_shift;
 assign stride_shift = (stride == 1 ) ? 0 : (stride == 2 ? 1 : 0);
@@ -245,8 +252,8 @@ always @(*) begin
                 next_state_IFM =    NEXT_WINDOW;
             end
             addr_valid_ifm  = 1'b1;
-            if ( count_for_a_OFM == OFM_W*OFM_W ) done_compute    =  1;
-            else done_compute    =  0;
+            // if ( count_for_a_OFM == OFM_W*OFM_W ) done_compute    =  1;
+            // else done_compute    =  0;
         end
 
         NEXT_WINDOW: begin
@@ -543,6 +550,81 @@ always @(posedge clk or negedge rst_n) begin
             end
             default: begin
                 addr_fetch_filter  <= 'b0;
+                
+            end
+        endcase
+    end
+end
+
+
+//---------------------------------------------------MULTIPLY---------------------------------------------------------//
+// FSM State Register
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n)
+        current_state_MULTIPLY <= START_ADDR_MULTIPLY;
+    else
+        current_state_MULTIPLY <= next_state_MULTIPLY;
+end
+
+
+// FSM Next State Logic
+always @(*) begin
+    case (current_state_MULTIPLY)
+        START_ADDR_MULTIPLY: begin
+
+            if ( ready ) begin
+                next_state_MULTIPLY   =  FETCH__MULTIPLY ;
+                
+            end else begin
+                next_state_MULTIPLY   = START_ADDR_MULTIPLY;
+            end
+
+        end
+        FETCH__MULTIPLY: begin
+         
+            if (row_index_KERNEL ==  (num_of_KERNEL_points * num_of_tiles   -1)) begin
+            //if ( count_for_a_Window < (num_of_KERNEL_points <<  (IFM_C_shift - num_of_mul_in_PE_shift + OFM_C_shift - total_PE_shift))   -1) begin
+                if (ready) begin
+                    next_state_MULTIPLY   = FETCH__MULTIPLY;
+                end else begin
+                    next_state_MULTIPLY   = START_ADDR_MULTIPLY;
+                end
+            end else begin
+                next_state_MULTIPLY   = START_ADDR_MULTIPLY;
+            end
+        end
+        default: 
+                next_state_MULTIPLY   = START_ADDR_MULTIPLY;
+    endcase
+end
+
+
+// FSM Output Logic
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+        coef_for_multiply_addr   <= addr_in;
+    end else begin
+        case (current_state_FILTER)
+            START_ADDR_FILTER: begin
+                if ( ready ) begin
+                    if ( addr_valid_ifm ==1 )  coef_for_multiply_addr    <=  coef_for_multiply_addr + 'h4; 
+                end 
+                else begin
+                    coef_for_multiply_addr <= 'h0;
+                end
+            end
+
+            FETCH_FILTER: begin
+                if ( addr_valid_ifm ==1 ) begin
+                    if (row_index_KERNEL ==  (num_of_KERNEL_points * num_of_tiles   -1)) begin
+                    //if ( count_for_a_Window == (num_of_KERNEL_points <<  (IFM_C_shift - num_of_mul_in_PE_shift + OFM_C_shift - total_PE_shift)) -1 ) begin
+                    coef_for_multiply_addr           <=  addr_in;
+                    end else
+                    coef_for_multiply_addr           <= coef_for_multiply_addr + 'h4;  
+                end                 
+            end
+            default: begin
+                coef_for_multiply_addr  <= 'b0;
                 
             end
         endcase

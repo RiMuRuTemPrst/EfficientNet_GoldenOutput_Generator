@@ -15,6 +15,7 @@ module Control_unit #(
     input  wire addr_valid,
     input  wire done_compute,
     input  wire [7:0] tile,
+    input  wire [2:0] current_state_SE_layer,
 
     output reg cal_start,
     output reg wr_rd_req_IFM,
@@ -39,6 +40,12 @@ parameter    S_REFRESH = 3'b000;
 parameter    S_LOAD    = 3'b001;
 parameter    S_CAL     = 3'b010;
 parameter    S_STORE   = 3'b011;
+
+    parameter DW_CONV           = 3'b000;
+    parameter REDUCE_CONV       = 3'b001;
+    parameter EXPAND_CONV       = 3'b010;
+    parameter MUL_CONV          = 3'b011;
+
 
 
 reg [2:0] current_state, next_state;
@@ -101,9 +108,20 @@ always @(*) begin
                 wr_addr_Weight = 0;
             end
 
-            // Check if both IFM and weights are loaded
-            if (IFM_size_counter >= IFM_W*IFM_W*IFM_C && Weight_size_counter >= IFM_C*KERNEL_W*KERNEL_W*tile) begin
-                next_state = S_CAL; // Transition to CAL state
+            if ( current_state_SE_layer == DW_CONV ) begin
+                // Check if both IFM and weights are loaded
+                if (IFM_size_counter >= IFM_W*IFM_W*IFM_C && Weight_size_counter >= IFM_C*KERNEL_W*KERNEL_W*tile) begin
+                    next_state = S_CAL; // Transition to CAL state
+                end else begin
+                    next_state = S_LOAD;
+                end
+            end else begin
+                if (Weight_size_counter >= IFM_C*KERNEL_W*KERNEL_W*tile) begin
+                    if ( current_state_SE_layer ==MUL_CONV) next_state = S_CAL; // Transition to CAL state
+                    else next_state = S_LOAD;
+                end else begin
+                    next_state = S_LOAD;
+                end
             end
         end
 
@@ -118,8 +136,10 @@ always @(*) begin
         end
 
         S_STORE: begin
-            next_state = S_STORE;
             cal_start = 0;
+            if ( current_state_SE_layer == REDUCE_CONV ) next_state = S_REFRESH;
+            else next_state = S_STORE;
+            
         end
 
         default: begin
@@ -136,8 +156,10 @@ always @(posedge clk or negedge rst_n) begin
     end else begin
         if (wr_rd_req_IFM)
             IFM_size_counter <= IFM_size_counter + 4;
+        else if (current_state != S_LOAD) IFM_size_counter<=0;
         if (wr_rd_req_Weight)
             Weight_size_counter <= Weight_size_counter + 4;
+        else if (current_state != S_LOAD) Weight_size_counter<=0;
     end
 end
 
