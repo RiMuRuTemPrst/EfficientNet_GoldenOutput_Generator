@@ -1,5 +1,6 @@
 module BRAM_IFM #(
-    parameter DATA_WIDTH= 32
+    parameter DATA_WIDTH= 32,
+    parameter DEPTH= 100352
 )
 (
     input wire clk,
@@ -12,7 +13,7 @@ module BRAM_IFM #(
 );
 
     // Dùng 32 khối BRAM chạy song song, mỗi khối lưu 64-bit
-    (* ram_style = "block" *) reg [DATA_WIDTH-1:0] bram [0:100352];  // Dùng 1 mảng một chiều
+    (* ram_style = "block" *) reg [DATA_WIDTH-1:0] bram [0:DEPTH - 1];  // Dùng 1 mảng một chiều
     
     //integer i;
     always @(posedge clk) begin
