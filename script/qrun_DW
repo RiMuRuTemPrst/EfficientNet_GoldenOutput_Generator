@@ -184,7 +184,76 @@ python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm_4.py --ofm_w
 python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm_5.py --ofm_width 1 --max_pe 4 --weight_filter 192; \
 python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm_DW.py --ofm_width \$(( (\${ofm_h1} - \${10} + 2 * \${12}) / 2 + 1 )) --max_pe 4 --ofm_channel \$6" --'
 
-
+alias py_run_5layers_stride_1='bash -c "\
+h=\$1; w=\$2; c=\$3; f1=\$4; f2=\$5; f3=\$6; \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/gen_random_ifm_weight_2layer.py --ifm_height \$h --ifm_width \$w --ifm_channel \$c --weight_filter_1 \$f1 --weight_filter_2 \$f2 --weight_filter_3 \$f3; \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/extract_weight_tile.py --pe 16 --filter_count \$f1 --weight_channel \$c; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/extract_weight_tile_dw.py --pe 4 --filter_count \$f2 --weight_channel \$f1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/extract_weight_tile_4.py --pe 4 --filter_count \$f2 --weight_channel \$f1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/extract_weight_tile_5.py --pe 4 --filter_count \$f1 --weight_channel \$f2; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/extract_weight_tile_6.py --pe 16 --filter_count \$f3 --weight_channel \$f1; \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/gen_tf.py --ifm_height \$h --ifm_width \$w --ifm_channel \$c --weight_filter \$f1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/gen_tf_dw.py --ifm_height \$(( (\$h - 1 + 2 * 0) / 1 + 1 )) --ifm_width \$(( (\$w - 1 + 2 * 0) / 1 + 1 )) --ifm_channel \$f1 --depth_multiplier 1; \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/process_stride_2.py --weight_filter \$f1 --ofm_width \$(( (\$h - 3 + 2 * 1) / 1 + 1 )); \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/gen_tf_pooling.py --ifm_height \$(( (\$h - 3 + 2 * 1) / 1 + 1 )) --ifm_width \$(( (\$h - 3 + 2 * 1) / 1 + 1 )) --ifm_channel \$f1; \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/gen_tf_layer_4.py --ifm_height 1 --ifm_width 1 --ifm_channel \$f1 --weight_filter \$f2; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/gen_tf_layer_5.py --ifm_height 1 --ifm_width 1 --ifm_channel \$f2 --weight_filter \$f1; \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/mutiply.py --height \$(( (\$h - 3 + 2 * 1) / 1 + 1 )) --channel \$f1 --channel_1 \$f1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/gen_tf_layer_last.py --ifm_height \$(( (\$h - 3 + 2 * 1) / 1 + 1 )) --ifm_width \$(( (\$h - 3 + 2 * 1) / 1 + 1 )) --ifm_channel \$f1 --weight_filter \$f3; \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/extract_ofm_tile.py --pe 16 --ofm_channel \$f1 --ofm_height \$h; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/extract_ofm_tile_dw.py --pe 4 --ofm_channel \$f1 --ofm_height \$(( (\$h - 3 + 2 * 1) / 1 + 1 )); \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/extract_ofm_tile_4.py --pe 4 --ofm_channel \$f2 --ofm_height 1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/extract_ofm_tile_5.py --pe 4 --ofm_channel \$f1 --ofm_height 1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/extract_ofm_tile_6.py --pe 16 --ofm_channel \$f3 --ofm_height \$(( (\$h - 3 + 2 * 1) / 1 + 1 )); \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/change_ofm.py --max_pe 16 --ofm_width \$h --weight_filter \$f1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/change_ofm_DW.py --max_pe 4 --ofm_width \$(( (\$h - 3 + 2 * 1) / 1 + 1 )) --ofm_channel \$f1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/change_ofm_4.py --max_pe 4 --ofm_width 1 --weight_filter \$f2; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/change_ofm_5.py --max_pe 4 --ofm_width 1 --weight_filter \$f1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder_stride_1/change_ofm_6.py --max_pe 16 --ofm_width \$(( (\$h - 3 + 2 * 1) / 1 + 1 )) --weight_filter \$f3; \
+" --'
+alias py_run_5layers_stride_2='bash -c "\
+h=\$1; w=\$2; c=\$3; f1=\$4; f2=\$5; f3=\$6; \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_random_ifm_weight_2layer.py --ifm_height \$h --ifm_width \$w --ifm_channel \$c --weight_filter_1 \$f1 --weight_filter_2 \$f2 --weight_filter_3 \$f3; \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_weight_tile.py --pe 16 --filter_count \$f1 --weight_channel \$c; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_weight_tile_dw.py --pe 4 --filter_count \$f2 --weight_channel \$f1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_weight_tile_4.py --pe 4 --filter_count \$f2 --weight_channel \$f1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_weight_tile_5.py --pe 4 --filter_count \$f1 --weight_channel \$f2; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_weight_tile_6.py --pe 16 --filter_count \$f3 --weight_channel \$f1; \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf.py --ifm_height \$h --ifm_width \$w --ifm_channel \$c --weight_filter \$f1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_dw.py --ifm_height \$(( (\$h - 1 + 2 * 0) / 1 + 1 )) --ifm_width \$(( (\$w - 1 + 2 * 0) / 1 + 1 )) --ifm_channel \$f1 --depth_multiplier 1; \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/process_stride_2.py --weight_filter \$f1 --ofm_width \$(( (\$h - 3 + 2 * 1) / 1 + 1 )); \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_pooling.py --ifm_height \$(( (\$h - 3 + 2 * 1) / 2 + 1 )) --ifm_width \$(( (\$h - 3 + 2 * 1) / 2 + 1 )) --ifm_channel \$f1; \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_layer_4.py --ifm_height 1 --ifm_width 1 --ifm_channel \$f1 --weight_filter \$f2; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_layer_5.py --ifm_height 1 --ifm_width 1 --ifm_channel \$f2 --weight_filter \$f1; \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/mutiply.py --height \$(( (\$h - 3 + 2 * 1) / 2 + 1 )) --channel \$f1 --channel_1 \$f1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/gen_tf_layer_last.py --ifm_height \$(( (\$h - 3 + 2 * 1) / 2 + 1 )) --ifm_width \$(( (\$h - 3 + 2 * 1) / 2 + 1 )) --ifm_channel \$f1 --weight_filter \$f3; \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_ofm_tile.py --pe 16 --ofm_channel \$f1 --ofm_height \$h; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_ofm_tile_dw.py --pe 4 --ofm_channel \$f1 --ofm_height \$(( (\$h - 3 + 2 * 1) / 2 + 1 )); \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_ofm_tile_4.py --pe 4 --ofm_channel \$f2 --ofm_height 1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_ofm_tile_5.py --pe 4 --ofm_channel \$f1 --ofm_height 1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/extract_ofm_tile_6.py --pe 16 --ofm_channel \$f3 --ofm_height \$(( (\$h - 3 + 2 * 1) / 2 + 1 )); \
+\
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm.py --max_pe 16 --ofm_width \$h --weight_filter \$f1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm_DW.py --max_pe 4 --ofm_width \$(( (\$h - 3 + 2 * 1) / 2 + 1 )) --ofm_channel \$f1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm_4.py --max_pe 4 --ofm_width 1 --weight_filter \$f2; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm_5.py --max_pe 4 --ofm_width 1 --weight_filter \$f1; \
+python3 ../Fused-Block-CNN/address/golden_5layers_folder/change_ofm_6.py --max_pe 16 --ofm_width \$(( (\$h - 3 + 2 * 1) / 2 + 1 )) --weight_filter \$f3; \
+" --'
 
 
 alias py_run_dw_10='bash -c "\
