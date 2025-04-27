@@ -24,7 +24,7 @@ def write_hex_file(filename, data):
             for w in range(W):
                 for c in range(C):
                     val = int(round(data[h, w, c]))
-                    f.write(f"{val & 0xFF:02x}\n")
+                    f.write(f"{val & 0xFF:02X}\n")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

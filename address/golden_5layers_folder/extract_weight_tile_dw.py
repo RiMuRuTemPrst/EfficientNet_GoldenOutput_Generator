@@ -32,7 +32,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--pe", type=int, default=16)
     parser.add_argument("--filter_count", type=int, required=True)
-    parser.add_argument("--weight_height", type=int, required=True)
+    parser.add_argument("--weight_height", type=int, default=3)
     parser.add_argument("--weight_channel", type=int, required=True)
     args = parser.parse_args()
     input_file = "../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/weight_2.hex"

@@ -53,8 +53,8 @@ if __name__ == "__main__":
     parser.add_argument("--ifm_height", type=int, required=True)
     parser.add_argument("--ifm_width", type=int, required=True)
     parser.add_argument("--ifm_channel", type=int, required=True)
-    parser.add_argument("--weight_height", type=int, required=True)
-    parser.add_argument("--weight_width", type=int, required=True)
+    parser.add_argument("--weight_height", type=int, default=1)
+    parser.add_argument("--weight_width", type=int, default=1)
     parser.add_argument("--weight_filter", type=int, required=True)
     parser.add_argument("--padding1", type=int, default=0)  # Padding P
     parser.add_argument("--stride1", type=int, default=1)   # Stride S

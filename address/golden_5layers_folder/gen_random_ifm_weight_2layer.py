@@ -12,23 +12,23 @@ if __name__ == "__main__":
     parser.add_argument("--ifm_height", type=int, required=True)
     parser.add_argument("--ifm_width", type=int, required=True)
     parser.add_argument("--ifm_channel", type=int, required=True)
-    parser.add_argument("--weight_height", type=int, required=True)
-    parser.add_argument("--weight_width", type=int, required=True)
-    parser.add_argument("--weight_filter", type=int, required=True)
-    parser.add_argument("--weight_height_2", type=int, required=True)
-    parser.add_argument("--weight_width_2", type=int, required=True)
-    parser.add_argument("--weight_filter_2", type=int, required=True)
+    parser.add_argument("--weight_height", type=int, default=1)
+    parser.add_argument("--weight_width", type=int, default=1)
+    parser.add_argument("--weight_height_2", type=int, default= 3)
+    parser.add_argument("--weight_width_2", type=int, default= 3)
+    parser.add_argument("--weight_filter_1", type=int, required=True)#192
+    parser.add_argument("--weight_filter_2", type=int, required=True)#12
+    parser.add_argument("--weight_filter_3", type=int, required=True)#96
     parser.add_argument("--padding1", type=int, default=0)
     args = parser.parse_args()
 
     np.random.seed(42)
     IFM = np.random.randint(0, 256, size=(args.ifm_height, args.ifm_width, args.ifm_channel), dtype=np.uint8)
-    Weight = np.random.randint(0, 256, size=(args.weight_filter, args.weight_height, args.weight_width, args.ifm_channel), dtype=np.uint8)
-    Weight_2 = np.random.randint(0, 256, size=(1, args.weight_height_2, args.weight_width_2, args.weight_filter), dtype=np.uint8)
-    Weight_4 = np.random.randint(0, 256, size=(192, 1, 1, 12), dtype=np.uint8)
-    Weight_5 = np.random.randint(0, 256, size=(12, 1, 1, 192), dtype=np.uint8)
-    Weight_6 = np.random.randint(0, 256, size=(192, 1, 1, 96), dtype=np.uint8)
-
+    Weight = np.random.randint(0, 256, size=(args.weight_filter_1, args.weight_height, args.weight_width, args.ifm_channel), dtype=np.uint8)
+    Weight_2 = np.random.randint(0, 256, size=(1, args.weight_height_2, args.weight_width_2, args.weight_filter_1), dtype=np.uint8)
+    Weight_4 = np.random.randint(0, 256, size=(args.weight_filter_1, 1, 1, args.weight_filter_2), dtype=np.uint8)
+    Weight_5 = np.random.randint(0, 256, size=(args.weight_filter_2, 1, 1, args.weight_filter_1), dtype=np.uint8)
+    Weight_6 = np.random.randint(0, 256, size=(args.weight_filter_1, 1, 1, args.weight_filter_3), dtype=np.uint8)
     # padded_height = args.ifm_height + 2 * args.padding
     # padded_width = args.ifm_width + 2 * args.padding
 

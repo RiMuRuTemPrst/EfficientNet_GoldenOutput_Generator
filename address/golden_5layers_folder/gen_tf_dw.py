@@ -52,10 +52,10 @@ if __name__ == "__main__":
     parser.add_argument("--ifm_height", type=int, required=True)
     parser.add_argument("--ifm_width", type=int, required=True)
     parser.add_argument("--ifm_channel", type=int, required=True)
-    parser.add_argument("--weight_height", type=int, required=True)
-    parser.add_argument("--weight_width", type=int, required=True)
+    parser.add_argument("--weight_height", type=int, default=3)
+    parser.add_argument("--weight_width", type=int, default=3)
     parser.add_argument("--depth_multiplier", type=int, default=1)
-    parser.add_argument("--padding2", type=int, default=0)
+    parser.add_argument("--padding2", type=int, default=1)
     parser.add_argument("--stride2", type=int, default=1)
     args = parser.parse_args()
 
