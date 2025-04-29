@@ -168,7 +168,7 @@ module Sub_top_MB_CONV(
     wire        wr_rd_req_IFM;
     wire        wr_rd_req_Weight;
     wire [31:0] wr_addr_Weight;
-    wire [31:0] wr_addr_IFM;
+    wire [31:0] wr_addr_IFM;  
 
     logic [31:0] base_addr =0;
 
