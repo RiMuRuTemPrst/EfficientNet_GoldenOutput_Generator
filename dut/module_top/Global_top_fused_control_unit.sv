@@ -23,7 +23,8 @@ module Global_top_fused_control_unit (
     input [31:0] size_Weight_layer_2,
     
     //input from Fused_block
-    input valid_layer2 
+    input valid_layer2 ,
+    input done_compute
 );
 reg [2:0] curr_state, next_state;
 parameter IDLE          = 3'b000;
@@ -79,7 +80,7 @@ always_comb begin
 
         // ST_DATA_BIT
         LOAD_IFM_CACULATE_STORE : begin
-            if(((wr_addr_fused << 4 ) < size_IFM) ) begin
+            if(~ done_compute ) begin 
                 next_state = LOAD_IFM_CACULATE_STORE ;
             end
             else begin
@@ -153,26 +154,34 @@ end
                     wr_addr_fused <= 0;
                     we_fused <= we_fused << 1;
                     count_weight_addr <= 0;
+                    load_weight_layer_st <= 0;
                 end
             end
 
             LOAD_IFM_CACULATE_STORE: begin
-                    if(next_state == LOAD_IFM_CACULATE_STORE) begin
-                    rd_addr_global <= rd_addr_global + 16 ;
-                    if(rd_addr_global == base_addr_IFM )  wr_addr_fused <= 0;
-                    else
-                    wr_addr_fused <= wr_addr_fused + 1 ;
-                    load_count <= load_count + 1;
-                    if(load_count == 336) begin
-                        ready <= 1;
+                if(next_state == LOAD_IFM_CACULATE_STORE) begin
+                    if(((wr_addr_fused << 4 ) < size_IFM)) begin
+                        rd_addr_global <= rd_addr_global + 16 ;
+                        if(rd_addr_global == base_addr_IFM )  wr_addr_fused <= 0;
+                        else
+                        wr_addr_fused <= wr_addr_fused + 1 ;
+                        load_count <= load_count + 1;
+                        if(load_count == 336) begin
+                            ready <= 1;
+                        end
+                        
+                    end
+                    else begin
+                        we_fused <= 0;
                     end
                     if(valid_layer2) begin
-                        wr_addr_global = wr_addr_global + 16;
+                        wr_addr_global = wr_addr_global + 1;
                         we_global <= 1;
                     end
                 end
                 if( next_state == IDLE ) begin
                     we_fused <= 0;
+                    ready <= 0;
                 end
             end
         endcase

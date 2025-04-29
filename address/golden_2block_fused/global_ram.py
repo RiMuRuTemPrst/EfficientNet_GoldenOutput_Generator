@@ -15,7 +15,7 @@ def merge_files_with_paths(file_paths, output_file):
 
 # 📄 Danh sách file cần gộp (đường dẫn đầy đủ hoặc tương đối)
 file_list = [
-    "../Fused-Block-CNN/address/golden_2block_fused/hex/ifm.hex",
+    "../Fused-Block-CNN/address/golden_2block_fused/hex/ifm_padded.hex",
     "../Fused-Block-CNN/address/golden_2block_fused/hex/weight_1_PE0.hex",
     "../Fused-Block-CNN/address/golden_2block_fused/hex/weight_1_PE1.hex",
     "../Fused-Block-CNN/address/golden_2block_fused/hex/weight_1_PE2.hex",

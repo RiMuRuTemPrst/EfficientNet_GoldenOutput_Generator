@@ -37,6 +37,7 @@ module Top_Global_Fused_tb;
     reg [31:0] ofm_data_2;
     reg [7:0] ofm_data_byte_2;
     wire [7:0] OFM_n_state [3:0];
+    logic start_layer_2;
     //handle for file 
     integer ofm_file_2[3:0];
     // Instantiate DUT
@@ -76,15 +77,16 @@ module Top_Global_Fused_tb;
         // Initialize signals
         clk = 0;
         reset_n = 0;
+        //initial for fused layer 1
         base_addr_IFM = 32'h0000_0000;
-        size_IFM = 32'h31000;
-        base_addr_Weight_layer_1 = 32'h31000;
+        size_IFM = 32'h32C40;
+        base_addr_Weight_layer_1 = 32'h32C40;
         size_Weight_layer_1 = 32'h2400;
-        base_addr_Weight_layer_2 = 32'h0033400;
+        base_addr_Weight_layer_2 = 32'h0035040;
         size_Weight_layer_2 = 32'h800;
         wr_addr_global_initial = -1;
         rd_addr_global_initial = 32'd0;
-        data_load_in_global = 128'hDEADBEEF_CAFECAFE_BADC0DE0_12345678;
+        data_load_in_global = 128'hDEADBEEF_CAFECAFE_ABCDC0DE0_12345678;
         we_global_initial = 0;
         load_phase = 0;
         start = 0;
@@ -93,7 +95,7 @@ module Top_Global_Fused_tb;
         OFM_W = 56;
         OFM_C = 64;
         IFM_C = 16;
-        IFM_W = 112;
+        IFM_W = 114;
         stride = 2;
         IFM_C_layer2 = 64;
         OFM_C_layer2 = 32;
@@ -162,10 +164,40 @@ end
          forever begin
              @(posedge clk)
              if(dut.done_compute) begin
-                 repeat(1000) @(posedge clk);
-        //#1000000;
-                $finish;
+                 start_layer_2 = 1;   
+                 $finish;              
             end
         end
+    end
+    initial begin
+        @(start_layer_2) begin
+            base_addr_IFM = 32'h0000_0000;
+            size_IFM = 32'h18800;
+            base_addr_Weight_layer_1 = 32'h35840;
+            size_Weight_layer_1 = 32'h9000;
+            base_addr_Weight_layer_2 = 32'h003E840;
+            size_Weight_layer_2 = 32'h1000;
+            wr_addr_global_initial = -1;
+            rd_addr_global_initial = 32'd0;
+            data_load_in_global = 128'hDEADBEEF_CAFECAFE_ABCDC0DE0_12345678;
+            we_global_initial = 0;
+            load_phase = 0;
+            start = 1;
+            sw_index_load_mem = 0;
+            KERNEL_W = 3;
+            OFM_W = 56;
+            OFM_C = 128;
+            IFM_C = 32;
+            IFM_W = 56;
+            stride = 2;
+            IFM_C_layer2 = 128;
+            OFM_C_layer2 = 32;
+        end
+        @(posedge clk) start = 0;
+        // repeat(1000000) begin
+        //      @(posedge clk) ;
+        // end
+        @(dut.done_compute)
+        $finish;
     end
 endmodule

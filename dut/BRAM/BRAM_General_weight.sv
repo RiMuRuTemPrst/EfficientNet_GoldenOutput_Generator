@@ -20,12 +20,12 @@ module BRAM_General_weight #(
         if (wr_rd_en) begin
             bram[wr_addr] <= data_in;
         end
-        data_load <= bram[rd_addr >> off_set_shift];
+        
         case(rd_addr[3:2])
-            2'b00: data_out <= data_load[31:0] ;
-            2'b01: data_out <= data_load[63:32] ;
-            2'b10: data_out <= data_load[95:64] ;
-            2'b11: data_out <= data_load[127:96] ;
+            2'b00: data_out <= bram[rd_addr >> off_set_shift] [31:0];
+            2'b01: data_out <= bram[rd_addr >> off_set_shift] [63:32] ;
+            2'b10: data_out <= bram[rd_addr >> off_set_shift] [95:64] ;
+            2'b11: data_out <= bram[rd_addr >> off_set_shift] [127:96] ;
         endcase
     end
     // always_comb begin

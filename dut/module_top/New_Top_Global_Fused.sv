@@ -150,10 +150,16 @@ module New_Top_Global_Fused(
     logic done_compute;
     //controller 1x1 add signal 
     logic [3:0] PE_finish_PE_cluster1x1;
+
+    //global signal
+    logic [127:0] store_in_global_RAM;
+    logic [127:0] data_in_global;
+
     assign wr_addr_global = load_phase ? wr_addr_global_initial : wr_addr_global_ctl ;
     //assign rd_addr_global = load_phase ? rd_addr_global_initial : rd_addr_global_ctl ;
     assign we_global = load_phase ? we_global_initial : we_global_ctl ;
-    assign we_global_ctl = 0;
+    //assign we_global_ctl = 0;
+    assign data_in_global = load_phase ? data_load_in_global : store_in_global_RAM;
     Global_top_fused_control_unit Global_control_unit(
         .clk(clk),
         .reset_n(reset_n),
@@ -177,28 +183,32 @@ module New_Top_Global_Fused(
         .base_addr_Weight_layer_1(base_addr_Weight_layer_1),
         .size_Weight_layer_1(size_Weight_layer_1),
         .base_addr_Weight_layer_2(base_addr_Weight_layer_2),
-        .size_Weight_layer_2(size_Weight_layer_2)
+        .size_Weight_layer_2(size_Weight_layer_2),
+
+    // write on Global BRAN
+        .valid_layer2(we_global_ctl),
+        .done_compute(done_compute)
     );
 
 
     BRAM_General #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(128),
-        .DEPTH(262144),
+        .DEPTH(300000),
         .off_set_shift(4)
     )BRAM_Global(
     .clk(clk),
     .wr_rd_en(we_global),                               // Write enable
     .wr_addr(wr_addr_global),            // Địa chỉ ghi
     .rd_addr(rd_addr_global_ctl),  // Địa chỉ đọc (địa chỉ byte → cần dịch)
-    .data_in(data_load_in_global),               // Dữ liệu vào
+    .data_in(data_in_global),               // Dữ liệu vào
     .data_out(data_out_global_BRAM)               // Dữ liệu ra
     );
 
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(12544),
+        .DEPTH(20000),
         .off_set_shift(4)
     )BRAM_IFM(
     .clk(clk),
@@ -212,7 +222,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_0_layer1(
     .clk(clk),
@@ -225,7 +235,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_1_layer_1(
     .clk(clk),
@@ -238,7 +248,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_2_layer_1(
     .clk(clk),
@@ -251,7 +261,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_3_layer_1(
     .clk(clk),
@@ -264,7 +274,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_4_layer_1(
     .clk(clk),
@@ -277,7 +287,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_5_layer_1(
     .clk(clk),
@@ -290,7 +300,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_6_layer_1(
     .clk(clk),
@@ -303,7 +313,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_7_layer_1(
     .clk(clk),
@@ -316,7 +326,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_8_layer_1(
     .clk(clk),
@@ -329,7 +339,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_9_layer_1(
     .clk(clk),
@@ -342,7 +352,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_10_layer_1(
     .clk(clk),
@@ -355,7 +365,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_11_layer_1(
     .clk(clk),
@@ -368,7 +378,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_12_layer_1(
     .clk(clk),
@@ -381,7 +391,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_13_layer_1(
     .clk(clk),
@@ -394,7 +404,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_14_layer_1(
     .clk(clk),
@@ -407,7 +417,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_15_layer_1(
     .clk(clk),
@@ -421,7 +431,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_0_layer_2(
     .clk(clk),
@@ -435,7 +445,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_1_layer_2(
     .clk(clk),
@@ -449,7 +459,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_2_layer_2(
     .clk(clk),
@@ -463,7 +473,7 @@ module New_Top_Global_Fused(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(36),
+        .DEPTH(360),
         .off_set_shift(4)
     )BRAM_Weight_3_layer_2(
     .clk(clk),
@@ -715,5 +725,12 @@ module New_Top_Global_Fused(
         .data_in(data_out_mux),
         .data_out(out_BRAM_CONV)
     );
-
+    Register_for_fused reg_for_write_in_global(
+        .clk(clk),
+        .reset_n(reset_n),
+        .data_in({OFM_3_n_state,OFM_2_n_state,OFM_1_n_state,OFM_0_n_state}),
+        .valid(PE_finish_PE_cluster1x1),
+        .data_out(store_in_global_RAM),
+        .valid_out(we_global_ctl)
+    );
 endmodule
