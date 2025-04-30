@@ -26,6 +26,7 @@ module Top_Global_Fused_tb;
     logic [1:0] stride;
     logic [7:0] IFM_C_layer2;
     logic [7:0] OFM_C_layer2;
+    logic [7:0] OFM_W_layer2;
     int sw_index_load_mem;
     reg [7:0] input_data_mem [0:1000000];
 
@@ -63,6 +64,7 @@ module Top_Global_Fused_tb;
         .IFM_W(IFM_W),
         .IFM_C_layer2(IFM_C_layer2),
         .OFM_C_layer2(OFM_C_layer2),
+        .OFM_W_layer2(OFM_W_layer2),
         .stride(stride)
     );
     //assign for debug
@@ -99,6 +101,7 @@ module Top_Global_Fused_tb;
         stride = 2;
         IFM_C_layer2 = 64;
         OFM_C_layer2 = 32;
+        OFM_W_layer2 = 56;
         $readmemh("../Fused-Block-CNN/address/golden_2block_fused/hex/global_ram.hex", input_data_mem);
         // Apply reset
         @(posedge clk) 

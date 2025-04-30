@@ -26,7 +26,8 @@ module New_Top_Global_Fused(
     input  wire [1:0] stride,
     
     input  wire [7:0] IFM_C_layer2,
-    input  wire [7:0] OFM_C_layer2
+    input  wire [7:0] OFM_C_layer2,
+    input  wire [7:0] OFM_W_layer2
     
 );
     logic [31:0] wr_addr_global_ctl;
@@ -155,6 +156,10 @@ module New_Top_Global_Fused(
     logic [127:0] store_in_global_RAM;
     logic [127:0] data_in_global;
 
+    //register fused
+    logic [127:0] data_out_reg_fused;
+    logic we_out_reg_fused;
+
     assign wr_addr_global = load_phase ? wr_addr_global_initial : wr_addr_global_ctl ;
     //assign rd_addr_global = load_phase ? rd_addr_global_initial : rd_addr_global_ctl ;
     assign we_global = load_phase ? we_global_initial : we_global_ctl ;
@@ -167,7 +172,7 @@ module New_Top_Global_Fused(
         .ready(ready),
 
     // Global BRAM signal
-        .wr_addr_global(wr_addr_global_ctl),
+        //.wr_addr_global(wr_addr_global_ctl),
         .rd_addr_global(rd_addr_global_ctl),
         .we_global(wr_addr_global_ctl),
 
@@ -730,7 +735,21 @@ module New_Top_Global_Fused(
         .reset_n(reset_n),
         .data_in({OFM_3_n_state,OFM_2_n_state,OFM_1_n_state,OFM_0_n_state}),
         .valid(PE_finish_PE_cluster1x1),
-        .data_out(store_in_global_RAM),
-        .valid_out(we_global_ctl)
+        .data_out(data_out_reg_fused),
+        .valid_out(we_out_reg_fused)
+    );
+    control_padding_fused control_padding_for_write(
+    .clk(clk),
+    .rst_n(reset_n),
+    .valid(we_out_reg_fused),
+    .start(ready),
+    .data_in(data_out_reg_fused),
+    .OFM_C(OFM_C_layer2),
+    .OFM_W(OFM_W_layer2),
+    .padding(1),
+    .wr_en(we_global_ctl),
+    .addr_next(wr_addr_global_ctl),
+    .data_out(store_in_global_RAM)
+    //.valid_for_next_pipeline()
     );
 endmodule
