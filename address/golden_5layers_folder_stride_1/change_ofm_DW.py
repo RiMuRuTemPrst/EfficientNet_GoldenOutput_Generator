@@ -67,6 +67,7 @@ def process_pe_file(pe_id, OFFSET, tile):
 
 # Hàm chính
 
+<<<<<<< HEAD
 # Hàm xử lý 1 PE
 def process_pe_file_all(pe_id, OFFSET, tile):
     input_file = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/ofm_2.hex"
@@ -110,6 +111,8 @@ def process_pe_file_all(pe_id, OFFSET, tile):
 
 # Hàm chính
 
+=======
+>>>>>>> 3c744f089472803f0ea1f05f1e58404e4e422e63
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--ofm_width", type=int, required=True)
@@ -120,7 +123,10 @@ def main():
     OFFSET = args.ofm_width * args.ofm_width   # Khoảng cách dòng
     for pe in range(args.max_pe):
         process_pe_file(pe, OFFSET, tile)
+<<<<<<< HEAD
     process_pe_file_all(pe, OFFSET, args.ofm_channel )
+=======
+>>>>>>> 3c744f089472803f0ea1f05f1e58404e4e422e63
 
     print(f"\n🚀 Đã xử lý xong tất cả {args.max_pe} PE!")
 

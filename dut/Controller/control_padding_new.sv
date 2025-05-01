@@ -1,4 +1,4 @@
-module control_padding#(
+module control_padding_new#(
     parameter PE = 16
 )
 (   

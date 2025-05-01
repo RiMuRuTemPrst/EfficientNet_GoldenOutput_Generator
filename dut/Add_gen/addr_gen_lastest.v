@@ -334,6 +334,12 @@ always @(posedge clk or negedge rst_n) begin
             predict_window_addr_fetch_ifm       <= window_start_addr_ifm + ( KERNEL_W *IFM_C ) + stride_offset_for_col + skip_a_pixel;
             predict_line_addr_fetch_ifm         <= window_start_addr_ifm + ( KERNEL_W *IFM_C ) + stride_offset_for_col + skip_a_pixel;
         end
+        if (done_compute) begin 
+            predict_line_addr_fetch_ifm         <= 0  ;  
+            predict_window_addr_fetch_ifm       <= 0 ;
+            predict_window_OFM_addr_fetch_ifm   <= 0 ;
+
+        end
         if ( ( row_index_KERNEL == 'h0 )&& ( col_index_KERNEL ==  'h0 )  ) begin 
             done_window <= 'b1;
             if (count_for_a_OFM =='h0 && count_for_a_Window=='h0 && tiles_count=='h0)

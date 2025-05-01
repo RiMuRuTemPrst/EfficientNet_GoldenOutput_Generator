@@ -37,5 +37,9 @@ if __name__ == "__main__":
     save_to_hex_file(Weight_2, "../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/weight_2.hex")    
     save_to_hex_file(Weight_4, "../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Reduce/weight_4.hex")
     save_to_hex_file(Weight_5, "../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Expand/weight_5.hex")  
+<<<<<<< HEAD
     save_to_hex_file(Weight_6, "../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight_6.hex")  
+=======
+    save_to_hex_file(Weight_6, "../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Last/weight_6.hex")  
+>>>>>>> 3c744f089472803f0ea1f05f1e58404e4e422e63
     print("✅ Đã lưu IFM (padded) và Weight.")

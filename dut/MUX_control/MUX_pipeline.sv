@@ -22,10 +22,10 @@ module MUX_pipeline(
 );
     always_comb begin 
         case (control)
-            2'd0 : data_out = {data_in_0,data_in_1,data_in_2,data_in_3} ;
-            2'd1 : data_out = {data_in_4,data_in_5,data_in_6,data_in_7} ;
-            2'd2 : data_out = {data_in_8,data_in_9,data_in_10,data_in_11} ;
-            2'd3 : data_out = {data_in_12,data_in_13,data_in_14,data_in_15} ;
+            2'd0 : data_out = {data_in_3,data_in_2,data_in_1,data_in_0} ;
+            2'd1 : data_out = {data_in_7,data_in_6,data_in_5,data_in_4} ;
+            2'd2 : data_out = {data_in_11,data_in_10,data_in_9,data_in_8} ;
+            2'd3 : data_out = {data_in_15,data_in_14,data_in_13,data_in_12} ;
             default: data_out =0;
         endcase
     end

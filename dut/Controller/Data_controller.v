@@ -26,6 +26,7 @@ always @(posedge clk or negedge rst_n) begin
 end
 
 always@(*) begin
+    if(~done_compute) begin
     case ( current_state )
     START : begin
         if (OFM_data_out_valid == 16'hFFFF)  next_state = DATA_FETCH;
@@ -36,6 +37,8 @@ always@(*) begin
         else                            next_state = DATA_FETCH;
     end
     endcase
+    end else
+    addr_ram_next_wr <= 0;
 end
 assign wr_en_next= (current_state==DATA_FETCH)? 'h1 : 'h0; 
 
