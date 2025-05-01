@@ -5,10 +5,10 @@ module address_generator #(
     input  wire clk,
     input  wire rst_n,
     input  wire [3:0] KERNEL_W,
-    input  wire [7:0] OFM_W,
-    input  wire [7:0] OFM_C,
-    input  wire [7:0] IFM_C,
-    input  wire [7:0] IFM_W,
+    input  wire [10:0] OFM_W,
+    input  wire [10:0] OFM_C,
+    input  wire [10:0] IFM_C,
+    input  wire [10:0] IFM_W,
     input  wire [1:0] stride,
     input  wire ready,
     input  wire [31:0] addr_in,
@@ -333,6 +333,12 @@ always @(posedge clk or negedge rst_n) begin
             predict_window_OFM_addr_fetch_ifm   <= window_start_addr_ifm + ( KERNEL_W *IFM_C ) + stride_offset_for_col + skip_a_pixel;
             predict_window_addr_fetch_ifm       <= window_start_addr_ifm + ( KERNEL_W *IFM_C ) + stride_offset_for_col + skip_a_pixel;
             predict_line_addr_fetch_ifm         <= window_start_addr_ifm + ( KERNEL_W *IFM_C ) + stride_offset_for_col + skip_a_pixel;
+        end
+        if (done_compute) begin 
+            predict_line_addr_fetch_ifm         <= 0  ;  
+            predict_window_addr_fetch_ifm       <= 0 ;
+            predict_window_OFM_addr_fetch_ifm   <= 0 ;
+
         end
         if ( ( row_index_KERNEL == 'h0 )&& ( col_index_KERNEL ==  'h0 )  ) begin 
             done_window <= 'b1;

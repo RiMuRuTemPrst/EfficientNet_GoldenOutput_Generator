@@ -2,8 +2,8 @@ module CONV_1x1_controller(
     input clk,
     input reset_n,
     input valid,
-    input [7:0] weight_c,
-    input [7:0] num_filter,
+    input [10:0] weight_c,
+    input [10:0] num_filter,
     input cal_start,
     output logic [31:0] addr_ifm,
     output logic [31:0] addr_weight,
@@ -58,10 +58,14 @@ always_comb begin
 
         // ST_START_BIT
         START_PIXEL : begin
-            if((valid_count >= weight_c - 'h8) || (next_filter) ) begin
-                next_state =  DEEP_FETCH;
+            if(~cal_start) 
+                next_state = IDLE;
+            else begin
+                if((valid_count >= weight_c - 'h8) || (next_filter) ) begin
+                    next_state =  DEEP_FETCH;
+                end
+                else next_state =  START_PIXEL;
             end
-            else next_state =  START_PIXEL;
         end
 
         // ST_DATA_BIT
@@ -77,7 +81,12 @@ always_comb begin
 
         // ST_END_TRAN 
         END_PIXEL : begin
+            if(cal_start) begin
             next_state = START_PIXEL ;
+            end 
+            else begin
+                next_state = IDLE ;
+            end
         end
     endcase
 end
@@ -101,6 +110,7 @@ end
                 if(next_state == START_PIXEL) begin
                     addr_ifm <= 0 ;
                     addr_weight <= 0 ;
+                    valid_count <= 0;
                 end
             end
             START_PIXEL:begin

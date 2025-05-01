@@ -7,8 +7,8 @@ module control_padding_fused#(
     input                                valid,
     input                                start, 
     input       [127 : 0]        data_in,
-    input logic [31:0]                     OFM_C, // lop truoc
-    input logic [31:0]                     OFM_W, // lop truoc
+    input logic [10:0]                     OFM_C, // lop truoc
+    input logic [10:0]                     OFM_W, // lop truoc
     input logic                           padding,
     output logic                         wr_en,
     output logic [31:0]                  addr_next,
@@ -70,7 +70,7 @@ always_comb begin
                 if (count_data >= ((OFM_C * OFM_W) >> 4) - 1) next_state = NEXT_ROW_DATA;
                 else next_state = ROW_DATA;
             end
-            else if (count_padd >= ((OFM_C * (OFM_W + padding)) >> 2) - 1 ) begin
+            else if (count_padd >= ((OFM_C * (OFM_W + padding)) >> 4) - 1 ) begin
                 if (end_signal) next_state = IDLE;
                 else next_state = LEFT_RIGHT_PADDING;
             end
@@ -78,8 +78,9 @@ always_comb begin
         end
         ROW_DATA: begin
             if (!valid) begin
-                    if (count_padd >= ((OFM_C *(OFM_W + padding)) >> 24) - 1)begin
+                    if (count_padd >= ((OFM_C *(OFM_W + padding)) >> 4) - 1)begin
                         if(end_signal) next_state = IDLE;
+                        else if (count_lr >= ((2 * padding * OFM_C) >> 4) - 1) next_state = NEXT_LEFT_RIGHT_PADDING;
                         else next_state = LEFT_RIGHT_PADDING;
                     end
                     else next_state = ROW_PADDING;
@@ -201,6 +202,9 @@ always_ff @(posedge clk or negedge rst_n)begin
                 addr_data <= addr_data;
                 count_lr <= count_lr + 1;
                 count_data <= count_data + 1;
+            end else if ( next_state == NEXT_LEFT_RIGHT_PADDING) begin
+                addr_data <= addr_data;
+                count_data <= count_data +1;
             end
             else begin
                 count_data <= count_data + 1;
@@ -237,11 +241,11 @@ always_ff @(posedge clk or negedge rst_n)begin
                 end_signal <= 1;            
             end
             else if (next_state == ROW_DATA) begin
-                count_lr <= 0;
+                count_lr <= count_lr;
                 addr_data <= addr_data + 1;
-                count_height_padd <= count_height_padd + 1;
+                count_height_padd <= count_height_padd;
                 
-                addr_padding <= addr_padding + OFM_W * OFM_C / 16 + 1;
+                addr_padding <= addr_padding;
             end
             else begin 
                 count_lr <= 0;

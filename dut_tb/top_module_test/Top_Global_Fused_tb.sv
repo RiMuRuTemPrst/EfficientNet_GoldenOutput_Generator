@@ -19,14 +19,14 @@ module Top_Global_Fused_tb;
 
     //input of size 
     logic [3:0] KERNEL_W;
-    logic [7:0] OFM_W;
-    logic [7:0] OFM_C;
-    logic [7:0] IFM_C;
-    logic [7:0] IFM_W;
+    logic [10:0] OFM_W;
+    logic [10:0] OFM_C;
+    logic [10:0] IFM_C;
+    logic [10:0] IFM_W;
     logic [1:0] stride;
-    logic [7:0] IFM_C_layer2;
-    logic [7:0] OFM_C_layer2;
-    logic [7:0] OFM_W_layer2;
+    logic [10:0] IFM_C_layer2;
+    logic [10:0] OFM_C_layer2;
+    logic [10:0] OFM_W_layer2;
     int sw_index_load_mem;
     reg [7:0] input_data_mem [0:1000000];
 
@@ -112,7 +112,7 @@ module Top_Global_Fused_tb;
         @(posedge clk) 
         load_phase = 1;
         we_global_initial = 1;
-        repeat(16000) begin 
+        repeat(16260) begin 
             @(posedge clk) 
             wr_addr_global_initial = wr_addr_global_initial + 1;
             data_load_in_global = {input_data_mem[sw_index_load_mem + 15],input_data_mem[sw_index_load_mem + 14],input_data_mem[sw_index_load_mem + 13],input_data_mem[sw_index_load_mem + 12],input_data_mem[sw_index_load_mem + 11],input_data_mem[sw_index_load_mem + 10],input_data_mem[sw_index_load_mem + 9],input_data_mem[sw_index_load_mem + 8],input_data_mem[sw_index_load_mem + 7],input_data_mem[sw_index_load_mem + 6],input_data_mem[sw_index_load_mem + 5],input_data_mem[sw_index_load_mem + 4],input_data_mem[sw_index_load_mem + 3],input_data_mem[sw_index_load_mem + 2],input_data_mem[sw_index_load_mem + 1],input_data_mem[sw_index_load_mem + 0]};
@@ -167,15 +167,14 @@ end
          forever begin
              @(posedge clk)
              if(dut.done_compute) begin
-                 start_layer_2 = 1;   
-                 $finish;              
+                 start_layer_2 = 1;                 
             end
         end
     end
     initial begin
         @(start_layer_2) begin
             base_addr_IFM = 32'h0000_0000;
-            size_IFM = 32'h18800;
+            size_IFM = 32'h1A480;
             base_addr_Weight_layer_1 = 32'h35840;
             size_Weight_layer_1 = 32'h9000;
             base_addr_Weight_layer_2 = 32'h003E840;
@@ -191,8 +190,8 @@ end
             OFM_W = 56;
             OFM_C = 128;
             IFM_C = 32;
-            IFM_W = 56;
-            stride = 2;
+            IFM_W = 58;
+            stride = 1;
             IFM_C_layer2 = 128;
             OFM_C_layer2 = 32;
         end

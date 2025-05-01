@@ -19,15 +19,15 @@ module New_Top_Global_Fused(
     //size of Fused 
 
     input  wire [3:0] KERNEL_W,
-    input  wire [7:0] OFM_W,
-    input  wire [7:0] OFM_C,
-    input  wire [7:0] IFM_C,
-    input  wire [7:0] IFM_W,
+    input  wire [10:0] OFM_W,
+    input  wire [10:0] OFM_C,
+    input  wire [10:0] IFM_C,
+    input  wire [10:0] IFM_W,
     input  wire [1:0] stride,
     
-    input  wire [7:0] IFM_C_layer2,
-    input  wire [7:0] OFM_C_layer2,
-    input  wire [7:0] OFM_W_layer2
+    input  wire [10:0] IFM_C_layer2,
+    input  wire [10:0] OFM_C_layer2,
+    input  wire [10:0] OFM_W_layer2
     
 );
     logic [31:0] wr_addr_global_ctl;
@@ -516,7 +516,7 @@ module New_Top_Global_Fused(
         .valid(wr_data_valid),
         .weight_c(IFM_C_layer2),
         .num_filter(OFM_C_layer2),
-        .cal_start(1),
+        .cal_start(ready),
         .addr_ifm(addr_ram_next_rd),
         .addr_weight(addr_w_n_state),
         .PE_reset(PE_reset_n_state_wire),
@@ -697,7 +697,8 @@ module New_Top_Global_Fused(
         .control_mux(control_mux_wire),
         .addr_ram_next_wr(addr_ram_next_wr_wire),
         .wr_en_next(wr_en_next_write),
-        .wr_data_valid(wr_data_valid)
+        .wr_data_valid(wr_data_valid),
+        .done_compute(done_compute)
     );
 
     MUX_pipeline mux(
