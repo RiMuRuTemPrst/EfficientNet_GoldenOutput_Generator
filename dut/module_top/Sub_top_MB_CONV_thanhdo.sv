@@ -70,21 +70,21 @@ module Sub_top_MB_CONV_thanhdo#
     //control singal layer 2
 
     input  wire [3:0] KERNEL_W_layer1,
-    input  wire [7:0] OFM_W_layer1,
-    input  wire [7:0] OFM_C_layer1,
-    input  wire [7:0] IFM_C_layer1,
-    input  wire [7:0] IFM_W_layer1,
+    input  wire [15:0] OFM_W_layer1,
+    input  wire [15:0] OFM_C_layer1,
+    input  wire [15:0] IFM_C_layer1,
+    input  wire [15:0] IFM_W_layer1,
     input  wire [1:0] stride_layer1,
 
 
-    input  wire [7:0] OFM_C_layer7,
+    input  wire [15:0] OFM_C_layer7,
  
 
     input  wire [3:0] KERNEL_W_layer2,
-    input  wire [7:0] IFM_C_layer2,
-    input  wire [7:0] OFM_C_layer2,
+    input  wire [15:0] IFM_C_layer2,
+    input  wire [15:0] OFM_C_layer2,
 
-    input  wire [7:0] OFM_C_se_reduce,
+    input  wire [15:0] OFM_C_se_reduce,
    
     
     input  wire [1:0] stride_layer2,
@@ -226,10 +226,10 @@ module Sub_top_MB_CONV_thanhdo#
     wire        finish_for_PE_cluster_layer2;
     wire        done_window_one_bit;
     wire        finish_for_PE;
-    wire [7:0] count_for_a_OFM_o;
+    wire [15:0] count_for_a_OFM_o;
     
     wire        addr_valid;
-    wire [7:0]  tile;
+    wire [15:0]  tile;
     wire        cal_start_ctl;
     wire        wr_rd_req_IFM;
     wire        we_Weight_Conv1x1;
@@ -258,10 +258,10 @@ module Sub_top_MB_CONV_thanhdo#
     logic       valid_post_SE;
 
     reg [3:0] KERNEL_W_Conv1x1;
-    reg [7:0] OFM_W_Conv1x1;
-    reg [7:0] OFM_C_Conv1x1;
-    reg [7:0] IFM_C_Conv1x1;
-    reg [7:0] IFM_W_Conv1x1;
+    reg [15:0] OFM_W_Conv1x1;
+    reg [15:0] OFM_C_Conv1x1;
+    reg [15:0] IFM_C_Conv1x1;
+    reg [15:0] IFM_W_Conv1x1;
     reg [1:0] stride_Conv1x1;
     reg       ready_Con1x1;
     wire        done_compute_Conv1x1;
@@ -301,7 +301,9 @@ module Sub_top_MB_CONV_thanhdo#
 
 
 
-    BRAM_IFM IFM_BRAM(
+    BRAM_IFM #(
+        .DEPTH(32930)
+    ) IFM_BRAM(
         .clk(clk),
         .rd_addr(addr_IFM_Conv1x1),
         .wr_addr(wr_addr_IFM),
@@ -541,8 +543,8 @@ module Sub_top_MB_CONV_thanhdo#
     wire addr_valid_ifm_layer2;
     wire done_window_layer2;
     wire addr_valid_filter_layer2;
-    wire [7:0] num_of_tiles_for_PE_layer2;
-    wire [7:0] OFM_W_layer2 ;
+    wire [15:0] num_of_tiles_for_PE_layer2;
+    wire [15:0] OFM_W_layer2 ;
     wire valid_for_next_pipeline_from_control_padding;
     assign OFM_W_layer2 =( OFM_W_layer1 +2*1 - KERNEL_W_layer2 )/ stride_layer2 +1;
     address_generator_dw #(
@@ -596,9 +598,11 @@ module Sub_top_MB_CONV_thanhdo#
 
     );
 
-    BRAM_IFM_128bit_in IFM_BRAM_layer_2(
+    BRAM_IFM_128bit_in #( 
+        .DEPTH(44000)
+    ) IFM_BRAM_layer_2(
         .clk(clk),
-        //.rd_addr(addr_IFM_layer_2),
+        //.rd_addr(addr_IFM_layer_2), // for test
         .rd_addr(req_addr_out_ifm_layer2),
         //.wr_addr(wr_addr_IFM_layer_2),
         .wr_addr( wr_addr_from_control_padding ),
@@ -679,8 +683,8 @@ module Sub_top_MB_CONV_thanhdo#
 
 
     wire se_layer;
-    reg [7:0] IFM_C_se;
-    reg [7:0] OFM_C_se;
+    reg [15:0] IFM_C_se;
+    reg [15:0] OFM_C_se;
     wire       done_window_for_SE;
     wire [31:0] req_addr_out_ifm_layerSE;
     wire [31:0] req_addr_out_filter_layerSE;
@@ -710,14 +714,15 @@ module Sub_top_MB_CONV_thanhdo#
     logic [31:0] write_addr_pooling_test;
     logic init_phase_pooling_test;
     logic [1:0] control_data_pooling_test;
-    reg [7:0] counter_num_of_PE_for_DW_1;
-    reg [7:0] counter_num_of_PE_for_DW_2;
-    reg [7:0] addition_counter_for_Pooling;
-    wire [7:0] counter_num_of_PE_for_DW;
+    reg [15:0] counter_num_of_PE_for_DW_1;
+    reg [15:0] counter_num_of_PE_for_DW_2;
+    reg [15:0] addition_counter_for_Pooling;
+    wire [15:0] counter_num_of_PE_for_DW;
 
     reg we_pooling_test;
     reg done_compute_pooling_test;
-    // assign read_addr_pooling = excute_average ? read_addr_pooling_tb: read_addr_pooling_tb  ; /// for test poolinng block
+    
+    //assign read_addr_pooling = excute_average ? read_addr_pooling_tb: read_addr_pooling_tb  ; /// for test poolinng block
     assign read_addr_pooling = excute_average ? read_addr_pooling_test: req_addr_out_ifm_layerSE  ;
 
     assign control_data_pooling_test = counter_num_of_PE_for_DW;
@@ -895,7 +900,38 @@ module Sub_top_MB_CONV_thanhdo#
 
 
     //wire ready_addr_gen_SE ;
+    reg layer1_done;
+    reg layer2_done;
 
+     always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            layer2_done <= 0;
+            layer1_done <= 0;
+        end
+        else begin
+            if (done_compute_Conv1x1) begin
+                layer1_done <=1;
+            end
+            else begin
+                if(current_state_SE_layer == DW_CONV) begin
+                     if (layer1_done) layer1_done <=1;
+                     else layer1_done <=0;
+                end
+                else layer1_done <=0;
+            end
+
+            if (done_compute_layer2) begin
+                layer2_done <=1;
+            end
+            else begin
+                if(current_state_SE_layer == DW_CONV) begin
+                     if (layer2_done) layer2_done <=1;
+                     else layer2_done <=0;
+                end
+                else layer2_done <=0;
+            end
+        end
+        end
     //-------------------------------------------------POOLING---------------------------------------------------------//
     // FSM State Register
     always @(posedge clk or negedge rst_n) begin
@@ -907,7 +943,7 @@ module Sub_top_MB_CONV_thanhdo#
     always @(*) begin
         case (current_state_SE_layer)
             DW_CONV: begin
-                if ( done_compute_layer2 ) begin
+                if ( layer1_done && layer2_done ) begin
                     next_state_SE_layer =    REDUCE_CONV ;
                 end else begin
                     next_state_SE_layer =    DW_CONV;
@@ -960,6 +996,7 @@ module Sub_top_MB_CONV_thanhdo#
                 IFM_W_Conv1x1    = IFM_W_layer1;
                 stride_Conv1x1   = stride_layer1;
                 ready_Con1x1     = cal_start_ctl;
+                
                 mul_en_Conv1x1   ='b0;
 
                 rd_addr_multiply = addr_rd_mul;
@@ -986,12 +1023,20 @@ module Sub_top_MB_CONV_thanhdo#
             end
 
             REDUCE_CONV: begin
+                // KERNEL_W_Conv1x1 = KERNEL_W_layer1;
+                // OFM_W_Conv1x1    = OFM_W_layer1;
+                // OFM_C_Conv1x1    = OFM_C_layer1;
+                // IFM_C_Conv1x1    = IFM_C_layer1;
+                // IFM_W_Conv1x1    = IFM_W_layer1;
+                // stride_Conv1x1   = stride_layer1;
                 KERNEL_W_Conv1x1 = 1;
                 OFM_W_Conv1x1    = OFM_W_layer2;
                 OFM_C_Conv1x1    = OFM_C_layer7;
                 IFM_C_Conv1x1    = OFM_C_layer2;
                 IFM_W_Conv1x1    = OFM_W_layer2;
                 stride_Conv1x1   = 1;
+                ready_Con1x1     = cal_start_ctl;
+
                 mul_en_Conv1x1   ='b0;
 
                 rd_addr_multiply = addr_rd_mul;
@@ -1021,18 +1066,27 @@ module Sub_top_MB_CONV_thanhdo#
             end
 
             EXPAND_CONV: begin
-                addr_rd_pre_SE_IFM = addr_rd_pre_SE;
+                // addr_rd_pre_SE_IFM = addr_rd_pre_SE;
+                // KERNEL_W_Conv1x1 = KERNEL_W_layer1;
+                // OFM_W_Conv1x1    = OFM_W_layer1;
+                // OFM_C_Conv1x1    = OFM_C_layer1;
+                // IFM_C_Conv1x1    = IFM_C_layer1;
+                // IFM_W_Conv1x1    = IFM_W_layer1;
+                // stride_Conv1x1   = stride_layer1;
                 KERNEL_W_Conv1x1 = 1;
                 OFM_W_Conv1x1    = OFM_W_layer2;
                 OFM_C_Conv1x1    = OFM_C_layer7;
                 IFM_C_Conv1x1    = OFM_C_layer2;
                 IFM_W_Conv1x1    = OFM_W_layer2;
                 stride_Conv1x1   = 1;
+                ready_Con1x1     = cal_start_ctl;
+
                 mul_en_Conv1x1   ='b0;
 
                 rd_addr_multiply = addr_rd_mul;
 
                 req_addr_out_ifm_layerSE_for_IFM_BRAM = req_addr_out_ifm_layerSE;
+                IFM_data_Conv1x1   = IFM_data;
 
                 IFM_SE_layer      = IFM_data_expand_layer;
                 Weight_0_SE_layer = Weight_0_expand;
@@ -1147,7 +1201,6 @@ module Sub_top_MB_CONV_thanhdo#
     .reset_n(rst_n),
     //data signal
     .data_in(data_in_pooling),
-
     //control signal
     .read_addr(read_addr_pooling),
     .write_addr(write_addr_pooling_test),
@@ -1155,6 +1208,7 @@ module Sub_top_MB_CONV_thanhdo#
     .init_phase(init_phase_pooling_test),
     .control_data(control_data_pooling_test),
     .valid(finish_for_PE_cluster_layer2),
+    .IFM_W(OFM_W_layer2),
     .data_pooling_average(data_pooling_average),
     .data_pooling_average_32bit(data_pooling_average_32bit)
     );
@@ -1308,7 +1362,9 @@ module Sub_top_MB_CONV_thanhdo#
     );
     // wire  wr_rd_en_IFM_BRAM_SE;
     // assign wr_rd_en_IFM_BRAM_SE = current_state_SE_layer? 0: finish_for_PE_SE_cluster;
-    BRAM_IFM IFM_BRAM_SE(
+    BRAM_IFM #(
+        .DEPTH()
+    ) IFM_BRAM_SE(
         .clk(clk),    
 
         .rd_addr(req_addr_out_ifm_layerSE_for_IFM_BRAM),
@@ -1377,7 +1433,9 @@ module Sub_top_MB_CONV_thanhdo#
         end
     end
 
-    BRAM_OFM_pre_SE BRAM_pre_SE(
+    BRAM_OFM_pre_SE #(
+        .DEPTH(50000)
+    ) BRAM_pre_SE(
         .clk(clk),
         //.rd_addr(addr_rd_pre_SE), // for test ofm_ multiply
         .rd_addr(addr_IFM_Conv1x1),

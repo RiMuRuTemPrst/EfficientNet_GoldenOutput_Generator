@@ -12,11 +12,15 @@ module Pooling_average_BRAM(
     input init_phase,
     input [1:0] control_data,
     input valid,
+    input [15:0] IFM_W,
 
     output [63:0] data_pooling_average,
     output [31:0] data_pooling_average_32bit
 );
     parameter DIV_14x14 = 31'h0000014e;
+    parameter DIV_7x7 = 31'h00000539;
+
+    logic [31:0] DIV;
     logic [31:0] data_for_write;
     logic [31:0] data_for_read;
     logic [31:0] add_data;
@@ -42,14 +46,23 @@ module Pooling_average_BRAM(
             IFM_reg_data <= data_in;
     end
     end
+
+    always_comb begin
+        case(IFM_W)
+            'd14 : DIV = DIV_14x14 ; 
+            'd07 : DIV = DIV_7x7 ; 
+            default :
+             DIV=1;
+        endcase
+    end
     //mux for init phase
     assign add_data = (init_phase) ? 0 : data_for_read;
-    assign data_pooling_average = ((data_for_read << 16) * DIV_14x14);
+    assign data_pooling_average = ((data_for_read << 16) * DIV);
 
-    assign divide_data_out_0_for_SE = ((data_out_0_for_SE << 16) * DIV_14x14);
-    assign divide_data_out_1_for_SE = ((data_out_1_for_SE << 16) * DIV_14x14);
-    assign divide_data_out_2_for_SE = ((data_out_2_for_SE << 16) * DIV_14x14);
-    assign divide_data_out_3_for_SE = ((data_out_3_for_SE << 16) * DIV_14x14);
+    assign divide_data_out_0_for_SE = ((data_out_0_for_SE << 16) * DIV);
+    assign divide_data_out_1_for_SE = ((data_out_1_for_SE << 16) * DIV);
+    assign divide_data_out_2_for_SE = ((data_out_2_for_SE << 16) * DIV);
+    assign divide_data_out_3_for_SE = ((data_out_3_for_SE << 16) * DIV);
     
     assign data_pooling_average_32bit ={divide_data_out_3_for_SE[39:32],
                                         divide_data_out_2_for_SE[39:32],

@@ -1,4 +1,4 @@
-module address_generator_SE #(
+module address_generator_SE_2 #(
     parameter TOTAL_PE   = 4,
     parameter DATA_WIDTH = 32
 )(
@@ -6,8 +6,8 @@ module address_generator_SE #(
     input  wire rst_n,
     input  wire [3:0] KERNEL_W,
     input  wire [7:0] OFM_W,
-    input  wire [7:0] OFM_C,
-    input  wire [7:0] IFM_C,
+    input  wire [15:0] OFM_C,
+    input  wire [15:0] IFM_C,
     input  wire [7:0] IFM_W,
     input  wire [1:0] stride,
     input  wire ready,
@@ -20,7 +20,7 @@ module address_generator_SE #(
     output reg addr_valid_ifm,
     output reg done_window,
     output wire addr_valid_filter,
-    output wire [7:0] num_of_tiles_for_PE
+    output wire [15:0] num_of_tiles_for_PE
 );
 
 wire in_progress;
@@ -135,7 +135,7 @@ always @(*) begin
     endcase
 end
 
-wire [7:0] num_of_tiles         = IFM_C >> num_of_mul_in_PE_shift ;
+wire [15:0] num_of_tiles         = IFM_C >> num_of_mul_in_PE_shift ;
 
 assign num_of_tiles_for_PE  = OFM_C >> total_PE_shift;
 //---------------------------------------------------LUT-num_of_tiles_shift--------------------------------------------------------//
@@ -278,7 +278,7 @@ always @(*) begin
     endcase
 end
 
-reg [7:0] skip_a_pixel;
+reg [15:0] skip_a_pixel;
 always @(*) begin  
     case ( IFM_W[0] )
     

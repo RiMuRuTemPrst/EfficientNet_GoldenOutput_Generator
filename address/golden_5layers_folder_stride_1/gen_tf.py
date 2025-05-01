@@ -29,9 +29,9 @@ def read_hex_file(filename, shape):
     H, W, C = shape
     reshaped_data = np.zeros((H, W, C), dtype=np.int32)
     index = 0
-    for c in range(C):
-        for h in range(H):
-            for w in range(W):
+    for h in range(H):
+        for w in range(W):
+            for c in range(C):
                 reshaped_data[h, w, c] = data[index]
                 index += 1
     return reshaped_data
@@ -45,7 +45,7 @@ def write_hex_file(filename, data):
                 for w in range(W):
                     int_value = int(round(data[h, w, c]))
                     hex_value = int_value & 0xFF
-                    file.write(f"{hex_value:02x}\n")
+                    file.write(f"{hex_value:02X}\n")
 
 # === Main ===
 if __name__ == "__main__":
@@ -66,9 +66,9 @@ if __name__ == "__main__":
     output_feature_channel = args.weight_filter
 
     # File paths cố định
-    input_file  = "../Fused-Block-CNN/address/golden_5layers_folder/hex/Reduce/ofm_4.hex"
-    weight_file = "../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/weight_5.hex"
-    output_file = "../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/ofm_5.hex"
+    input_file = "../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/ifm.hex"
+    weight_file = "../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight.hex"
+    output_file = "../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/ofm_layer1.hex"
 
     # Đọc dữ liệu
     input_data = read_hex_file(input_file, (args.ifm_height, args.ifm_width, args.ifm_channel))

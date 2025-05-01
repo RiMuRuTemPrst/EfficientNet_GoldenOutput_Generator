@@ -15,12 +15,12 @@ module Quad_PE_v2(
 );
 
     // --- Các wire trung gian ---
-    wire [7:0] mul1, mul2, mul3,mul4;   // Kết quả 3 phép nhân
-    wire [7:0] add1, add2, add3;        // Kết quả cộng dồn từng bước
-    wire [7:0] sum_d;                   // Giá trị tổng mới
-    reg  [7:0] sum_q;                   // Thanh ghi lưu giá trị tổng
+    wire [23:0] mul1, mul2, mul3,mul4;   // Kết quả 3 phép nhân
+    wire [23:0] add1, add2, add3;        // Kết quả cộng dồn từng bước
+    wire [23:0] sum_d;                   // Giá trị tổng mới
+    reg  [23:0] sum_q;                   // Thanh ghi lưu giá trị tổng
     reg        valid_r;                 // Thanh ghi xuất cờ valid
-    reg  [7:0] mul_sum;
+    reg  [23:0] mul_sum;
 
     wire [7:0] c1,c2,c3,c4;
 
@@ -63,7 +63,7 @@ module Quad_PE_v2(
     end
 
     // Gán các ngõ ra
-    assign OFM   = sum_q;
+    assign OFM   = sum_q[7:0];
     assign valid = valid_r;
 
 endmodule

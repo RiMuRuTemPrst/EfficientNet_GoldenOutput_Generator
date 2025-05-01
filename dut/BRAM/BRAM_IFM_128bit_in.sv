@@ -1,4 +1,8 @@
-module BRAM_IFM_128bit_in(
+module BRAM_IFM_128bit_in
+#(
+    parameter DATA_WIDTH= 32,
+    parameter DEPTH= 100352
+)(
     input wire clk,
     input wire wr_rd_en,                     // Write enable
     input wire [31:0] wr_addr,           // Write address (6-bit → 64 hàng)
@@ -9,7 +13,7 @@ module BRAM_IFM_128bit_in(
 );
 
     // Dùng 32 khối BRAM chạy song song, mỗi khối lưu 64-bit
-    reg [31:0] bram [0:100352];  // Dùng 1 mảng một chiều
+    reg [31:0] bram [0:DEPTH-1];  // Dùng 1 mảng một chiều
     
     //integer i;
     always @(posedge clk) begin

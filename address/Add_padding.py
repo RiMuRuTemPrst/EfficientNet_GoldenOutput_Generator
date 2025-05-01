@@ -8,9 +8,9 @@ def read_hex_file(filename, shape):
     H, W, C = shape
     reshaped_data = np.zeros((H, W, C), dtype=np.int32)
     index = 0
-    for h in range(H):
-        for w in range(W):
-            for c in range(C):
+    for c in range(C):
+        for h in range(H):
+            for w in range(W):
                 reshaped_data[h, w, c] = data[index]
                 index += 1
     return reshaped_data
@@ -29,7 +29,7 @@ def write_hex_file(filename, padded_ifm):
 
 # ======== Sử dụng ==========
 input_file = "../Fused-Block-CNN/address/ofm.hex"
-output_file = "../Fused-Block-CNN/address/padded_ofm.hex"
+output_file = "../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/PADDING_control_IFM_golden.hex"
 parser = argparse.ArgumentParser()
 parser.add_argument("--ifm_height", type=int, required=True)
 parser.add_argument("--ifm_width", type=int, required=True)

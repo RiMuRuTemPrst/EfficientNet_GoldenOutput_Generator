@@ -1,0 +1,32 @@
+py_run_5layers_v3 14 14 112 672 28 192
+
+test_MB 14 112 672 28 192
+
+py_run_padding 14 14 112 1 1 672 0 1
+
+py_run_5layers_v3 28 28 48 192 12 96
+test_run 28 28 48 192 12 96
+
+
+stride =1;
+5a :
+py_run_5layers_stride_1 14 14 96 576 24 112
+
+5b :
+py_run_5layers_stride_1 14 14 112 672 28 112
+
+5c :
+py_run_5layers_stride_1 14 14 112 672 28 112
+
+5c :
+py_run_5layers_stride_1 14 14 112 672 28 112
+
+5d :
+py_run_5layers_stride_1 14 14 112 672 28 112
+
+
+5e :
+py_run_5layers_stride_1 14 14 112 672 28 112
+
+6b :
+py_run_5layers_stride_1 7 7 192 1152 48 192

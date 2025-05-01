@@ -80,39 +80,39 @@
 #     print(f"Log đã được lưu vào: {log_file}")  # In thông báo cho biết log đã lưu vào đâu
 # if __name__ == "__main__":
 #     for pe in range(16):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
-#         file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/OFM1_PE{pe}_change.hex"
-#         file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/OFM1_PE{pe}_DUT.hex"
+#         file1 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/OFM1_PE{pe}_change.hex"
+#         file2 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/OFM1_PE{pe}_DUT.hex"
 #         compare_files(file1, file2, pe_id=pe)
 #     print("---------------------------------------------------------------FIRST LAYER!---------------------------------------------------------------")
 #     for pe in range(4):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
-#         file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/OFM2_PE{pe}_change.hex"
-#         file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/OFM2_PE{pe}_DUT_DW.hex"
+#         file1 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/OFM2_PE{pe}_change.hex"
+#         file2 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/OFM2_PE{pe}_DUT_DW.hex"
 #         compare_files_log(file1, file2, pe_id=pe)
 
-#     # file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/PADDING_control_IFM_golden.hex"
-#     # file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/PADDING_control_IFM.hex"
+#     # file1 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/PADDING_control_IFM_golden.hex"
+#     # file2 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/PADDING_control_IFM.hex"
 #     # compare_files_log(file1, file2)
 #     print("---------------------------------------------------------------Padding LAYER!---------------------------------------------------------------")
 
 #     # print("---------------------------------------------------------------DEPTH WISE LAYER!---------------------------------------------------------------")
 #     # for pe in range(1):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
-#     #     file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Average_Pooling/ofm_3.hex"
-#     #     file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Average_Pooling/ofm_3_DUT_test.hex"
+#     #     file1 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Average_Pooling/ofm_3.hex"
+#     #     file2 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Average_Pooling/ofm_3_DUT_test.hex"
 #     #     compare_files(file1, file2, pe_id=pe)
 #     # print("---------------------------------------------------------------AVERAGE POOLING LAYER!---------------------------------------------------------------")
 #     # for pe in range(4):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
-#     #     file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Reduce/ofm_4.hex"
-#     #     file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Reduce/OFM4_DUT_SE.hex"
+#     #     file1 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Reduce/ofm_4.hex"
+#     #     file2 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Reduce/OFM4_DUT_SE.hex"
 #     #     compare_files(file1, file2, pe_id=pe)
 #     # print(" --------------------------------------------------------------- REDUCE LAYER!--------------------------------------------------------------- ")
 #     # for pe in range(4):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
-#     #     file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/OFM5_PE{pe}_change.hex"
-#     #     file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/OFM5_PE{pe}_DUT_SE.hex"
+#     #     file1 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Expand/OFM5_PE{pe}_change.hex"
+#     #     file2 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Expand/OFM5_PE{pe}_DUT_SE.hex"
 #     #     compare_files(file1, file2, pe_id=pe)
 #     # print("---------------------------------------------------------------EXPAND LAYER!---------------------------------------------------------------")
 #     # for pe in range(16):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
-#     #     file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/OFM6_PE{pe}_change.hex"
-#     #     file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/OFM6_PE{pe}_DUT.hex"
+#     #     file1 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/OFM6_PE{pe}_change.hex"
+#     #     file2 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/OFM6_PE{pe}_DUT.hex"
 #     #     compare_files(file1, file2, pe_id=pe)
 #     # print("---------------------------------------------------------------Conv1x1(last layer) LAYER!---------------------------------------------------------------")
 
@@ -180,39 +180,45 @@ def log_to_file(log_file, message):
 
 def compare_files_in_directory():
     # Chạy cho Layer 1
-    if os.path.exists("test_log_block4a.txt"):
-        os.remove("test_log_block4a.txt")
+    if os.path.exists("test_log_block6b.txt"):
+        os.remove("test_log_block6b.txt")
 
     for pe in range(16):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
-        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/OFM1_PE{pe}_change.hex"
-        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/OFM1_PE{pe}_DUT.hex"
-        compare_files(file1, file2, pe_id=pe, log_file="test_log_block4a.txt")  # Lưu log vào file riêng
-    log_to_file("test_log_block4a.txt", "\n---------------------------------------------------------------Layer 1!---------------------------------------------------------------\n")
+        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/OFM1_PE{pe}_change.hex"
+        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/OFM1_PE{pe}_DUT.hex"
+        compare_files(file1, file2, pe_id=pe, log_file="test_log_block6b.txt")  # Lưu log vào file riêng
+    log_to_file("test_log_block6b.txt", "\n---------------------------------------------------------------Layer 1!---------------------------------------------------------------\n")
 
-    # Chạy cho Depthwise Layer (DW)
+    # for pe in range(1):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
+    #     file1 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/PADDING_control_IFM_golden.hex"
+    #     file2 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/PADDING_control_IFM.hex"
+    #     compare_files(file1, file2, pe_id=pe, log_file="test_log_block6b.txt")  # Lưu log vào file riêng
+    # log_to_file("test_log_block6b.txt", "\n---------------------------------------------------------------PADDING_IFM!---------------------------------------------------------------\n")
+
+# Chạy cho Depthwise Layer (DW)
     for pe in range(4):  # PE0 → PE3 // Điều chỉnh số PE của mỗi lớp ở đây
-        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/OFM2_PE{pe}_change.hex"
-        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/OFM2_PE{pe}_DUT_DW.hex"
-        compare_files(file1, file2, pe_id=pe, log_file="test_log_block4a.txt")  # Lưu log vào file riêng
-    log_to_file("test_log_block4a.txt", "\n---------------------------------------------------------------Depthwise Layer!---------------------------------------------------------------\n")
+        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/OFM2_PE{pe}_change.hex"
+        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/OFM2_PE{pe}_DUT_DW.hex"
+        compare_files(file1, file2, pe_id=pe, log_file="test_log_block6b.txt")  # Lưu log vào file riêng
+    log_to_file("test_log_block6b.txt", "\n---------------------------------------------------------------Depthwise Layer!---------------------------------------------------------------\n")
 
     for pe in range(1):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
-        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Reduce/ofm_4.hex"
-        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Reduce/OFM4_DUT_SE.hex"
-        compare_files(file1, file2, pe_id=pe, log_file="test_log_block4a.txt")  # Lưu log vào file riêng
-    log_to_file("test_log_block4a.txt", "\n---------------------------------------------------------------REDUCE LAYER!---------------------------------------------------------------\n")
+        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Reduce/ofm_4.hex"
+        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Reduce/OFM4_DUT_SE.hex"
+        compare_files(file1, file2, pe_id=pe, log_file="test_log_block6b.txt")  # Lưu log vào file riêng
+    log_to_file("test_log_block6b.txt", "\n---------------------------------------------------------------REDUCE LAYER!---------------------------------------------------------------\n")
 
     for pe in range(4):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
-        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/OFM5_PE{pe}_change.hex"
-        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/OFM5_PE{pe}_DUT_SE.hex"
-        compare_files(file1, file2, pe_id=pe, log_file="test_log_block4a.txt")  # Lưu log vào file riêng
-    log_to_file("test_log_block4a.txt","\n---------------------------------------------------------------EXPAND LAYER!---------------------------------------------------------------\n")
+        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Expand/OFM5_PE{pe}_change.hex"
+        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Expand/OFM5_PE{pe}_DUT_SE.hex"
+        compare_files(file1, file2, pe_id=pe, log_file="test_log_block6b.txt")  # Lưu log vào file riêng
+    log_to_file("test_log_block6b.txt","\n---------------------------------------------------------------EXPAND LAYER!---------------------------------------------------------------\n")
 
     for pe in range(16):  # PE0 → PE15 // Điều chỉnh số PE của mỗi lớp ở đây
-        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/OFM6_PE{pe}_change.hex"
-        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/OFM6_PE{pe}_DUT.hex"
-        compare_files(file1, file2, pe_id=pe, log_file="test_log_block4a.txt")  # Lưu log vào file riêng
-    log_to_file("test_log_block4a.txt","\n---------------------------------------------------------------Conv1x1(last layer) LAYER!---------------------------------------------------------------\n")
+        file1 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/OFM6_PE{pe}_change.hex"
+        file2 = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/OFM6_PE{pe}_DUT.hex"
+        compare_files(file1, file2, pe_id=pe, log_file="test_log_block6b.txt")  # Lưu log vào file riêng
+    log_to_file("test_log_block6b.txt","\n---------------------------------------------------------------Conv1x1(last layer) LAYER!---------------------------------------------------------------\n")
     print("---------------------------------------------------------------Conv1x1(last layer) LAYER!---------------------------------------------------------------")
 
 if __name__ == "__main__":

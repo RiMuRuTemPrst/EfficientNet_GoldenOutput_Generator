@@ -7,10 +7,10 @@ module Control_unit #(
     //input  wire inprogress,     // Signal to prevent further actions when in progress
     input  wire [3:0] instrution,  // instruction code
     input  wire [3:0] KERNEL_W,
-    input  wire [7:0] OFM_W,
-    input  wire [7:0] OFM_C,
-    input  wire [7:0] IFM_C,
-    input  wire [7:0] IFM_W,
+    input  wire [15:0] OFM_W,
+    input  wire [15:0] OFM_C,
+    input  wire [15:0] IFM_C,
+    input  wire [15:0] IFM_W,
     input  wire [1:0] stride,
     input  wire addr_valid,
     input  wire done_compute,

@@ -5,10 +5,10 @@ module address_generator_dw #(
     input  wire         clk,
     input  wire         rst_n,
     input  wire [3:0]   KERNEL_W,
-    input  wire [7:0]   OFM_W,
-    input  wire [7:0]   OFM_C,
-    input  wire [7:0]   IFM_C,
-    input  wire [7:0]   IFM_W,
+    input  wire [15:0]   OFM_W,
+    input  wire [15:0]   OFM_C,
+    input  wire [15:0]   IFM_C,
+    input  wire [15:0]   IFM_W,
     input  wire [1:0]   stride,
     input  wire         ready,
     input  wire [31:0]  addr_in,
@@ -20,7 +20,7 @@ module address_generator_dw #(
     output reg          addr_valid_ifm,
     output reg          done_window,
     output wire         addr_valid_filter,
-    output wire [7:0]   num_of_tiles_for_PE
+    output wire [15:0]   num_of_tiles_for_PE
 );
 
 wire       in_progress;
@@ -106,7 +106,7 @@ always @(*) begin
 end
 
 //---------------------------------------------------LUT-KERNEL_W--------------------------------------------------------//
-reg [7:0] num_of_KERNEL_points; // = KERNEL_W *KERNEL_W
+reg [15:0] num_of_KERNEL_points; // = KERNEL_W *KERNEL_W
 
 always @(*) begin
     case (KERNEL_W)
@@ -125,7 +125,7 @@ always @(*) begin
 end
 
 //---------------------------------------------------LUT-KERNEL_W--------------------------------------------------------//
-reg [7:0] num_of_OFM_points; // = KERNEL_W *KERNEL_W
+reg [15:0] num_of_OFM_points; // = KERNEL_W *KERNEL_W
 
 always @(*) begin
     case (KERNEL_W)
@@ -140,7 +140,7 @@ always @(*) begin
     endcase
 end
 
-wire [7:0] num_of_tiles         = IFM_C >> num_of_mul_in_PE_shift ;
+wire [15:0] num_of_tiles         = IFM_C >> num_of_mul_in_PE_shift ;
 
 assign num_of_tiles_for_PE  = OFM_C >> total_PE_shift;
 //---------------------------------------------------LUT-num_of_tiles_shift--------------------------------------------------------//
@@ -265,11 +265,11 @@ always @(*) begin
         end
 
         PENDING : begin
-            if(ready ) begin
+            if(ready || stride ==1 ) begin
                 next_state_IFM  =   NEXT_WINDOW ;
                 addr_valid_ifm  =   1;
             end else begin
-                if ((col_index_OFM < OFM_W-3 )) begin
+                if ((col_index_OFM <= OFM_W-3 )) begin
                     next_state_IFM  =   PENDING ;
                     addr_valid_ifm  =   0;
                 end else begin
@@ -321,7 +321,7 @@ always @(*) begin
     'h2:    stride_offset_for_row  =   ( IFM_C ) ;
     endcase
 end
-reg [7:0] skip_a_pixel;
+reg [15:0] skip_a_pixel;
 always @(*) begin  
     case ( IFM_W[0] )
     

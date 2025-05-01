@@ -202,9 +202,6 @@ always_ff @(posedge clk or negedge rst_n)begin
                 addr_data <= addr_data;
                 count_lr <= count_lr + 1;
                 count_data <= count_data + 1;
-            end else if ( next_state == NEXT_LEFT_RIGHT_PADDING) begin
-                addr_data <= addr_data;
-                count_data <= count_data +1;
             end
             else begin
                 count_data <= count_data + 1;

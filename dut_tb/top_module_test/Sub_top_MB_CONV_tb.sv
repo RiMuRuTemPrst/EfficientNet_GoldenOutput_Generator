@@ -5,7 +5,9 @@
 
 `define GOL1 0
 
-// `define IFM_W_layer1_para 58
+`ifndef IFM_W_layer1_para
+    `define IFM_W_layer1_para 28
+`endif
 // `define IFM_C_layer1_para 32
 // `define KERNEL_W_layer1_para 3
 // `define OFM_C_layer1_para 128
@@ -17,28 +19,30 @@
 `define Num_of_layer2_PE_para 4
 
 module Sub_top_MB_CONV_tb #(
-    parameter IFM_W_layer1_para= 28, 
-    parameter IFM_C_layer1_para =48,
-    parameter KERNEL_W_layer1_para =1,
-    parameter OFM_C_layer1_para= 192,
-    parameter stride_layer1_para= 1,
+    parameter IFM_W_layer1_para     = 7, 
 
-    parameter KERNEL_W_layer2_para =3,
-    parameter OFM_C_layer2_para= 192,
-    parameter stride_layer2_para =2,
+    parameter IFM_C_layer1_para     = 192,
 
-    parameter OFM_C_se_reduce_para =12,
+    parameter OFM_C_layer1_para     = 1152,
 
-    parameter OFM_C_layer7_para =96 ,
+    parameter stride_layer2_para    = 1,
+
+    parameter OFM_C_se_reduce_para  = 48,
+
+    parameter OFM_C_layer7_para     = 192 
     
-
-    //
-    parameter OFM_W_layer2_para = IFM_W_layer1_para / stride_layer2_para,
-    parameter Start_addr_for_data_layer_2 = (IFM_W_layer1_para + 3) * OFM_C_layer1_para,
-    parameter enter_row_data = (IFM_W_layer1_para) * OFM_C_layer1_para,
-    parameter inc_addr_for_enter_row = 2*OFM_C_layer1_para,
-    parameter End_addr_for_data_layer_2 = ((IFM_W_layer1_para + 2)*(IFM_W_layer1_para + 2) - (IFM_W_layer1_para + 3) ) * OFM_C_layer1_para
+    
 );
+    parameter stride_layer1_para    = 1;
+    parameter KERNEL_W_layer1_para  =1;
+    parameter KERNEL_W_layer2_para  =3;
+    parameter OFM_C_layer2_para     = OFM_C_layer1_para;
+    parameter OFM_W_layer2_para = IFM_W_layer1_para / stride_layer2_para;
+    parameter Start_addr_for_data_layer_2 = (IFM_W_layer1_para + 3) * OFM_C_layer1_para;
+    parameter enter_row_data = (IFM_W_layer1_para) * OFM_C_layer1_para;
+    parameter inc_addr_for_enter_row = 2*OFM_C_layer1_para;
+    parameter End_addr_for_data_layer_2 = ((IFM_W_layer1_para + 2)*(IFM_W_layer1_para + 2) - (IFM_W_layer1_para + 3) ) * OFM_C_layer1_para;
+
     reg clk;
     reg reset;
     reg wr_rd_en_IFM;
@@ -54,10 +58,10 @@ module Sub_top_MB_CONV_tb #(
 
 
     reg [3:0] KERNEL_W_layer1;
-    reg [7:0] OFM_C_layer1;
-    reg [7:0] OFM_W_layer1;
-    reg [7:0] IFM_C_layer1;
-    reg [7:0] IFM_W_layer1;
+    reg [15:0] OFM_C_layer1;
+    reg [15:0] OFM_W_layer1;
+    reg [15:0] IFM_C_layer1;
+    reg [15:0] IFM_W_layer1;
     reg [1:0] stride_layer1;
 
     reg [31:0] addr, addr_lay2;
@@ -423,63 +427,63 @@ module Sub_top_MB_CONV_tb #(
         //wr_en_next = 0;
 
         // Load input data from file (example: input_data.hex)
-       //$readmemh("C:/Users/Admin/OneDrive - Hanoi University of Science and Technology/Desktop/CNN/Fused-Block-CNN/../Fused-Block-CNN/address/golden_5layers_folder/hex/input_56x56x16_pad.hex", input_data_mem);
+       //$readmemh("C:/Users/Admin/OneDrive - Hanoi University of Science and Technology/Desktop/CNN/Fused-Block-CNN/../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/input_56x56x16_pad.hex", input_data_mem);
         //
         begin
         // $readmemh("../Fused-Block-CNN/address/ifm_padded.hex", input_data_mem);
 
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE0.hex", input_data_mem0_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE1.hex", input_data_mem1_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE2.hex", input_data_mem2_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE3.hex", input_data_mem3_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE4.hex", input_data_mem4_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE5.hex", input_data_mem5_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE6.hex", input_data_mem6_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE7.hex", input_data_mem7_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE8.hex", input_data_mem8_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE9.hex", input_data_mem9_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE10.hex", input_data_mem10_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE11.hex", input_data_mem11_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE12.hex", input_data_mem12_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE13.hex", input_data_mem13_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE14.hex", input_data_mem14_2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/weight6_PE15.hex", input_data_mem15_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE0.hex", input_data_mem0_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE1.hex", input_data_mem1_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE2.hex", input_data_mem2_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE3.hex", input_data_mem3_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE4.hex", input_data_mem4_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE5.hex", input_data_mem5_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE6.hex", input_data_mem6_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE7.hex", input_data_mem7_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE8.hex", input_data_mem8_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE9.hex", input_data_mem9_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE10.hex", input_data_mem10_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE11.hex", input_data_mem11_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE12.hex", input_data_mem12_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE13.hex", input_data_mem13_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE14.hex", input_data_mem14_2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/weight6_PE15.hex", input_data_mem15_2);
         end
         begin
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/ifm.hex", input_data_mem);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/ifm.hex", input_data_mem);
 
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE0.hex", input_data_mem0);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE1.hex", input_data_mem1);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE2.hex", input_data_mem2);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE3.hex", input_data_mem3);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE4.hex", input_data_mem4);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE5.hex", input_data_mem5);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE6.hex", input_data_mem6);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE7.hex", input_data_mem7);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE8.hex", input_data_mem8);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE9.hex", input_data_mem9);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE10.hex", input_data_mem10);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE11.hex", input_data_mem11);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE12.hex", input_data_mem12);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE13.hex", input_data_mem13);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE14.hex", input_data_mem14);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/weight1_PE15.hex", input_data_mem15);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE0.hex", input_data_mem0);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE1.hex", input_data_mem1);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE2.hex", input_data_mem2);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE3.hex", input_data_mem3);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE4.hex", input_data_mem4);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE5.hex", input_data_mem5);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE6.hex", input_data_mem6);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE7.hex", input_data_mem7);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE8.hex", input_data_mem8);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE9.hex", input_data_mem9);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE10.hex", input_data_mem10);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE11.hex", input_data_mem11);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE12.hex", input_data_mem12);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE13.hex", input_data_mem13);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE14.hex", input_data_mem14);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/weight1_PE15.hex", input_data_mem15);
 
         end
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/weight2_PE0.hex", input_data_mem0_n_state);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/weight2_PE1.hex", input_data_mem1_n_state);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/weight2_PE2.hex", input_data_mem2_n_state);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/weight2_PE3.hex", input_data_mem3_n_state);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/weight2_PE0.hex", input_data_mem0_n_state);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/weight2_PE1.hex", input_data_mem1_n_state);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/weight2_PE2.hex", input_data_mem2_n_state);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/weight2_PE3.hex", input_data_mem3_n_state);
         
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Reduce/weight4_PE0.hex", input_data_mem0_reduce);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Reduce/weight4_PE1.hex", input_data_mem1_reduce);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Reduce/weight4_PE2.hex", input_data_mem2_reduce);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Reduce/weight4_PE3.hex", input_data_mem3_reduce);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Reduce/weight4_PE0.hex", input_data_mem0_reduce);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Reduce/weight4_PE1.hex", input_data_mem1_reduce);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Reduce/weight4_PE2.hex", input_data_mem2_reduce);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Reduce/weight4_PE3.hex", input_data_mem3_reduce);
 
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/weight5_PE0.hex", input_data_mem0_expand);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/weight5_PE1.hex", input_data_mem1_expand);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/weight5_PE2.hex", input_data_mem2_expand);
-        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/weight5_PE3.hex", input_data_mem3_expand);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Expand/weight5_PE0.hex", input_data_mem0_expand);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Expand/weight5_PE1.hex", input_data_mem1_expand);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Expand/weight5_PE2.hex", input_data_mem2_expand);
+        $readmemh("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Expand/weight5_PE3.hex", input_data_mem3_expand);
         run         =   1;
         instrution  =   1;
         fork
@@ -561,7 +565,11 @@ module Sub_top_MB_CONV_tb #(
             
         join
 
-        @(posedge uut.done_compute_Conv1x1);
+        repeat (2) @(posedge uut.done_compute_Conv1x1);
+        // @(posedge uut.done_compute_layer2);
+        // #10000;
+        $finish;
+        
         @(posedge uut.wr_rd_req_IFM);
         begin : load_weight_for_last_conv
                 for (k7 = 0; k7 < OFM_C_layer2_para*KERNEL_W_layer1*KERNEL_W_layer1*tile_2 +24; k7 = k7 + 4) begin
@@ -592,7 +600,7 @@ module Sub_top_MB_CONV_tb #(
 
         @(posedge clk);
         for ( k3 = 0;k3 < (OFM_W_layer1+2)*(OFM_W_layer1+2)*OFM_C_layer2_para ; k3 = k3+4 ) begin
-                    addr_IFM_layer_2 = k3;
+            addr_IFM_layer_2 = k3;
                     #10;
             //for ( k4=0; k4<4 ; k4+1) begin
             $fwrite(padding_data, "%h\n", uut.IFM_data_check_padding[7:0]);  // Ghi giá trị từng byte vào file
@@ -603,16 +611,24 @@ module Sub_top_MB_CONV_tb #(
             
         end   
         k3=0;
+    //  #100000;
+    //      $finish;
         addr_IFM_layer_2=0; 
         //PE_finish = 0;
         @(posedge uut.done_compute_Conv1x1);
-    #100000;
+      #10;
+        $finish;
+        #10;
+        $finish;
+        #10;
+        $finish;
+        #10;
         $finish;
     end
     initial begin
         for (k = 0; k < 16; k = k + 1) begin
             if (`GOL1) ofm_file[k] = $fopen($sformatf("../Fused-Block-CNN/address/OFM1_PE%0d_DUT.hex", k), "w");
-            else    ofm_file[k] = $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer1/OFM1_PE%0d_DUT.hex", k), "w");
+            else    ofm_file[k] = $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer1/OFM1_PE%0d_DUT.hex", k), "w");
             if (ofm_file[k] == 0) begin
                 $display("Error opening file OFM_PE%d.hex", k); 
                 $finish;  
@@ -620,28 +636,28 @@ module Sub_top_MB_CONV_tb #(
         end
 
         for (m = 0; m < 4; m = m + 1) begin
-            ofm_file_2[m] = $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/OFM2_PE%0d_DUT_DW.hex", m), "w");
+            ofm_file_2[m] = $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/OFM2_PE%0d_DUT_DW.hex", m), "w");
             if (ofm_file_2[m] == 0) begin
                 $display("Error opening file OFM%d.hex", k);
                 $finish;  
             end
         end
 
-        ofm_file_3 = $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder/hex/Average_Pooling/ofm_3_DUT.hex"), "w");
+        ofm_file_3 = $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Average_Pooling/ofm_3_DUT.hex"), "w");
         if (ofm_file_3 == 0) begin
             $display("Error opening file OFM%d.hex", k);
             $finish;  
         end
         
 
-        padding_data= $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder/hex/DW/PADDING_control_IFM.hex"), "w");
+        padding_data= $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/DW/PADDING_control_IFM.hex"), "w");
         if (padding_data == 0) begin
             $display("Error opening file", k);
             $finish;  
         end
 
 
-        ofm_file_4 = $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder/hex/Reduce/OFM4_DUT_SE.hex"), "w");
+        ofm_file_4 = $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Reduce/OFM4_DUT_SE.hex"), "w");
         if (ofm_file_4== 0) begin
             $display("Error opening file OFM%d.hex", k);
             $finish;  
@@ -649,21 +665,21 @@ module Sub_top_MB_CONV_tb #(
         end
 
         for (k8 = 0; k8 < 4; k8 = k8 + 1) begin
-            ofm_file_5[k8] = $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder/hex/Expand/OFM5_PE%0d_DUT_SE.hex", k8), "w");
+            ofm_file_5[k8] = $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Expand/OFM5_PE%0d_DUT_SE.hex", k8), "w");
             if (ofm_file_5[m] == 0) begin
                 $display("Error opening file OFM%d.hex", k);
                 $finish;  
             end
         end
 
-        ofm_file_6= $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder/hex/Multiply/ofm_multiply_DUT.hex"), "w");
-        if (ofm_file_6 == 0) begin
-            $display("Error opening file", k);
-            $finish;  
-        end
+        // ofm_file_6= $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Multiply/ofm_multiply_DUT.hex"), "w");
+        // if (ofm_file_6 == 0) begin
+        //     $display("Error opening file", k);
+        //     $finish;  
+        // end
 
         for (j0 = 0; j0 < 16; j0 = j0 + 1) begin
-            ofm_file_8[j0] = $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder/hex/Layer6/OFM6_PE%0d_DUT.hex", j0), "w");
+            ofm_file_8[j0] = $fopen($sformatf("../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/OFM6_PE%0d_DUT.hex", j0), "w");
             if (ofm_file_8[j0] == 0) begin
                 $display("Error opening file OFM%d.hex", k);
                 $finish;  
