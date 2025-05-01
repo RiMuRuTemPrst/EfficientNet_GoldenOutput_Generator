@@ -66,11 +66,7 @@ if __name__ == "__main__":
     output_feature_channel = args.weight_filter
 
     # File paths cố định
-<<<<<<< HEAD
     input_file = "../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Average_Pooling/ofm_3_DUT_6b.hex"
-=======
-    input_file = "../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Average_Pooling/ofm_3.hex"
->>>>>>> 3c744f089472803f0ea1f05f1e58404e4e422e63
     weight_file = "../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Reduce/weight_4.hex"
     output_file = "../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Reduce/ofm_4.hex"
 

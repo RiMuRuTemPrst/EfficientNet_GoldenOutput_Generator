@@ -1,4 +1,8 @@
- module Sub_top_MB_CONV_thanhdo(
+module Sub_top_MB_CONV_thanhdo#
+(   
+    parameter Num_of_layer1_PE_para= 16, 
+    parameter Num_of_layer2_PE_para =4
+)(
     input clk,
     input rst_n,
     
@@ -25,32 +29,30 @@
     input [31:0] data_in_Weight_15,
 
     input [31:0] addr_Wei_layer2,
-    input wr_rd_en_Weight_layer2,
+    input        wr_rd_en_Weight_layer2,
     input [31:0] data_in_Weight_0_n_state,  // layer 2
     input [31:0] data_in_Weight_1_n_state,  // layer 2
     input [31:0] data_in_Weight_2_n_state,  // layer 2
     input [31:0] data_in_Weight_3_n_state,  // layer 2
-    //input wr_en_next,                     // controll  layer1_2
 
     input [31:0] addr_Wei_layer_reduce,
-    input wr_rd_en_Weight_layer_reduce,
+    input        wr_rd_en_Weight_layer_reduce,
+
     input [31:0] data_in_Weight_0_reduce,  // layer reduce
     input [31:0] data_in_Weight_1_reduce,  // layer reduce
     input [31:0] data_in_Weight_2_reduce,  // layer reduce
     input [31:0] data_in_Weight_3_reduce,  // layer reduce
 
     input [31:0] addr_Wei_layer_expand,
-    input wr_rd_en_Weight_layer_expand,
+    input        wr_rd_en_Weight_layer_expand,
     input [31:0] data_in_Weight_0_expand,  // layer expand
     input [31:0] data_in_Weight_1_expand,  // layer expand
     input [31:0] data_in_Weight_2_expand,  // layer expand
     input [31:0] data_in_Weight_3_expand,  // layer expand
 
     //next state pipeline
-    //input [31:0] addr_ram_next_rd,
     input [31:0] addr_ram_next_wr,
     input [3:0] PE_reset_n_state,
-    //input [31:0] addr_w_n_state,
     output [7:0] OFM_0_DW_layer,
     output [7:0] OFM_1_DW_layer,
     output [7:0] OFM_2_DW_layer,
@@ -66,7 +68,6 @@
     input wire [15:0] PE_reset,
     input wire [15:0] PE_finish,
     //control singal layer 2
-    output wire [3:0] PE_finish_PE_cluster1x1,
 
     input  wire [3:0] KERNEL_W_layer1,
     input  wire [15:0] OFM_W_layer1,
@@ -87,21 +88,13 @@
    
     
     input  wire [1:0] stride_layer2,
-    output wire [15:0] valid,
-    output wire        valid_layer2,
-    output wire        valid_layer_reduce,
-    //output wire [15:0] done_window,
-    output wire        done_compute,
+
     
 
 
     // for Control_unit
     input  wire        run,
-    input  wire [3:0]  instrution,
-    output wire        wr_rd_req_IFM_for_tb,
-    output wire [31:0] wr_addr_IFM_for_tb,
-    output wire        wr_rd_req_Weight_for_tb,
-    output wire [31:0] wr_addr_Weight_for_tb,
+    input  wire [3:0]  instrution, 
     output wire [7:0]  OFM_0,
     output wire [7:0]  OFM_1,
     output wire [7:0]  OFM_2,
@@ -124,20 +117,36 @@
 
     // layer 2 signal 
     input wr_rd_req_IFM_layer_2,
-    output [31:0] IFM_data_layer_2,
     input [31:0] addr_IFM_layer_2,
     input valid_for_next_pipeline,
     input [31:0] wr_addr_IFM_layer_2,
-    output       done_compute_layer2,
+    
 
     //signal for pooling average
-    input [31:0] read_addr_pooling_tb,
-    input [31:0] write_addr_pooling,
-    input init_phase_pooling,
-    input [1:0] control_data_pooling,
-    input we_pooling,
-    output [63:0] data_pooling_average
+    input [31:0] read_addr_pooling_tb, // must have rtl code
+    input [31:0] write_addr_pooling,  // must have rtl code
+    input init_phase_pooling,         // must have rtl code
+    input [1:0] control_data_pooling, // must have rtl code
+    input we_pooling,                 // must have rtl code
+    input [31:0]  count_init_for_pooling, // must have rtl code
+
+
+
+    //layer CONV 1x1 next
+    input [31:0] addr_wr_pre_SE, // must have rtl code
+    input [31:0] addr_rd_pre_SE, // no need
+    input [31:0] addr_rd_mul, // no need
+    input start_mutiple, // no need
+    input multiply_we_back // no need
 );
+
+    logic [31:0] addr_wr_pre_SE_test;
+    logic [31:0] addr_rd_pre_SE_test;
+    logic [31:0] addr_rd_mul_test;
+    logic start_mutiple_test;
+    logic multiply_we_back_test;
+
+    reg   [31:0] rd_addr_multiply; 
 
     //wire for Weight connect to PE_1x1 from BRAM
     logic [31:0] Weight_0_n_state;
@@ -162,8 +171,8 @@
 
     //wire to PE_cluster
 
-    logic [31:0] addr_IFM;
-    logic [19:0] addr_w;
+    logic [31:0] addr_IFM_Conv1x1;
+    logic [19:0] addr_wei_Conv1x1;
     logic [31:0] IFM_data;
     logic [31:0] Weight_0;
     logic [31:0] Weight_1;
@@ -186,13 +195,6 @@
     wire [31:0] data_out_mux;
     wire [7:0]  OFM_n_CONV_0;
     wire [7:0]  OFM_n_CONV_1;
-    wire [7:0]  OFM_n_CONV_2;
-    wire [7:0]  OFM_n_CONV_3;
-    wire [7:0]  OFM_n_CONV_4;
-    wire [7:0]  OFM_n_CONV_5;
-    wire [7:0]  OFM_n_CONV_6;
-    wire [7:0]  OFM_n_CONV_7;
-    wire [7:0]  OFM_n_CONV_8;
     wire [7:0]  OFM_n_CONV_9;
     wire [7:0]  OFM_n_CONV_10;
     wire [7:0]  OFM_n_CONV_11;
@@ -230,7 +232,7 @@
     wire [15:0]  tile;
     wire        cal_start_ctl;
     wire        wr_rd_req_IFM;
-    wire        wr_rd_req_Weight;
+    wire        we_Weight_Conv1x1;
     wire [31:0] wr_addr_Weight;
     wire [31:0] wr_addr_IFM;
 
@@ -278,19 +280,20 @@
         .run(run),
         .instrution(instrution),
         .KERNEL_W(KERNEL_W_layer1),
-        .OFM_W(OFM_W_layer1),
-        .OFM_C(OFM_C_layer1),
-        .IFM_C(IFM_C_layer1),
-        .IFM_W(IFM_W_layer1),
-        .stride(stride_layer1),
+        .OFM_W(OFM_W_Conv1x1),
+        .OFM_C(OFM_C_Conv1x1),
+        .IFM_C(IFM_C_Conv1x1),
+        .IFM_W(IFM_W_Conv1x1),
+        .stride(stride_Conv1x1),
         .addr_valid(addr_valid),
-        .done_compute(done_compute),
+        .done_compute(done_compute_Conv1x1),
         .tile(tile),
+        .current_state_SE_layer(current_state_SE_layer_for_ctl_unit),
         //out
         .cal_start(cal_start_ctl),
         .wr_rd_req_IFM(wr_rd_req_IFM),
         .wr_addr_IFM(wr_addr_IFM),
-        .wr_rd_req_Weight(wr_rd_req_Weight),
+        .wr_rd_req_Weight(we_Weight_Conv1x1),
         .wr_addr_Weight(wr_addr_Weight),
         .base_addr(),
         .current_state_o()
@@ -302,197 +305,173 @@
         .DEPTH(32930)
     ) IFM_BRAM(
         .clk(clk),
-        .rd_addr(addr_IFM),
+        .rd_addr(addr_IFM_Conv1x1),
         .wr_addr(wr_addr_IFM),
         //.wr_rd_en(wr_rd_en_IFM),
         .wr_rd_en(wr_rd_req_IFM),
         .data_in(data_in_IFM),
         .data_out(IFM_data)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_0_layer1(
+    reg [31:0] wr_addr_Weight_Conv1x1;
+    BRAM BRam_Weight_0_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_0),
         .data_out(Weight_0)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_1_layer1(
+    BRAM BRam_Weight_1_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_1),
         .data_out(Weight_1)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_2_layer1(
+    BRAM BRam_Weight_2_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_2),
         .data_out(Weight_2)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_3_layer1(
+    BRAM BRam_Weight_3_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_3),
         .data_out(Weight_3)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_4_layer1(
+    BRAM BRam_Weight_4_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_4),
         .data_out(Weight_4)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_5_layer1(
+    BRAM BRam_Weight_5_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_5),
         .data_out(Weight_5)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_6_layer1(
+    BRAM BRam_Weight_6_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_6),
         .data_out(Weight_6)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_7_layer1(
+    BRAM BRam_Weight_7_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-.wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_7),
         .data_out(Weight_7)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_8_layer1(
+    BRAM BRam_Weight_8_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_8),
         .data_out(Weight_8)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_9_layer1(
+    BRAM BRam_Weight_9_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_9),
         .data_out(Weight_9)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_10_layer1(
+    BRAM BRam_Weight_10_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_10),
         .data_out(Weight_10)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_11_layer1(
+    BRAM BRam_Weight_11_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_11),
         .data_out(Weight_11)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_12_layer1(
+    BRAM BRam_Weight_12_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_12),
         .data_out(Weight_12)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_13_layer1(
+    BRAM BRam_Weight_13_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_13),
         .data_out(Weight_13)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_14_layer1(
+    BRAM BRam_Weight_14_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_14),
         .data_out(Weight_14)
     );
-    BRAM_Weight#(
-        .DEPTH(144)
-    ) BRam_Weight_15_layer1(
+    BRAM BRam_Weight_15_layer1(
         .clk(clk),
-        .rd_addr(addr_w),
-        .wr_addr(wr_addr_Weight),
+        .rd_addr(addr_wei_Conv1x1),
+        .wr_addr(wr_addr_Weight_Conv1x1),
         //.wr_rd_en(wr_rd_en_Weight),
-        .wr_rd_en(wr_rd_req_Weight),
+        .wr_rd_en(we_Weight_Conv1x1),
         .data_in(data_in_Weight_15),
         .data_out(Weight_15)
     );
-    
-    PE_cluster PE_cluster_layer1(
+    reg [31:0] IFM_data_Conv1x1;
+    reg        mul_en_Conv1x1;
+    PE_cluster_v2 PE_cluster_layer1(
         .clk(clk),
         .reset_n(rst_n),
         .PE_reset(done_window_for_PE_cluster),
-        .PE_finish(PE_finish),
+        //.PE_finish(PE_finish),
         //.valid(valid),
-        .IFM(IFM_data),
+        .mul_en(mul_en_Conv1x1),
+        .coef_1(data_out_multiply[7:0]),
+        .coef_2(data_out_multiply[15:8]),
+        .coef_3(data_out_multiply[23:16]),
+        .coef_4(data_out_multiply[31:24]),
+
+        .IFM(IFM_data_Conv1x1),
         .Weight_0(Weight_0),
         .Weight_1(Weight_1),
         .Weight_2(Weight_2),
@@ -527,23 +506,25 @@
         .OFM_15(OFM_15)
 
     );
-    assign data_in_IFM_layer_2 = write_padding ? {OFM_15,OFM_14,OFM_13,OFM_12,OFM_11,OFM_10,OFM_9,OFM_8,OFM_7,OFM_6,OFM_5,OFM_4,OFM_3,OFM_2,OFM_1,OFM_0} : 0;
     
+    
+    reg [31:0] coef_for_multiply_addr_Conv1x1;
     address_generator addr_gen(
         .clk(clk),
         .rst_n(rst_n),
-        .KERNEL_W(KERNEL_W_layer1),
-        .OFM_W(OFM_W_layer1),
-        .OFM_C(OFM_C_layer1),
-        .IFM_C(IFM_C_layer1),
-        .IFM_W(IFM_W_layer1),
-        .stride(stride_layer1),
+        .KERNEL_W(KERNEL_W_Conv1x1),
+        .OFM_W(OFM_W_Conv1x1),
+        .OFM_C(OFM_C_Conv1x1),
+        .IFM_C(IFM_C_Conv1x1),
+        .IFM_W(IFM_W_Conv1x1),
+        .stride(stride_Conv1x1),
         //.ready(cal_start),
-        .ready(cal_start_ctl),
+        .ready(ready_Con1x1),
         .addr_in(base_addr),
-        .req_addr_out_filter(addr_w),
-        .req_addr_out_ifm(addr_IFM),
-        .done_compute(done_compute),
+        .req_addr_out_filter(addr_wei_Conv1x1),
+        .req_addr_out_ifm(addr_IFM_Conv1x1),
+        .coef_for_multiply_addr(coef_for_multiply_addr_Conv1x1),
+        .done_compute(done_compute_Conv1x1),
         .done_window(done_window_one_bit),
         .finish_for_PE(finish_for_PE),
         .addr_valid_filter(addr_valid),
@@ -552,8 +533,7 @@
 
     
     assign done_window_for_PE_cluster       =   {16{done_window_one_bit}};
-    assign finish_for_PE_cluster_layer1            =   (cal_start_ctl) && ( addr_IFM != 'b0 )   ? {16{finish_for_PE}} : 16'b0;
-    assign valid                            =   finish_for_PE_cluster_layer1;
+    assign finish_for_PE_cluster_layer1     =   (cal_start_ctl) && ( addr_IFM_Conv1x1 != 'b0 )   ? {16{finish_for_PE}} : 16'b0;
 
 
     wire [31:0] req_addr_out_ifm_layer2;
@@ -591,21 +571,22 @@
         .addr_valid_filter(addr_valid_filter_layer2),
         .num_of_tiles_for_PE(num_of_tiles_for_PE_layer2)
     );
-    assign finish_for_PE_cluster_layer2 = (1) && (req_addr_out_ifm_layer2!= 'b0)  ? finish_for_PE_layer2 : 1'b0;
+    assign finish_for_PE_cluster_layer2 =  (req_addr_out_ifm_layer2!= 'b0)  ? finish_for_PE_layer2 : 1'b0;
 
-    assign valid_layer2 =finish_for_PE_cluster_layer2;
 
     wire wr_en_from_control_padding;
     wire [31:0] wr_addr_from_control_padding;
     wire [16*8-1:0] IFM_data_layer_2_from_control_padding;
 
+
+    reg start_for_control_padding;
     control_padding #( 
         .PE()
     ) control_padding_inst (
         .clk(clk),
         .rst_n(rst_n),
-        .valid(valid),
-        .start(cal_start_ctl),
+        .valid(finish_for_PE_cluster_layer1),
+        .start(start_for_control_padding),
         .data_in({OFM_15,OFM_14,OFM_13,OFM_12,OFM_11,OFM_10,OFM_9,OFM_8,OFM_7,OFM_6,OFM_5,OFM_4,OFM_3,OFM_2,OFM_1,OFM_0}),
         .OFM_C(OFM_C_layer1),
         .OFM_W(OFM_W_layer1),
@@ -630,11 +611,11 @@
         .wr_rd_en(wr_en_from_control_padding),
         //.data_in(data_in_IFM_layer_2),
         .data_in( IFM_data_layer_2_from_control_padding ),
-        .data_out(IFM_data_layer_2)
+        .data_out(IFM_data_check_padding)
     );
 
     BRAM #(
-    .DATA_WIDTH(8),    
+    .DATA_WIDTH(8),
     .off_set_shift(0)
     )BRam_Weight_0_DW(
         .clk(clk),
@@ -690,7 +671,7 @@
         .Weight_1(Weight_1_n_state),
         .Weight_2(Weight_2_n_state),
         .Weight_3(Weight_3_n_state),
-        .IFM(IFM_data_layer_2),
+        .IFM(IFM_data_check_padding),
         .PE_reset(done_window_layer2),
         .PE_finish(),
         .OFM_0(OFM_0_DW_layer),
@@ -744,9 +725,7 @@
     //assign read_addr_pooling = excute_average ? read_addr_pooling_tb: read_addr_pooling_tb  ; /// for test poolinng block
     assign read_addr_pooling = excute_average ? read_addr_pooling_test: req_addr_out_ifm_layerSE  ;
 
-    parameter POOLING_IDLE      = 1'b0;
-    parameter POOLING_EXCUTE    = 1'b1;
-    reg current_state_POOLING , next_state_POOLING ;
+    assign control_data_pooling_test = counter_num_of_PE_for_DW;
     //-------------------------------------------------POOLING---------------------------------------------------------//
     // FSM State Register
     always @(posedge clk or negedge rst_n) begin
@@ -755,24 +734,40 @@
         else
             current_state_POOLING <= next_state_POOLING;
     end
+     always @(posedge clk or negedge rst_n) begin
+        if (!rst_n)
+            last_state_POOLING <= POOLING_IDLE;
+        else
+            last_state_POOLING <= current_state_POOLING;
+    end
     always @(*) begin
     case (current_state_POOLING)
 
         POOLING_IDLE: begin
-            if ( valid_layer2 ) begin
-                next_state_POOLING =    POOLING_EXCUTE ;
+            if ( finish_for_PE_cluster_layer2 ) begin
+                next_state_POOLING =    POOLING_EXCUTE_1 ;
             end else begin
                 next_state_POOLING =    POOLING_IDLE;
                 
             end
         end
 
-        POOLING_EXCUTE: begin
-            if ( done_compute_pooling ) begin
+        POOLING_EXCUTE_1: begin
+            if ( finish_for_PE_cluster_layer2 ) begin
+                next_state_POOLING =    POOLING_EXCUTE_2 ;
+            end else begin
+                next_state_POOLING =    POOLING_EXCUTE_1;
+            end
+        end
+        POOLING_EXCUTE_2: begin
+            if ( done_compute_pooling_test ) begin
                 next_state_POOLING =    POOLING_IDLE ;
             end else begin
-                next_state_POOLING =    POOLING_EXCUTE;
-                
+                if ( finish_for_PE_cluster_layer2 ) begin
+                    next_state_POOLING =    POOLING_EXCUTE_1 ;
+                end else begin
+                    next_state_POOLING =    POOLING_EXCUTE_2;
+                end
             end
         end
         
@@ -783,17 +778,92 @@
     endcase
     end
 
+    
+
+    assign counter_num_of_PE_for_DW = counter_num_of_PE_for_DW_1+ counter_num_of_PE_for_DW_2 -1;
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            excute_average <= 0;
+            excute_average                  <=0;
+            count_init_for_pooling_test     <=0;
+            read_addr_pooling_test          <=0;
+            write_addr_pooling_test         <=0;
+            init_phase_pooling_test         <=1;
+            we_pooling_test                 <=0;
+            counter_num_of_PE_for_DW_1      <=0;
+            counter_num_of_PE_for_DW_2      <=0;
+            done_compute_pooling_test       <=0;
+            addition_counter_for_Pooling    <=0;
         end else begin
+            case (current_state_POOLING)
+                POOLING_IDLE: begin
+
+                    count_init_for_pooling_test <= 0;
+                    init_phase_pooling_test <= 1;
+                    done_compute_pooling_test <= 0 ;
+                    addition_counter_for_Pooling<=0;
+                end
+
+                POOLING_EXCUTE_1: begin
+                    counter_num_of_PE_for_DW_2    <=0;
+                    if ( finish_for_PE_cluster_layer2 ) count_init_for_pooling_test <= count_init_for_pooling_test +1;                    
+                    
+                    if ( counter_num_of_PE_for_DW_1 < Num_of_layer2_PE_para ) begin
+                        counter_num_of_PE_for_DW_1 <= counter_num_of_PE_for_DW_1+1;
+                        we_pooling_test <=1;
+                        read_addr_pooling_test <= read_addr_pooling_test + 1;
+                        write_addr_pooling_test <= read_addr_pooling_test;
+                        if(read_addr_pooling_test == OFM_C_layer2) read_addr_pooling_test <=0;
+                    end else begin
+                        we_pooling_test <=0;
+                    end
+                    if ( count_init_for_pooling_test > (OFM_C_layer2 /Num_of_layer2_PE_para) -1 ) begin
+                        init_phase_pooling_test <= 0;
+                    end
+
+                end
+                POOLING_EXCUTE_2: begin
+                    counter_num_of_PE_for_DW_1 <= 0;
+                    if ( finish_for_PE_cluster_layer2 ) begin
+                        count_init_for_pooling_test <= count_init_for_pooling_test +1;
+                    end else begin
+                        if (count_init_for_pooling_test == OFM_W_layer2*OFM_W_layer2*OFM_C_layer2/Num_of_layer2_PE_para -1 )
+                           begin 
+                            addition_counter_for_Pooling <= addition_counter_for_Pooling+1;
+                           end
+                        else addition_counter_for_Pooling <=0;
+                    end
+                    if ( counter_num_of_PE_for_DW_2 < Num_of_layer2_PE_para ) begin
+                        counter_num_of_PE_for_DW_2 <= counter_num_of_PE_for_DW_2+1;
+                        we_pooling_test <=1;
+                        read_addr_pooling_test <= read_addr_pooling_test + 1;
+                        write_addr_pooling_test <= read_addr_pooling_test;
+                        if(read_addr_pooling_test == OFM_C_layer2-1) read_addr_pooling_test <=0;
+                    end else begin
+                        we_pooling_test <=0;
+                    end
+ 
+                    if( addition_counter_for_Pooling == Num_of_layer2_PE_para +2 ) 
+                        done_compute_pooling_test <= 1 ;
+                    else 
+                        done_compute_pooling_test <= 0 ;
+
+                end
+                                  
+                default: begin
+                    
+                end
+            endcase
+
             case (next_state_POOLING)
                 POOLING_IDLE: begin
                     excute_average<=0;
                 end
 
-                POOLING_EXCUTE: begin
-                    excute_average<=1;
+                POOLING_EXCUTE_1: begin
+                    excute_average<=1; 
+                end
+                POOLING_EXCUTE_2: begin
+                    excute_average<=1; 
                 end
                                   
                 default: begin
@@ -803,11 +873,6 @@
         end
     end
 
-    // assign se_layer =0;
-
-    // assign IFM_C_se = se_layer ? OFM_C_se_reduce : OFM_C_layer2;
-
-    // assign OFM_C_se = se_layer ? OFM_C_layer2 : OFM_C_se_reduce;
 
 //----------------------------------------------------_FSM_FOR_REDUCE_EXPAND------------------------------------//
     parameter DW_CONV           = 3'b000;
@@ -871,7 +936,7 @@
     // FSM State Register
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n)
-            current_state_SE_layer <= REDUCE_CONV;
+            current_state_SE_layer <= DW_CONV;
         else
             current_state_SE_layer <= next_state_SE_layer;
     end
@@ -897,15 +962,22 @@
 
             EXPAND_CONV: begin
                 if ( done_compute_SE ) begin
-                    next_state_SE_layer =    REDUCE_CONV ;
+                    next_state_SE_layer =    MUL_CONV ;
                 end else begin
                     next_state_SE_layer =    EXPAND_CONV;
                     
                 end
             end
-            
+            MUL_CONV: begin
+                if( done_compute_Conv1x1 ==1 ) begin
+                    next_state_SE_layer =    DW_CONV;
+                end else begin
+                    next_state_SE_layer =    MUL_CONV;
+                end
+                
+            end
             default: begin
-                current_state_SE_layer  = REDUCE_CONV;
+
             end
 
         endcase
@@ -1086,14 +1158,19 @@
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            IFM_C_se <=  0;
-            done_compute_reduce <=0;
+            IFM_C_se                <=0;
+            done_compute_reduce     <=0;
+
         end else begin
             case (current_state_SE_layer)
+                DW_CONV: begin
+                    
+                    IFM_C_se <=  OFM_C_layer2;
+                    OFM_C_se <=  OFM_C_se_reduce;
+                end
                 REDUCE_CONV: begin
                     IFM_C_se <=  OFM_C_layer2;
                     OFM_C_se <=  OFM_C_se_reduce;
-                    //req_addr_out_ifm_layerSE_for_IFM_BRAM <=    0;
                     if (next_state_SE_layer  == EXPAND_CONV) done_compute_reduce <=1;
                     else done_compute_reduce <=0;
                 end
@@ -1102,8 +1179,12 @@
 
                     IFM_C_se <=  OFM_C_se_reduce;
                     OFM_C_se <=  OFM_C_layer2;
-                    //req_addr_out_ifm_layerSE_for_IFM_BRAM <= req_addr_out_ifm_layerSE;
                     done_compute_reduce <=0;
+                end
+
+                MUL_CONV: begin
+
+                    
                 end
                                   
                 default: begin
@@ -1113,7 +1194,6 @@
         end
     end
 
-    assign req_addr_out_ifm_layerSE_for_IFM_BRAM = current_state_SE_layer ? req_addr_out_ifm_layerSE : 'h0;
 
     wire [31:0] data_pooling_average_32bit;
     Pooling_average_BRAM pooling(
@@ -1134,11 +1214,8 @@
     );
 //BRAM for SE reduce layer 
 
-    wire [31:0] IFM_data_reduce_layer;
     assign IFM_data_reduce_layer = data_pooling_average_32bit;
-    BRAM_Weight#(
-        .DEPTH(576)
-    ) BRam_Weight_0_SE_reduce(
+    BRAM BRam_Weight_0_SE_reduce(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -1148,9 +1225,7 @@
         .data_out(Weight_0_reduce)
     );
     
-    BRAM_Weight#(
-        .DEPTH(576)
-    ) BRam_Weight_1_SE_reduce(
+    BRAM BRam_Weight_1_SE_reduce(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -1160,9 +1235,7 @@
         .data_out(Weight_1_reduce)
     );
     
-    BRAM_Weight#(
-        .DEPTH(576)
-    ) BRam_Weight_2_SE_reduce(
+    BRAM BRam_Weight_2_SE_reduce(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -1172,9 +1245,7 @@
         .data_out(Weight_2_reduce)
     );
 
-    BRAM_Weight#(
-        .DEPTH(576)
-    ) BRam_Weight_3_SE_reduce(
+    BRAM BRam_Weight_3_SE_reduce(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -1184,9 +1255,7 @@
         .data_out(Weight_3_reduce)
     );
 //BRAM for SE expand layer 
-    BRAM_Weight#(
-        .DEPTH(576)
-    ) BRam_Weight_0_SE_expand(
+    BRAM BRam_Weight_0_SE_expand(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -1196,9 +1265,7 @@
         .data_out(Weight_0_expand)
     );
 
-    BRAM_Weight#(
-        .DEPTH(576)
-    ) BRam_Weight_1_SE_expand(
+    BRAM BRam_Weight_1_SE_expand(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -1208,9 +1275,7 @@
         .data_out(Weight_1_expand)
     );
 
-    BRAM_Weight#(
-        .DEPTH(576)
-    ) BRam_Weight_2_SE_expand(
+    BRAM BRam_Weight_2_SE_expand(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -1220,9 +1285,7 @@
         .data_out(Weight_2_expand)
     );
 
-    BRAM_Weight#(
-        .DEPTH(576)
-    ) BRam_Weight_3_SE_expand(
+    BRAM BRam_Weight_3_SE_expand(
         .clk(clk),
         .rd_addr(req_addr_out_filter_layerSE),
         .wr_addr(addr_Wei_layer_reduce),
@@ -1231,24 +1294,23 @@
         .data_in(data_in_Weight_3_expand),
         .data_out(Weight_3_expand)
     );
-    
+    //ready_addr_gen_SE = next_state_SE_layer ? done_compute_reduce :done_compute_pooling  ; 
    
 //BRAM for SE expand layer 
 
-    always_ff @(posedge clk or negedge rst_n) begin
-        if(~rst_n) begin
-            done_compute_pooling    <=  0;
-        end
-        else begin
-        if( (count_init_for_pooling == 9408 ) && (init_phase_pooling)  ) 
-            done_compute_pooling <= 1 ;
-        else 
-            done_compute_pooling <= 0 ;
-        end
+//     always_ff @(posedge clk or negedge rst_n) begin
+//         if(~rst_n) begin
+//             done_compute_pooling    <=  0;
+//         end
+//         else begin
+//         if( (count_init_for_pooling == OFM_W_layer2*OFM_W_layer2*OFM_C_layer2/Num_of_layer2_PE_para ) && (init_phase_pooling)  ) 
+//             done_compute_pooling <= 1 ;
+//         else 
+//             done_compute_pooling <= 0 ;
+//         end
             
-    end
-
-    assign ready_addr_gen_SE = next_state_SE_layer ? done_compute_reduce :done_compute_pooling  ; 
+// end
+    
     
     address_generator_SE addr_gen_SE(
         .clk(clk),
@@ -1271,19 +1333,6 @@
         .num_of_tiles_for_PE()
     );
 
-    assign valid_layer_reduce = finish_for_PE_SE_cluster;
-    wire [31:0] IFM_data_expand_layer;
-    wire [31:0] IFM_SE_layer;
-    wire [31:0] Weight_0_SE_layer;
-    wire [31:0] Weight_1_SE_layer;
-    wire [31:0] Weight_2_SE_layer;
-    wire [31:0] Weight_3_SE_layer;
-    assign IFM_SE_layer = current_state_SE_layer ? IFM_data_expand_layer : IFM_data_reduce_layer;
-
-    assign Weight_0_SE_layer = current_state_SE_layer ? Weight_0_expand : Weight_0_reduce;
-    assign Weight_1_SE_layer = current_state_SE_layer ? Weight_1_expand : Weight_1_reduce;
-    assign Weight_2_SE_layer = current_state_SE_layer ? Weight_2_expand : Weight_2_reduce;
-    assign Weight_3_SE_layer = current_state_SE_layer ? Weight_3_expand : Weight_3_reduce;
     PE_cluster_1x1 PE_SE_cluster(
         .clk(clk),
         .reset_n(rst_n),
@@ -1326,18 +1375,18 @@
         .data_out( IFM_data_expand_layer )
     );
     
-    wire  wr_rd_en_IFM_BRAM_Multiple;
-    assign wr_rd_en_IFM_BRAM_Multiple = current_state_SE_layer? finish_for_PE_SE_cluster :0;
-    BRAM_IFM #(
-        .DEPTH(40000)
-    ) IFM_BRAM_Multiple(
+    // wire  wr_rd_en_IFM_BRAM_Multiple;
+    // assign wr_rd_en_IFM_BRAM_Multiple = current_state_SE_layer? finish_for_PE_SE_cluster :0;
+    
+    BRAM_IFM IFM_BRAM_Multiply(
         .clk(clk),
-        .rd_addr(req_addr_out_ifm_layerSE_for_IFM_BRAM),
+        //.rd_addr(addr_rd_mul),
+        .rd_addr(coef_for_multiply_addr_Conv1x1),
         .wr_addr(addr_ram_next_wr_wire),
         //.wr_rd_en(wr_rd_en_IFM),
         .wr_rd_en(wr_rd_en_IFM_BRAM_Multiple),
         .data_in({OFM_3_SE_layer,OFM_2_SE_layer,OFM_1_SE_layer,OFM_0_SE_layer}),
-        .data_out(  )
+        .data_out( data_out_multiply)
     );
     // assign data_in_post_SE = start_mutiple ? data_write_back_post_SE : data_in_pooling;
     // assign valid_post_SE = start_mutiple ? multiply_we_back : valid_layer2;

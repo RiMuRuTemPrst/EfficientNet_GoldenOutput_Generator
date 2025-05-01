@@ -27,7 +27,6 @@ def trim_output_file_to_match_input(output_file, target_line_count):
 
 # Hàm xử lý 1 PE
 def process_pe_file(pe_id, OFFSET, tile):
-<<<<<<< HEAD
     input_file = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/OFM6_PE{pe_id}.hex"
     output_file = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/OFM6_PE{pe_id}_change.hex"
 
@@ -72,10 +71,6 @@ def process_pe_file(pe_id, OFFSET, tile):
 def process_pe_file_all(pe_id, OFFSET, tile):
     input_file = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/ofm_6.hex"
     output_file = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Layer6/ofm_6_change.hex"
-=======
-    input_file = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Last/OFM6_PE{pe_id}.hex"
-    output_file = f"../Fused-Block-CNN/address/golden_5layers_folder_stride_1/hex/Last/OFM6_PE{pe_id}_change.hex"
->>>>>>> 3c744f089472803f0ea1f05f1e58404e4e422e63
 
     # Đếm số dòng trong file
     total_lines = count_lines(input_file)
@@ -125,11 +120,8 @@ def main():
     for pe in range(args.max_pe):
         process_pe_file(pe, OFFSET, tile)
 
-<<<<<<< HEAD
     process_pe_file_all(pe, OFFSET, 1)
 
-=======
->>>>>>> 3c744f089472803f0ea1f05f1e58404e4e422e63
     print(f"\n🚀 Đã xử lý xong tất cả {args.max_pe} PE!")
 
 if __name__ == "__main__":
