@@ -19,14 +19,14 @@ module Top_Global_Fused_tb;
 
     //input of size 
     logic [3:0] KERNEL_W;
-    logic [10:0] OFM_W;
-    logic [10:0] OFM_C;
-    logic [10:0] IFM_C;
-    logic [10:0] IFM_W;
+    logic [15:0] OFM_W;
+    logic [15:0] OFM_C;
+    logic [15:0] IFM_C;
+    logic [15:0] IFM_W;
     logic [1:0] stride;
-    logic [10:0] IFM_C_layer2;
-    logic [10:0] OFM_C_layer2;
-    logic [10:0] OFM_W_layer2;
+    logic [15:0] IFM_C_layer2;
+    logic [15:0] OFM_C_layer2;
+    logic [15:0] OFM_W_layer2;
     int sw_index_load_mem;
     reg [7:0] input_data_mem [0:1000000];
 
@@ -39,6 +39,7 @@ module Top_Global_Fused_tb;
     reg [7:0] ofm_data_byte_2;
     wire [7:0] OFM_n_state [3:0];
     logic start_layer_2;
+    logic start_layer_3;
     //handle for file 
     integer ofm_file_2[3:0];
     // Instantiate DUT
@@ -79,6 +80,8 @@ module Top_Global_Fused_tb;
         // Initialize signals
         clk = 0;
         reset_n = 0;
+        start_layer_2 =0;
+        start_layer_3 =0;
         //initial for fused layer 1
         base_addr_IFM = 32'h0000_0000;
         size_IFM = 32'h32C40;
@@ -125,13 +128,122 @@ module Top_Global_Fused_tb;
         // Wait for a few cycles
         @(posedge clk) 
         @(posedge clk) 
+        $display("START FUSED BLOCK 1");
         start = 0;
 
         // Phase 2: Turn off load_phase for your later dev work
         load_phase = 0;
-
+        @(dut.done_compute);
+        @(posedge clk)
+        @(posedge clk)
+        @(posedge clk)
+        @(posedge clk)
+        begin
+        $display("DONE FUSED BLOCK 1");
+        $display("START FUSED BLOCK 2");
+            base_addr_IFM = 32'h0000_0000;
+            size_IFM = 32'h1A480;
+            base_addr_Weight_layer_1 = 32'h35840;
+            size_Weight_layer_1 = 32'h9000;
+            base_addr_Weight_layer_2 = 32'h003E840;
+            size_Weight_layer_2 = 32'h1000;
+            wr_addr_global_initial = -1;
+            rd_addr_global_initial = 32'd0;
+            data_load_in_global = 128'hDEADBEEF_CAFECAFE_ABCDC0DE0_12345678;
+            we_global_initial = 0;
+            load_phase = 0;
+            start = 1;
+            sw_index_load_mem = 0;
+            KERNEL_W = 3;
+            OFM_W = 56;
+            OFM_C = 128;
+            IFM_C = 32;
+            IFM_W = 58;
+            stride = 1;
+            IFM_C_layer2 = 128;
+            OFM_C_layer2 = 32;
+        end
+        @(posedge clk) start = 0;
+        @(posedge clk)
+        @(posedge clk)
+        @(posedge clk)
+        @(dut.done_compute);
+        $display("DONE FUSED BLOCK 2");
+        @(posedge clk)
+        @(posedge clk)
+        @(posedge clk)
+        @(posedge clk)
+        begin
+        $display("START FUSED BLOCK 3");
+         begin
+            base_addr_IFM = 32'h0000_0000;
+            size_IFM = 32'h1A480;
+            base_addr_Weight_layer_1 = 32'h3F840;
+            size_Weight_layer_1 = 32'h9000;
+            base_addr_Weight_layer_2 = 32'h48840;
+            size_Weight_layer_2 = 32'h1800;
+            wr_addr_global_initial = -1;
+            rd_addr_global_initial = 32'd0;
+            data_load_in_global = 128'hDEADBEEF_CAFECAFE_ABCDC0DE0_12345678;
+            we_global_initial = 0;
+            load_phase = 0;
+            start = 1;
+            sw_index_load_mem = 0;
+            KERNEL_W = 3;
+            OFM_W = 28;
+            OFM_C = 128;
+            IFM_C = 32;
+            IFM_W = 58;
+            stride = 2;
+            IFM_C_layer2 = 128;
+            OFM_C_layer2 = 48;
+            OFM_W_layer2 = 28;
+        end
+        @(posedge clk) start = 0;
+        @(posedge clk)
+        @(posedge clk)
+        @(dut.done_compute);
+        @(posedge clk)
+        @(posedge clk)
+        @(posedge clk)
+        @(posedge clk)
+        $display("DONE FUSED BLOCK 3");
+        begin
+        $display("START FUSED BLOCK 4");
+         begin
+            base_addr_IFM = 32'h0000_0000;
+            size_IFM = 32'h1A480;
+            base_addr_Weight_layer_1 = 32'h3F840;
+            size_Weight_layer_1 = 32'h9000;
+            base_addr_Weight_layer_2 = 32'h48840;
+            size_Weight_layer_2 = 32'h1800;
+            wr_addr_global_initial = -1;
+            rd_addr_global_initial = 32'd0;
+            data_load_in_global = 128'hDEADBEEF_CAFECAFE_ABCDC0DE0_12345678;
+            we_global_initial = 0;
+            load_phase = 0;
+            start = 1;
+            sw_index_load_mem = 0;
+            KERNEL_W = 3;
+            OFM_W = 28;
+            OFM_C = 192;
+            IFM_C = 48;
+            IFM_W = 30;
+            stride = 1;
+            IFM_C_layer2 = 192;
+            OFM_C_layer2 = 48;
+            OFM_W_layer2 = 28;
+        end
+        @(posedge clk) start = 0;
+        $display("DONE FUSED BLOCK 4");
+        repeat (5 ) @(posedge clk);
+        @(dut.done_compute);
+        repeat (100 ) @(posedge clk);
+        $finish;
+        end
         // You can add assertions or further logic here
         
+    end
     end
 //inital for load hex debug
     always @(posedge clk) begin
@@ -167,12 +279,14 @@ end
          forever begin
              @(posedge clk)
              if(dut.done_compute) begin
-                 start_layer_2 = 1;                 
+                 start_layer_2 = 0;                
             end
         end
     end
     initial begin
         @(start_layer_2) begin
+        $display("DONE FUSED BLOCK 1");
+        $display("START FUSED BLOCK 2");
             base_addr_IFM = 32'h0000_0000;
             size_IFM = 32'h1A480;
             base_addr_Weight_layer_1 = 32'h35840;
@@ -199,7 +313,56 @@ end
         // repeat(1000000) begin
         //      @(posedge clk) ;
         // end
-        @(dut.done_compute)
+       
+       
+
+    end
+
+    initial begin
+         forever begin
+             @(posedge clk)
+             if (start_layer_2) begin
+                if(dut.done_compute) begin
+                    $display("DONE FUSED BLOCK 2");
+                    start_layer_3 = 0;                
+                end
+             end
+        end
+    end
+
+    initial begin
+        @(start_layer_3) begin
+        $display("START FUSED BLOCK 3");
+         begin
+            base_addr_IFM = 32'h0000_0000;
+            size_IFM = 32'h1A480;
+            base_addr_Weight_layer_1 = 32'h3F840;
+            size_Weight_layer_1 = 32'h9000;
+            base_addr_Weight_layer_2 = 32'h48840;
+            size_Weight_layer_2 = 32'h1800;
+            wr_addr_global_initial = -1;
+            rd_addr_global_initial = 32'd0;
+            data_load_in_global = 128'hDEADBEEF_CAFECAFE_ABCDC0DE0_12345678;
+            we_global_initial = 0;
+            load_phase = 0;
+            start = 1;
+            sw_index_load_mem = 0;
+            KERNEL_W = 3;
+            OFM_W = 28;
+            OFM_C = 128;
+            IFM_C = 32;
+            IFM_W = 58;
+            stride = 2;
+            IFM_C_layer2 = 128;
+            OFM_C_layer2 = 48;
+            OFM_W_layer2 = 28;
+        end
+        @(posedge clk) start = 0;
+        repeat (100 ) @(posedge clk);
+        @(dut.done_compute);
+        $display("DONE FUSED BLOCK 3");
+        repeat (100 ) @(posedge clk);
         $finish;
+        end
     end
 endmodule

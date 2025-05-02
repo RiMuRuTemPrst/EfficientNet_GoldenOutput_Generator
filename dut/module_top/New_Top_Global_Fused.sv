@@ -19,15 +19,15 @@ module New_Top_Global_Fused(
     //size of Fused 
 
     input  wire [3:0] KERNEL_W,
-    input  wire [10:0] OFM_W,
-    input  wire [10:0] OFM_C,
-    input  wire [10:0] IFM_C,
-    input  wire [10:0] IFM_W,
+    input  wire [15:0] OFM_W,
+    input  wire [15:0] OFM_C,
+    input  wire [15:0] IFM_C,
+    input  wire [15:0] IFM_W,
     input  wire [1:0] stride,
     
-    input  wire [10:0] IFM_C_layer2,
-    input  wire [10:0] OFM_C_layer2,
-    input  wire [10:0] OFM_W_layer2
+    input  wire [15:0] IFM_C_layer2,
+    input  wire [15:0] OFM_C_layer2,
+    input  wire [15:0] OFM_W_layer2
     
 );
     logic [31:0] wr_addr_global_ctl;
@@ -170,6 +170,8 @@ module New_Top_Global_Fused(
         .reset_n(reset_n),
         .start(start),
         .ready(ready),
+        .IFM_C(IFM_C),
+        .IFM_W(IFM_W),
 
     // Global BRAM signal
         //.wr_addr_global(wr_addr_global_ctl),

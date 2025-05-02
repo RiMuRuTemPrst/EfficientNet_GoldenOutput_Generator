@@ -3,6 +3,8 @@ module Global_top_fused_control_unit (
     input reset_n,
     input start,
     output logic ready,
+    input [15:0] IFM_C,
+    input [15:0] IFM_W,
 
     // Global BRAM signal
     output logic [31:0] wr_addr_global,
@@ -166,7 +168,7 @@ end
                         else
                         wr_addr_fused <= wr_addr_fused + 1 ;
                         load_count <= load_count + 1;
-                        if(load_count == 336) begin
+                        if(load_count == (IFM_C*IFM_W*3)>>4) begin
                             ready <= 1;
                         end
                         
