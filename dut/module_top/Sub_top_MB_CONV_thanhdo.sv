@@ -602,7 +602,7 @@ module Sub_top_MB_CONV_thanhdo#
         .DEPTH(44000)
     ) IFM_BRAM_layer_2(
         .clk(clk),
-        //.rd_addr(addr_IFM_layer_2), // for test
+        //.rd_addr(addr_IFM_layer_2), // for test padding
         .rd_addr(req_addr_out_ifm_layer2),
         //.wr_addr(wr_addr_IFM_layer_2),
         .wr_addr( wr_addr_from_control_padding ),

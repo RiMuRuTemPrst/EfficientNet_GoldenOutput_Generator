@@ -19,17 +19,17 @@
 `define Num_of_layer2_PE_para 4
 
 module Sub_top_MB_CONV_tb #(
-    parameter IFM_W_layer1_para     = 7, 
+    parameter IFM_W_layer1_para     = 14, 
 
-    parameter IFM_C_layer1_para     = 192,
+    parameter IFM_C_layer1_para     = 96,
 
-    parameter OFM_C_layer1_para     = 1152,
+    parameter OFM_C_layer1_para     = 384,
 
     parameter stride_layer2_para    = 1,
 
-    parameter OFM_C_se_reduce_para  = 48,
+    parameter OFM_C_se_reduce_para  = 24,
 
-    parameter OFM_C_layer7_para     = 192 
+    parameter OFM_C_layer7_para     = 96 
     
     
 );
@@ -565,10 +565,10 @@ module Sub_top_MB_CONV_tb #(
             
         join
 
-        repeat (2) @(posedge uut.done_compute_Conv1x1);
+        repeat (1) @(posedge uut.done_compute_Conv1x1);
         // @(posedge uut.done_compute_layer2);
         // #10000;
-        $finish;
+        //$finish;
         
         @(posedge uut.wr_rd_req_IFM);
         begin : load_weight_for_last_conv
@@ -616,7 +616,7 @@ module Sub_top_MB_CONV_tb #(
         addr_IFM_layer_2=0; 
         //PE_finish = 0;
         @(posedge uut.done_compute_Conv1x1);
-      #10;
+        #10;
         $finish;
         #10;
         $finish;

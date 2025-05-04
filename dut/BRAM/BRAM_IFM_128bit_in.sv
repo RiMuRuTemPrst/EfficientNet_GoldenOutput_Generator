@@ -18,7 +18,10 @@ module BRAM_IFM_128bit_in
     //integer i;
     always @(posedge clk) begin
         if (wr_rd_en) begin
-            bram[wr_addr]     <= data_in[127:0];  // Ghi dữ liệu vào BRAM
+            bram[wr_addr]     <= data_in[31:0];  // Ghi dữ liệu vào BRAM
+            bram[wr_addr + 1] <= data_in[63:32];  // Ghi dữ liệu vào BRAM
+            bram[wr_addr + 2] <= data_in[95:64];  // Ghi dữ liệu vào BRAM
+            bram[wr_addr + 3] <= data_in[127:96];  // Ghi dữ liệu vào BRAM
         end
         data_out <= bram[ rd_addr >> 2 ];
         // addr <= rd_addr; 

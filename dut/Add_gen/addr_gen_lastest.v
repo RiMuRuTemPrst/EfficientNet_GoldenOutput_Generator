@@ -47,6 +47,7 @@ reg [31:0] window_start_addr_filter;
 parameter START_ADDR_IFM        = 2'b00;
 parameter FETCH_WINDOW          = 2'b01;
 parameter NEXT_WINDOW           = 2'b10;
+parameter PENDING               = 2'b11;
 reg [2:0] current_state_IFM, next_state_IFM;
 
 
@@ -248,12 +249,42 @@ always @(*) begin
             if ( count_for_a_Window < num_of_KERNEL_points * num_of_tiles * num_of_tiles_for_PE  -1) begin
             //if ( count_for_a_Window <  (num_of_KERNEL_points << (IFM_C_shift - num_of_mul_in_PE_shift + OFM_C_shift - total_PE_shift) ) -1 ) begin
                 next_state_IFM =    FETCH_WINDOW ;
+                addr_valid_ifm  = 1'b1;
             end else begin
-                next_state_IFM =    NEXT_WINDOW;
+                if (row_index_OFM == OFM_W-1) begin
+                    if(ready) begin
+                        next_state_IFM =    NEXT_WINDOW;
+                        addr_valid_ifm  =   1;
+                    end else begin
+                        next_state_IFM  =   PENDING ;
+                        addr_valid_ifm  =   0;
+                    end
+                end else begin
+                    next_state_IFM =    NEXT_WINDOW;
+                end
             end
-            addr_valid_ifm  = 1'b1;
+            
             // if ( count_for_a_OFM == OFM_W*OFM_W ) done_compute    =  1;
             // else done_compute    =  0;
+        end
+        PENDING : begin
+            if(ready ) begin
+                next_state_IFM  =   NEXT_WINDOW ;
+                addr_valid_ifm  =   1;
+            end else begin
+                
+                next_state_IFM  =   PENDING ;
+                // if ((col_index_OFM <= OFM_W-3 )) begin
+                //     next_state_IFM  =   PENDING ;
+                //     addr_valid_ifm  =   0;
+                // end else begin
+                //     if (col_index_OFM != OFM_W ) next_state_IFM  = NEXT_WINDOW ;
+                //     else next_state_IFM  =   PENDING ;
+                    
+                // end
+                
+            end
+
         end
 
         NEXT_WINDOW: begin
@@ -341,11 +372,12 @@ always @(posedge clk or negedge rst_n) begin
 
         end
         if ( ( row_index_KERNEL == 'h0 )&& ( col_index_KERNEL ==  'h0 )  ) begin 
-            done_window <= 'b1;
+            if ( current_state_IFM != PENDING) done_window <= 'b1;
             if (count_for_a_OFM =='h0 && count_for_a_Window=='h0 && tiles_count=='h0)
                 finish_for_PE <='h0;
-            else
-                finish_for_PE<= 'b1;   
+            else begin
+                finish_for_PE<= 'b1;
+            end
         end else begin
             done_window <= 'b0;
             finish_for_PE<= 'b0; 
@@ -433,6 +465,9 @@ always @(posedge clk or negedge rst_n) begin
                     col_index_KERNEL        <= 'b0;
                 end
             end 
+            PENDING : begin
+               
+            end
 
             NEXT_WINDOW: begin
                 

@@ -370,6 +370,12 @@ always @(posedge clk or negedge rst_n) begin
             predict_window_addr_fetch_ifm       <= window_start_addr_ifm +num_of_PE+ ( (KERNEL_W-1) *IFM_C ) + stride_offset_for_col + skip_a_pixel;
             predict_line_addr_fetch_ifm         <= window_start_addr_ifm +num_of_PE+ ( (KERNEL_W-1) *IFM_C ) + stride_offset_for_col + skip_a_pixel;
         end
+        if (done_compute) begin 
+            predict_line_addr_fetch_ifm         <= 0  ;  
+            predict_window_addr_fetch_ifm       <= 0 ;
+            predict_window_OFM_addr_fetch_ifm   <= 0 ;
+
+        end
         if ( ( row_index_KERNEL == 'h0 )&& ( col_index_KERNEL ==  'h0 )  ) begin 
             if ( current_state_IFM != PENDING) done_window <= 'b1;
             else done_window <= 'b1;

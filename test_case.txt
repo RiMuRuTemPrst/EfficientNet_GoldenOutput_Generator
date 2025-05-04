@@ -8,7 +8,11 @@ py_run_5layers_v3 28 28 48 192 12 96
 test_run 28 28 48 192 12 96
 
 
+
 stride =1;
+4b:
+
+py_run_5layers_stride_1 14 14 96 384 24 96
 5a :
 py_run_5layers_stride_1 14 14 96 576 24 112
 

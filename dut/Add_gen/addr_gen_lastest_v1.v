@@ -5,16 +5,17 @@ module address_generator #(
     input  wire clk,
     input  wire rst_n,
     input  wire [3:0] KERNEL_W,
-    input  wire [7:0] OFM_W,
-    input  wire [7:0] OFM_C,
-    input  wire [7:0] IFM_C,
-    input  wire [7:0] IFM_W,
+    input  wire [15:0] OFM_W,
+    input  wire [15:0] OFM_C,
+    input  wire [15:0] IFM_C,
+    input  wire [15:0] IFM_W,
     input  wire [1:0] stride,
     input  wire ready,
     input  wire [31:0] addr_in,
 
     output wire [31:0] req_addr_out_ifm,
     output wire [31:0] req_addr_out_filter,
+    output reg  [31:0] coef_for_multiply_addr,
     output reg done_compute,
     output reg finish_for_PE,
     output reg addr_valid_ifm,
@@ -25,6 +26,7 @@ module address_generator #(
 
 wire in_progress;
 reg [15:0] count_for_a_Window;
+reg [15:0] count_for_multiply;
 reg [15:0] count_for_a_OFM;
 reg [15:0] row_index_KERNEL;
 reg [15:0] col_index_KERNEL;
@@ -52,6 +54,11 @@ reg [2:0] current_state_IFM, next_state_IFM;
 parameter START_ADDR_FILTER     = 1'b0;
 parameter FETCH_FILTER          = 1'b1;
 reg current_state_FILTER, next_state_FILTER;
+
+// FSM state encoding for coef_for_mutltiply
+parameter START_ADDR_MULTIPLY     = 1'b0;
+parameter FETCH__MULTIPLY          = 1'b1;
+reg current_state_MULTIPLY, next_state_MULTIPLY;
 
 wire [2:0] stride_shift;
 assign stride_shift = (stride == 1 ) ? 0 : (stride == 2 ? 1 : 0);
@@ -327,6 +334,12 @@ always @(posedge clk or negedge rst_n) begin
             predict_window_addr_fetch_ifm       <= window_start_addr_ifm + ( KERNEL_W *IFM_C ) + stride_offset_for_col + skip_a_pixel;
             predict_line_addr_fetch_ifm         <= window_start_addr_ifm + ( KERNEL_W *IFM_C ) + stride_offset_for_col + skip_a_pixel;
         end
+        if (done_compute) begin 
+            predict_line_addr_fetch_ifm         <= 0  ;  
+            predict_window_addr_fetch_ifm       <= 0 ;
+            predict_window_OFM_addr_fetch_ifm   <= 0 ;
+
+        end
         if ( ( row_index_KERNEL == 'h0 )&& ( col_index_KERNEL ==  'h0 )  ) begin 
             done_window <= 'b1;
             if (count_for_a_OFM =='h0 && count_for_a_Window=='h0 && tiles_count=='h0)
@@ -543,6 +556,81 @@ always @(posedge clk or negedge rst_n) begin
             end
             default: begin
                 addr_fetch_filter  <= 'b0;
+                
+            end
+        endcase
+    end
+end
+
+
+//---------------------------------------------------MULTIPLY---------------------------------------------------------//
+// FSM State Register
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n)
+        current_state_MULTIPLY <= START_ADDR_MULTIPLY;
+    else
+        current_state_MULTIPLY <= next_state_MULTIPLY;
+end
+
+
+// FSM Next State Logic
+always @(*) begin
+    case (current_state_MULTIPLY)
+        START_ADDR_MULTIPLY: begin
+
+            if ( ready ) begin
+                next_state_MULTIPLY   =  FETCH__MULTIPLY ;
+                
+            end else begin
+                next_state_MULTIPLY   = START_ADDR_MULTIPLY;
+            end
+
+        end
+        FETCH__MULTIPLY: begin
+         
+            if (row_index_KERNEL ==  (num_of_KERNEL_points * num_of_tiles   -1)) begin
+            //if ( count_for_a_Window < (num_of_KERNEL_points <<  (IFM_C_shift - num_of_mul_in_PE_shift + OFM_C_shift - total_PE_shift))   -1) begin
+                if (ready) begin
+                    next_state_MULTIPLY   = FETCH__MULTIPLY;
+                end else begin
+                    next_state_MULTIPLY   = START_ADDR_MULTIPLY;
+                end
+            end else begin
+                next_state_MULTIPLY   = START_ADDR_MULTIPLY;
+            end
+        end
+        default: 
+                next_state_MULTIPLY   = START_ADDR_MULTIPLY;
+    endcase
+end
+
+
+// FSM Output Logic
+always @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+        coef_for_multiply_addr   <= addr_in;
+    end else begin
+        case (current_state_FILTER)
+            START_ADDR_FILTER: begin
+                if ( ready ) begin
+                    if ( addr_valid_ifm ==1 )  coef_for_multiply_addr    <=  coef_for_multiply_addr + 'h4; 
+                end 
+                else begin
+                    coef_for_multiply_addr <= 'h0;
+                end
+            end
+
+            FETCH_FILTER: begin
+                if ( addr_valid_ifm ==1 ) begin
+                    if (row_index_KERNEL ==  (num_of_KERNEL_points * num_of_tiles   -1)) begin
+                    //if ( count_for_a_Window == (num_of_KERNEL_points <<  (IFM_C_shift - num_of_mul_in_PE_shift + OFM_C_shift - total_PE_shift)) -1 ) begin
+                    coef_for_multiply_addr           <=  addr_in;
+                    end else
+                    coef_for_multiply_addr           <= coef_for_multiply_addr + 'h4;  
+                end                 
+            end
+            default: begin
+                coef_for_multiply_addr  <= 'b0;
                 
             end
         endcase
