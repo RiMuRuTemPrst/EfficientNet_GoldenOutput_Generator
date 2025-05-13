@@ -7,6 +7,7 @@ module New_Top_Global_Fused(
     input [31:0] size_Weight_layer_1,
     input [31:0] base_addr_Weight_layer_2,
     input [31:0] size_Weight_layer_2,
+    input [31:0] base_addr_OFM,
 
     input [31:0] wr_addr_global_initial,
     input [31:0] rd_addr_global_initial,
@@ -149,6 +150,9 @@ module New_Top_Global_Fused(
     logic [7:0] OFM_2_n_state;
     logic [7:0] OFM_3_n_state;
     logic done_compute;
+    logic done_compute_delay;
+    logic done_compute_1x1;
+    logic ready_delay;
     //controller 1x1 add signal 
     logic [3:0] PE_finish_PE_cluster1x1;
 
@@ -176,7 +180,7 @@ module New_Top_Global_Fused(
     // Global BRAM signal
         //.wr_addr_global(wr_addr_global_ctl),
         .rd_addr_global(rd_addr_global_ctl),
-        .we_global(wr_addr_global_ctl),
+        //.we_global(wr_addr_global_ctl),
 
     // Load BRAM signal
         .wr_addr_fused(wr_addr_fused),
@@ -193,7 +197,7 @@ module New_Top_Global_Fused(
         .size_Weight_layer_2(size_Weight_layer_2),
 
     // write on Global BRAN
-        .valid_layer2(we_global_ctl),
+        //.valid_layer2(we_global_ctl),
         .done_compute(done_compute)
     );
 
@@ -201,7 +205,7 @@ module New_Top_Global_Fused(
     BRAM_General #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(128),
-        .DEPTH(300000),
+        .DEPTH(3000000),
         .off_set_shift(4)
     )BRAM_Global(
     .clk(clk),
@@ -518,7 +522,7 @@ module New_Top_Global_Fused(
         .valid(wr_data_valid),
         .weight_c(IFM_C_layer2),
         .num_filter(OFM_C_layer2),
-        .cal_start(ready),
+        .cal_start(ready_delay),
         .addr_ifm(addr_ram_next_rd),
         .addr_weight(addr_w_n_state),
         .PE_reset(PE_reset_n_state_wire),
@@ -695,15 +699,32 @@ module New_Top_Global_Fused(
     Data_controller Data_controller_inst(
         .clk(clk),
         .rst_n(reset_n),
+        .IFM_C(OFM_C),
+        .OFM_C(OFM_C_layer2),
         .OFM_data_out_valid(valid),
         .control_mux(control_mux_wire),
         .addr_ram_next_wr(addr_ram_next_wr_wire),
         .wr_en_next(wr_en_next_write),
         .wr_data_valid(wr_data_valid),
-        .done_compute(done_compute)
+        .done_compute(done_compute),
+        .done_compute_1x1(done_compute_1x1)
+    );
+    delay delay_inst(
+        .clk(clk),
+        .rst_n(reset_n),
+        .IFM_C(OFM_C),
+        .OFM_C(OFM_C_layer2),
+        .done_compute(ready),
+        .done_compute_delay(ready_delay)
+    );
+    delay delay_inst1(
+        .clk(clk),
+        .rst_n(reset_n),
+        .done_compute(done_compute),
+        .done_compute_delay(done_compute_delay)
     );
 
-    MUX_pipeline mux(
+    MUX_pipeline mux(                                                                                                                                                                   
         .control(control_mux_wire),
 
         .data_in_0(OFM_n_CONV_0),
@@ -752,6 +773,7 @@ module New_Top_Global_Fused(
     .padding(1),
     .wr_en(we_global_ctl),
     .addr_next(wr_addr_global_ctl),
+    .base_addr(base_addr_OFM),
     .data_out(store_in_global_RAM)
     //.valid_for_next_pipeline()
     );

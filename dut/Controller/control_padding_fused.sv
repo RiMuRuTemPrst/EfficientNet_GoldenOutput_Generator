@@ -10,6 +10,7 @@ module control_padding_fused#(
     input logic [10:0]                     OFM_C, // lop truoc
     input logic [10:0]                     OFM_W, // lop truoc
     input logic                           padding,
+    input [31:0]                         base_addr,
     output logic                         wr_en,
     output logic [31:0]                  addr_next,
     output logic [127: 0]        data_out,
@@ -132,7 +133,7 @@ always_comb begin
     endcase
 end
 wire [31:0] addr_data_base ;
-assign  addr_data_base = ( OFM_C * (OFM_W + 3 * padding)) >> 4;
+assign  addr_data_base = ( OFM_C * (OFM_W + 3 * padding) + base_addr) >> 4;
 always_ff @(posedge clk or negedge rst_n)begin
     if (!rst_n) begin
         count_padd <= 0;
@@ -145,7 +146,7 @@ always_ff @(posedge clk or negedge rst_n)begin
         end_signal <=0;
         count_for_OFM <= 0;
         addr_data  <= 0;
-        addr_padding <=0;
+        addr_padding <= base_addr >> 4;
     end
     else begin
     case (current_state) 
@@ -160,7 +161,7 @@ always_ff @(posedge clk or negedge rst_n)begin
             end_signal <=0;
             count_for_OFM <= 0;
             addr_data  <= 0;
-            addr_padding <=0;
+            addr_padding <= base_addr >> 4;
         end
         IDLE: begin
             if (count_height > 2 ) begin

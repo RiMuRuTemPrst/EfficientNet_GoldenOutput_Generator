@@ -31,6 +31,8 @@ reg [15:0] count_for_a_OFM;
 reg [15:0] row_index_KERNEL;
 reg [15:0] col_index_KERNEL;
 
+reg [2:0] count_for_waiting_mux_data;
+
 reg [15:0] row_index_OFM;
 reg [15:0] col_index_OFM;
 reg [15:0] tiles_count;
@@ -372,7 +374,13 @@ always @(posedge clk or negedge rst_n) begin
 
         end
         if ( ( row_index_KERNEL == 'h0 )&& ( col_index_KERNEL ==  'h0 )  ) begin 
-            if ( current_state_IFM != PENDING) done_window <= 'b1;
+            if ( current_state_IFM != PENDING) begin
+               if ( current_state_IFM != START_ADDR_IFM) done_window <= 'b1;
+               else begin
+                if (count_for_waiting_mux_data <3 ) done_window <= 'b0;
+                else done_window <= 'b1;
+               end
+            end
             if (count_for_a_OFM =='h0 && count_for_a_Window=='h0 && tiles_count=='h0)
                 finish_for_PE <='h0;
             else begin
@@ -391,6 +399,7 @@ always @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
         addr_fetch_ifm          <= addr_in;
         count_for_a_Window      <= 1'b0;
+        count_for_waiting_mux_data <=0;
         row_index_KERNEL        <= 8'b0;
         count_for_a_OFM         <= 8'b0;
         col_index_KERNEL        <= 8'b0;
@@ -402,6 +411,12 @@ always @(posedge clk or negedge rst_n) begin
     end else begin
         case (current_state_IFM)
             START_ADDR_IFM: begin
+
+                if ( count_for_a_OFM == 0) begin 
+                    if ( count_for_waiting_mux_data <4 ) count_for_waiting_mux_data <= count_for_waiting_mux_data+1;
+                end else begin
+                    count_for_waiting_mux_data <= 0;
+                end
                 done_compute    <=  0;
                 if ( ready ) begin
                     row_index_KERNEL        <= 8'b0;
@@ -498,7 +513,7 @@ always @(posedge clk or negedge rst_n) begin
                     end
 
                 end else begin    
-                     if ( count_for_a_OFM >= OFM_W*OFM_W-1 ) done_compute    <=  1;
+                     if ( count_for_a_OFM >= OFM_W*OFM_W -1) done_compute    <=  1;
                         else done_compute    <=  0;
                 end
                 if (count_for_a_OFM >= OFM_W*OFM_W -1 )   begin

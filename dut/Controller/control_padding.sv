@@ -128,7 +128,9 @@ always_comb begin
                 else next_state = LEFT_RIGHT_PADDING;
             end
         end
-
+    default: begin
+        next_state = current_state;
+    end
     endcase
 end
 wire [31:0] addr_data_base ;
@@ -309,7 +311,11 @@ always_comb begin
             addr_next = (valid) ? addr_data : addr_padding;
             data_out = 0;
         end
-
+        default: begin
+            wr_en    = 0;
+            addr_next= 0;
+            data_out = 0;
+        end
     endcase
 end
 

@@ -1,4 +1,4 @@
-module address_generator #(
+module address_generator_1 #(
     parameter TOTAL_PE   = 16,
     parameter DATA_WIDTH = 32
 )(

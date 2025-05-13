@@ -177,9 +177,10 @@ end
                         we_fused <= 0;
                     end
                     if(valid_layer2) begin
-                        wr_addr_global = wr_addr_global + 1;
+                        wr_addr_global <= wr_addr_global + 1;
                         we_global <= 1;
                     end
+                    else we_global <= 0;
                 end
                 if( next_state == IDLE ) begin
                     we_fused <= 0;
