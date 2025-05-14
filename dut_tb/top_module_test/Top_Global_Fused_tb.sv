@@ -86,7 +86,7 @@ module Top_Global_Fused_tb;
     integer ofm_file_8[3:0];
 
     // Instantiate DUT
-    New_Top_Global_Fused dut (
+    New_Top_Global_Fused_v1 dut (
         .clk(clk),
         .reset_n(reset_n),
         .base_addr_IFM(base_addr_IFM),
@@ -264,12 +264,15 @@ module Top_Global_Fused_tb;
 
         // Phase 2: Turn off load_phase for your later dev work
         load_phase = 0;
-        @(dut.done_compute_1x1);
+        @(dut.done_compute);
         write_block_2 = 1;
         @(posedge clk)
         @(posedge clk)
         @(posedge clk)
         @(posedge clk)
+        repeat(500) begin
+            @(posedge clk);
+        end
         begin
         $display("DONE FUSED BLOCK 1");
         $display("START FUSED BLOCK 2");
@@ -299,7 +302,7 @@ module Top_Global_Fused_tb;
         @(posedge clk) start = 0;
         @(posedge clk)
         @(posedge clk)
-        @(dut.done_compute_1x1);
+        @(dut.done_compute);
         write_block_2 = 0;
         write_block_3 = 1;
         $display("DONE FUSED BLOCK 2");

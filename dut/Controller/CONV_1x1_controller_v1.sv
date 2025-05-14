@@ -1,4 +1,4 @@
-module CONV_1x1_controller_v2(
+module CONV_1x1_controller_v1(
     input clk,
     input reset_n,
     input valid,
@@ -21,10 +21,9 @@ reg [7:0] valid_count;
 reg [7:0] count_deep_pixel;
 reg [7:0] count_filter;
 reg next_filter;
-reg [4:0] done_compute;
+reg revert;
 
 parameter Num_of_PE_x4     = 16;
-parameter END_FOR_1x1      = 6;
 
 
 always_comb begin
@@ -83,7 +82,7 @@ always_comb begin
 
         // ST_END_TRAN 
         END_PIXEL : begin
-            if(done_compute == END_FOR_1x1) begin
+            if(cal_start) begin
             next_state = START_PIXEL ;
             end 
             else begin
@@ -104,7 +103,7 @@ end
             next_filter         <= 0;
             PE_reset            <= 0;
             PE_finish           <= 0;
-            done_compute        <= 0;
+            revert              <= 0;
         end
         else begin
             unique case(curr_state)
@@ -159,13 +158,16 @@ end
                 PE_finish <=4'b1111;
                 if(valid == 1) valid_count <= valid_count + 16;
                 if(next_state == START_PIXEL) begin
-                    done_compute <= 0;
-                    addr_ifm <= addr_ifm + 4 ;
+                    if(~revert) begin 
+                        addr_ifm <= addr_ifm + 4 ;
+                        revert <= 1;
+                    end
+                    else begin
+                        revert <= 0;
+                        addr_ifm <= addr_ifm - (weight_c-'h4) -  (weight_c-'h4) - 'h4 ;
+                    end
                     addr_weight <= 0 ;
                     next_filter <= 0;
-                end
-                if(~cal_start) begin
-                    done_compute <= done_compute + 1;
                 end
             end
         endcase

@@ -7,13 +7,13 @@ module control_padding_fused#(
     input                                valid,
     input                                start, 
     input       [127 : 0]        data_in,
-    input logic [10:0]                     OFM_C, // lop truoc
-    input logic [10:0]                     OFM_W, // lop truoc
-    input logic                           padding,
+    input  [10:0]                        OFM_C, // lop truoc
+    input  [10:0]                        OFM_W, // lop truoc
+    input                                padding,
     input [31:0]                         base_addr,
     output logic                         wr_en,
     output logic [31:0]                  addr_next,
-    output logic [127: 0]        data_out,
+    output logic [127: 0]                data_out,
     output logic                         valid_for_next_pipeline
 );
 logic [31:0] count_padd;
@@ -133,7 +133,8 @@ always_comb begin
     endcase
 end
 wire [31:0] addr_data_base ;
-assign  addr_data_base = ( OFM_C * (OFM_W + 3 * padding) + base_addr) >> 4;
+ assign  addr_data_base = ( OFM_C * (OFM_W + 3 * padding) + base_addr) >> 4;
+// assign  addr_data_base =  OFM_C * (OFM_W + 3 * padding)  >> 4;
 always_ff @(posedge clk or negedge rst_n)begin
     if (!rst_n) begin
         count_padd <= 0;
@@ -147,6 +148,7 @@ always_ff @(posedge clk or negedge rst_n)begin
         count_for_OFM <= 0;
         addr_data  <= 0;
         addr_padding <= base_addr >> 4;
+        // addr_padding <= 0;
     end
     else begin
     case (current_state) 
@@ -162,6 +164,7 @@ always_ff @(posedge clk or negedge rst_n)begin
             count_for_OFM <= 0;
             addr_data  <= 0;
             addr_padding <= base_addr >> 4;
+            // addr_padding <= 0;
         end
         IDLE: begin
             if (count_height > 2 ) begin
@@ -197,27 +200,31 @@ always_ff @(posedge clk or negedge rst_n)begin
         ROW_DATA: begin
             if (next_state == NEXT_ROW_DATA)begin
                 addr_data <= addr_data;
+                 addr_padding <= addr_padding;
             end
             else if (next_state == LEFT_RIGHT_PADDING) begin
                 addr_padding <= addr_padding + 1;
                 addr_data <= addr_data;
                 count_lr <= count_lr + 1;
                 count_data <= count_data + 1;
+                 addr_padding <= addr_padding;
             end else if ( next_state == NEXT_LEFT_RIGHT_PADDING) begin
                 addr_data <= addr_data;
                 count_data <= count_data +1;
+                 addr_padding <= addr_padding;
             end
             else begin
                 count_data <= count_data + 1;
                 addr_data <= addr_data + 1;
+                 addr_padding <= addr_padding;
             end
         end
         NEXT_ROW_DATA: begin
             count_data <= 0;
             count_height <= count_height + 1;
             count_line_pipelined <= count_line_pipelined+1;
-            addr_data <= addr_data + 2 * OFM_C * padding / 16 + 1;
-
+            addr_data <= addr_data + (2 * OFM_C * padding >> 4 )+ 1;
+            addr_padding <= addr_padding;
             
 
         end
@@ -251,8 +258,7 @@ always_ff @(posedge clk or negedge rst_n)begin
             else begin 
                 count_lr <= 0;
                 count_height_padd <= count_height_padd + 1;
-                
-                addr_padding <= addr_padding + OFM_W * OFM_C / 16 + 1;
+                addr_padding <= addr_padding +  ((OFM_W * OFM_C) >> 4) + 1'b1;
             end
             count_for_OFM <= count_for_OFM + 1;
         end
