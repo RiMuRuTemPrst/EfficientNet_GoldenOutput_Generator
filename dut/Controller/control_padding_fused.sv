@@ -207,7 +207,6 @@ always_ff @(posedge clk or negedge rst_n)begin
                 addr_data <= addr_data;
                 count_lr <= count_lr + 1;
                 count_data <= count_data + 1;
-                 addr_padding <= addr_padding;
             end else if ( next_state == NEXT_LEFT_RIGHT_PADDING) begin
                 addr_data <= addr_data;
                 count_data <= count_data +1;
@@ -216,7 +215,7 @@ always_ff @(posedge clk or negedge rst_n)begin
             else begin
                 count_data <= count_data + 1;
                 addr_data <= addr_data + 1;
-                 addr_padding <= addr_padding;
+                addr_padding <= addr_padding;
             end
         end
         NEXT_ROW_DATA: begin
