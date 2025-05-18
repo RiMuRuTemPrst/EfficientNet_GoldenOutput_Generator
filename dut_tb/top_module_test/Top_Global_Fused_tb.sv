@@ -85,6 +85,11 @@ module Top_Global_Fused_tb;
     integer ofm_file_7[15:0];
     integer ofm_file_8[3:0];
 
+    logic [15:0] size_3;
+    logic [15:0] size_6;
+    logic [15:0] size_change;
+    logic [6:0] num_of_line_for_pipeline;
+
     // Instantiate DUT
     New_Top_Global_Fused_v1 dut (
         .clk(clk),
@@ -110,6 +115,10 @@ module Top_Global_Fused_tb;
         .IFM_C_layer2(IFM_C_layer2),
         .OFM_C_layer2(OFM_C_layer2),
         .OFM_W_layer2(OFM_W_layer2),
+        .size_3(size_3),
+        .size_6(size_6),
+        .size_change(size_change),
+        .num_of_line_for_pipeline(num_of_line_for_pipeline),
         .stride(stride)
     );
     //assign for debug
@@ -227,6 +236,10 @@ module Top_Global_Fused_tb;
         load_phase = 0;
         start = 0;
         sw_index_load_mem = 0;
+        size_3 = 342 ;
+        size_6 = 1026 ;
+        size_change = 1824;
+        num_of_line_for_pipeline = 4;
         KERNEL_W = 3;
         OFM_W = 56;
         OFM_C = 64;
@@ -296,6 +309,10 @@ module Top_Global_Fused_tb;
             IFM_C = 32;
             IFM_W = 58;
             stride = 1;
+            size_3 = 348 ;
+            size_6 = 696 ;
+            size_change = 3712;
+            num_of_line_for_pipeline = 4;
             IFM_C_layer2 = 128;
             OFM_C_layer2 = 32;
         end

@@ -23,6 +23,10 @@ module New_Top_Global_Fused_v1(
     input  wire [15:0] OFM_C,
     input  wire [15:0] IFM_C,
     input  wire [15:0] IFM_W,
+    input wire [15:0] size_3,
+    input wire [15:0] size_6,
+    input wire [15:0] size_change,
+    input wire [6:0] num_of_line_for_pipeline,
     input  wire [1:0] stride,
     
     input  wire [15:0] IFM_C_layer2,
@@ -67,6 +71,7 @@ module New_Top_Global_Fused_v1(
     wire [7:0]  OFM_15;
     wire [7:0]  OFM_16;
     logic [31:0] addr_IFM;
+    logic [31:0] addr_IFM_filter;
     logic [19:0] addr_w;
     logic [31:0] IFM_data;
     //logic [31:0] IFM_data_q;
@@ -163,6 +168,8 @@ module New_Top_Global_Fused_v1(
     logic we_out_reg_fused;
     logic ready_delay;
 
+    wire [15:0] col_index_OFM;
+
     assign wr_addr_global = load_phase ? wr_addr_global_initial : wr_addr_global_ctl ;
     //assign rd_addr_global = load_phase ? rd_addr_global_initial : rd_addr_global_ctl ;
     assign we_global = load_phase ? we_global_initial : we_global_ctl ;
@@ -205,7 +212,12 @@ module New_Top_Global_Fused_v1(
 
     // write on Global BRAN
         .valid_layer2(we_global_ctl),
-        .done_compute(done_compute)
+        .col_index_OFM(col_index_OFM),
+        .done_compute(done_compute),
+
+        .size_3(size_3), //342
+        .size_6(size_6), //1026
+        .size_change(size_change) //1824
     );
 
     BRAM_General #(
@@ -225,7 +237,7 @@ module New_Top_Global_Fused_v1(
     BRAM_General_weight #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(32),
-        .DEPTH(20000),
+        .DEPTH(2000),
         .off_set_shift(4)
     )BRAM_IFM(
     .clk(clk),
@@ -501,7 +513,7 @@ module New_Top_Global_Fused_v1(
     .data_out(Weight_3_n_state)               // Dữ liệu ra
     );
 
-    address_generator addr_gen(
+    addr_gen_fused addr_gen(
         .clk(clk),
         .rst_n(reset_n),
         .KERNEL_W(KERNEL_W),
@@ -515,13 +527,14 @@ module New_Top_Global_Fused_v1(
         .addr_in(base_addr),
         .req_addr_out_filter(addr_w),
         .req_addr_out_ifm(addr_IFM),
-        .done_compute(done_compute),
+        .done_compute_all(done_compute),
         .done_window(done_window_one_bit),
         .finish_for_PE(finish_for_PE),
         .addr_valid_filter(addr_valid),
+        .col_index_OFM(col_index_OFM),
+        .num_of_line_for_pipeline(num_of_line_for_pipeline),
         .num_of_tiles_for_PE(tile)
     );
-
     CONV_1x1_controller_v1 CONV_1x1_controller_inst(
         .clk(clk),
         .reset_n(reset_n),

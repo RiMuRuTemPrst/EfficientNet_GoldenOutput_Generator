@@ -7,7 +7,6 @@ module New_Top_Global_Fused(
     input [31:0] size_Weight_layer_1,
     input [31:0] base_addr_Weight_layer_2,
     input [31:0] size_Weight_layer_2,
-    input [31:0] base_addr_OFM,
 
     input [31:0] wr_addr_global_initial,
     input [31:0] rd_addr_global_initial,
@@ -70,6 +69,7 @@ module New_Top_Global_Fused(
     logic [31:0] addr_IFM;
     logic [19:0] addr_w;
     logic [31:0] IFM_data;
+    //logic [31:0] IFM_data_q;
     logic [31:0] Weight_0;
     logic [31:0] Weight_1;
     logic [31:0] Weight_2;
@@ -143,6 +143,7 @@ module New_Top_Global_Fused(
     logic [7:0]  OFM_active_16;
     logic [31:0] base_addr =0;
     logic  [127:0] data_out_global_BRAM;
+    logic [127:0] data_write_pipeline_bram;
 
     //output fused signal
     logic [7:0] OFM_0_n_state;
@@ -150,9 +151,6 @@ module New_Top_Global_Fused(
     logic [7:0] OFM_2_n_state;
     logic [7:0] OFM_3_n_state;
     logic done_compute;
-    logic done_compute_delay;
-    logic done_compute_1x1;
-    logic ready_delay;
     //controller 1x1 add signal 
     logic [3:0] PE_finish_PE_cluster1x1;
 
@@ -180,7 +178,7 @@ module New_Top_Global_Fused(
     // Global BRAM signal
         //.wr_addr_global(wr_addr_global_ctl),
         .rd_addr_global(rd_addr_global_ctl),
-        //.we_global(wr_addr_global_ctl),
+        .we_global(wr_addr_global_ctl),
 
     // Load BRAM signal
         .wr_addr_fused(wr_addr_fused),
@@ -197,15 +195,14 @@ module New_Top_Global_Fused(
         .size_Weight_layer_2(size_Weight_layer_2),
 
     // write on Global BRAN
-        //.valid_layer2(we_global_ctl),
+        .valid_layer2(we_global_ctl),
         .done_compute(done_compute)
     );
-
 
     BRAM_General #(
         .DATA_WIDTH_IN(128),
         .DATA_WIDTH_OUT(128),
-        .DEPTH(3000000),
+        .DEPTH(300000),
         .off_set_shift(4)
     )BRAM_Global(
     .clk(clk),
@@ -519,10 +516,10 @@ module New_Top_Global_Fused(
     CONV_1x1_controller CONV_1x1_controller_inst(
         .clk(clk),
         .reset_n(reset_n),
-        .valid(wr_data_valid),
+        .valid(finish_for_PE),
         .weight_c(IFM_C_layer2),
         .num_filter(OFM_C_layer2),
-        .cal_start(ready_delay),
+        .cal_start(ready),
         .addr_ifm(addr_ram_next_rd),
         .addr_weight(addr_w_n_state),
         .PE_reset(PE_reset_n_state_wire),
@@ -654,104 +651,30 @@ module New_Top_Global_Fused(
     assign finish_for_PE_cluster            =   1 && ( addr_IFM != 'b0 )   ? {16{finish_for_PE}} : 16'b0;
     assign valid                            =   finish_for_PE_cluster;
 
+    assign data_write_pipeline_bram = {OFM_active_15,OFM_active_14,OFM_active_13,OFM_active_12,OFM_active_11,OFM_active_10,OFM_active_9,OFM_active_8,OFM_active_7,OFM_active_6,OFM_active_5,OFM_active_4,OFM_active_3,OFM_active_2,OFM_active_1,OFM_active_0};
 
 
-    Register_for_pipeline Reg_1(
-        .clk(clk),
-        .reset_n(reset_n),
-        .valid_data(done_window_for_PE_cluster),
-        .data_in_0(OFM_active_0),
-        .data_in_1(OFM_active_1),
-        .data_in_2(OFM_active_2),
-        .data_in_3(OFM_active_3),
-        .data_in_4(OFM_active_4),
-        .data_in_5(OFM_active_5),
-        .data_in_6(OFM_active_6),
-        .data_in_7(OFM_active_7),
-        .data_in_8(OFM_active_8),
-        .data_in_9(OFM_active_9),
-        .data_in_10(OFM_active_10),
-        .data_in_11(OFM_active_11),
-        .data_in_12(OFM_active_12),
-        .data_in_13(OFM_active_13),
-        .data_in_14(OFM_active_14),
-        .data_in_15(OFM_active_15),
-        .data_out_0(OFM_n_CONV_0),
-        .data_out_1(OFM_n_CONV_1),
-        .data_out_2(OFM_n_CONV_2),
-        .data_out_3(OFM_n_CONV_3),
-        .data_out_4(OFM_n_CONV_4),
-        .data_out_5(OFM_n_CONV_5),
-        .data_out_6(OFM_n_CONV_6),
-        .data_out_7(OFM_n_CONV_7),
-        .data_out_8(OFM_n_CONV_8),
-        .data_out_9(OFM_n_CONV_9),
-        .data_out_10(OFM_n_CONV_10),
-        .data_out_11(OFM_n_CONV_11),
-        .data_out_12(OFM_n_CONV_12),
-        .data_out_13(OFM_n_CONV_13),
-        .data_out_14(OFM_n_CONV_14),
-        .data_out_15(OFM_n_CONV_15)
-    );
     wire [1:0]  control_mux_wire;
     wire [31:0] addr_ram_next_wr_wire;
     wire        wr_en_next_write;
-    Data_controller Data_controller_inst(
+    Write_for_Bram_controller data_write_controller(
         .clk(clk),
-        .rst_n(reset_n),
-        .IFM_C(OFM_C),
-        .OFM_C(OFM_C_layer2),
-        .OFM_data_out_valid(valid),
-        .control_mux(control_mux_wire),
-        .addr_ram_next_wr(addr_ram_next_wr_wire),
-        .wr_en_next(wr_en_next_write),
-        .wr_data_valid(wr_data_valid),
-        .done_compute(done_compute),
-        .done_compute_1x1(done_compute_1x1)
+        .reset_n(reset_n),
+        .OFM_C(IFM_C_layer2),
+        .valid(finish_for_PE),
+        .write_addr(addr_ram_next_wr_wire)
     );
-    delay delay_inst(
-        .clk(clk),
-        .rst_n(reset_n),
-        .IFM_C(OFM_C),
-        .OFM_C(OFM_C_layer2),
-        .done_compute(ready),
-        .done_compute_delay(ready_delay)
-    );
-    delay delay_inst1(
-        .clk(clk),
-        .rst_n(reset_n),
-        .done_compute(done_compute),
-        .done_compute_delay(done_compute_delay)
-    );
-
-    MUX_pipeline mux(                                                                                                                                                                   
-        .control(control_mux_wire),
-
-        .data_in_0(OFM_n_CONV_0),
-        .data_in_1(OFM_n_CONV_1),
-        .data_in_2(OFM_n_CONV_2),
-        .data_in_3(OFM_n_CONV_3),
-        .data_in_4(OFM_n_CONV_4),
-        .data_in_5(OFM_n_CONV_5),
-        .data_in_6(OFM_n_CONV_6),
-        .data_in_7(OFM_n_CONV_7),
-        .data_in_8(OFM_n_CONV_8),
-        .data_in_9(OFM_n_CONV_9),
-        .data_in_10(OFM_n_CONV_10),
-        .data_in_11(OFM_n_CONV_11),
-        .data_in_12(OFM_n_CONV_12),
-        .data_in_13(OFM_n_CONV_13),
-        .data_in_14(OFM_n_CONV_14),
-        .data_in_15(OFM_n_CONV_15),
-
-        .data_out(data_out_mux)
-    );
-    BRAM_IFM BRAM_IFM_layer2(
+    BRAM_General_weight #(
+        .DATA_WIDTH_IN(128),
+        .DATA_WIDTH_OUT(32),
+        .DEPTH(360),
+        .off_set_shift(4) 
+        )BRAM_IFM_layer2(
         .clk(clk),
         .rd_addr(addr_ram_next_rd),
         .wr_addr(addr_ram_next_wr_wire),
-        .wr_rd_en(wr_en_next_write),
-        .data_in(data_out_mux),
+        .wr_rd_en(done_window_one_bit),
+        .data_in(data_write_pipeline_bram),
         .data_out(out_BRAM_CONV)
     );
     Register_for_fused reg_for_write_in_global(
@@ -773,7 +696,6 @@ module New_Top_Global_Fused(
     .padding(1),
     .wr_en(we_global_ctl),
     .addr_next(wr_addr_global_ctl),
-    .base_addr(base_addr_OFM),
     .data_out(store_in_global_RAM)
     //.valid_for_next_pipeline()
     );

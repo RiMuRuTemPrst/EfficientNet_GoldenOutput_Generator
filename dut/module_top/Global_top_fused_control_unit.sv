@@ -26,6 +26,10 @@ module Global_top_fused_control_unit (
     
     //input from Fused_block
     input valid_layer2 ,
+    input [15:0] col_index_OFM,
+    input [15:0] size_3,
+    input [15:0] size_6,
+    input [15:0] size_change,
     input done_compute
 );
 reg [2:0] curr_state, next_state;
@@ -38,8 +42,10 @@ parameter END_PIXEL     = 3'b100;
 logic [10:0] load_count;
 logic [10:0] count_weight_addr;
 logic load_weight_layer_st;
-
-
+logic [10:0] load_row_count;
+logic start_load;
+logic load_6;
+logic change_rd;
 
 always_comb begin
     // case(data_bit_num)
@@ -106,6 +112,9 @@ end
             load_count <= 0;
             count_weight_addr <= 0;
             load_weight_layer_st <= 0;
+            start_load <= 1;
+            load_6 <= 0;
+            change_rd <= 0;
         end
         else begin
             unique case(curr_state)
@@ -162,15 +171,44 @@ end
 
             LOAD_IFM_CACULATE_STORE: begin
                 if(next_state == LOAD_IFM_CACULATE_STORE) begin
-                    if(((wr_addr_fused << 4 ) < size_IFM)) begin
-                        rd_addr_global <= rd_addr_global + 16 ;
-                        if(rd_addr_global == base_addr_IFM )  wr_addr_fused <= 0;
-                        else
-                        wr_addr_fused <= wr_addr_fused + 1 ;
-                        load_count <= load_count + 1;
-                        if(load_count == (IFM_C*IFM_W*3)>>4) begin
-                            ready <= 1;
-                        end
+                    if(((wr_addr_fused << 4 ) < size_IFM) || (wr_addr_fused == -1) ) begin
+
+
+                        if((col_index_OFM > 2) || start_load)    //load 3
+                            if(load_count < size_3 ) begin
+                                change_rd <= 1;
+                                rd_addr_global <= rd_addr_global + 16 ;
+                                if(rd_addr_global == base_addr_IFM )  wr_addr_fused <= 0;
+                                else
+                                wr_addr_fused <= wr_addr_fused + 1 ;
+                                load_count <= load_count + 1;
+                            end
+                            else begin
+                                ready <= 1;
+                                start_load <= 0;
+                                //if(start_load) load_count <= 0;
+                            end
+
+                        else if(col_index_OFM == 0) begin    //load 6
+                            if((load_count < size_6) && ~load_6 ) begin
+                                rd_addr_global <= rd_addr_global + 16 ;
+                                if(rd_addr_global == base_addr_IFM )  wr_addr_fused <= 0;
+                                else
+                                wr_addr_fused <= wr_addr_fused + 1 ;
+                                load_count <= load_count + 1;
+                            end else begin
+                                load_count <= 0;
+                                load_6 <=  1;
+                            end
+                            end
+                            else begin 
+                                //load_count <= 0;
+                                if (change_rd)
+                                rd_addr_global <= rd_addr_global - size_change;
+                                change_rd <= 0;
+                                wr_addr_fused <= -1;
+                                load_6 <= 0;
+                            end
                         
                     end
                     else begin
@@ -183,8 +221,12 @@ end
                     else we_global <= 0;
                 end
                 if( next_state == IDLE ) begin
+                    start_load <= 1;
+                load_6 <= 0;
+                change_rd <= 0;
                     we_fused <= 0;
                     ready <= 0;
+                    load_count <= 0;
                 end
             end
         endcase
