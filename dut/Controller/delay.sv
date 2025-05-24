@@ -2,6 +2,7 @@ module delay(
     input clk,
     input rst_n,
     input [15:0] IFM_C,
+    input [15:0] OFM_W_layer2,
     input [15:0] OFM_C,
     input done_compute,
     output logic done_compute_delay
@@ -19,7 +20,7 @@ always_ff @(posedge clk or negedge rst_n) begin
             count <= 0;
         end
         if (done_compute) done_compute_delay <= done_compute;
-        if (count  == IFM_C * OFM_C >> 2) begin
+        if (count  == ( IFM_C * OFM_C) >> 2 ) begin
             done_compute_delay <= done_compute;
             count <= 0;
         end

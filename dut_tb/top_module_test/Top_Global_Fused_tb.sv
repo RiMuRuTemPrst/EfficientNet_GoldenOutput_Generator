@@ -278,14 +278,17 @@ module Top_Global_Fused_tb;
         // Phase 2: Turn off load_phase for your later dev work
         load_phase = 0;
         @(dut.done_compute);
+        repeat(1000) begin
+        @(posedge clk);
+        end
         write_block_2 = 1;
         @(posedge clk)
         @(posedge clk)
         @(posedge clk)
         @(posedge clk)
-        repeat(500) begin
-            @(posedge clk);
-        end
+        // repeat(500) begin
+        //     @(posedge clk);
+        // end
         begin
         $display("DONE FUSED BLOCK 1");
         $display("START FUSED BLOCK 2");
@@ -320,15 +323,18 @@ module Top_Global_Fused_tb;
         @(posedge clk)
         @(posedge clk)
         @(dut.done_compute);
+        repeat(1000) begin
+        @(posedge clk);
+        end
         write_block_2 = 0;
         write_block_3 = 1;
         $display("DONE FUSED BLOCK 2");
-        repeat(100) begin
-        @(posedge clk);
-        end
         @(posedge clk)
         @(posedge clk)
         @(posedge clk)
+        // repeat(500) begin
+        // @(posedge clk);
+        // end
         begin
         $display("START FUSED BLOCK 3");
          begin
@@ -363,6 +369,9 @@ module Top_Global_Fused_tb;
         @(posedge clk)
         @(posedge clk)
         @(dut.done_compute);
+        repeat(1000) begin
+        @(posedge clk);
+        end
         write_block_2 = 0;
         write_block_3 = 0;
         write_block_4 = 1;
@@ -402,9 +411,10 @@ module Top_Global_Fused_tb;
             OFM_W_layer2 = 28;
         end
         @(posedge clk) start = 0;
-        $display("DONE FUSED BLOCK 4");
-        repeat (5 ) @(posedge clk);
+        
         @(dut.done_compute);
+        repeat (5000 ) @(posedge clk);
+        $display("DONE FUSED BLOCK 4");
         repeat (100 ) @(posedge clk);
         $finish;
         end

@@ -179,6 +179,7 @@ module New_Top_Global_Fused_v1(
         .clk(clk),
         .rst_n(reset_n),
         .IFM_C(OFM_C),
+        .OFM_W_layer2(OFM_W_layer2),
         .OFM_C(OFM_C_layer2),
         .done_compute(ready),
         .done_compute_delay(ready_delay)
