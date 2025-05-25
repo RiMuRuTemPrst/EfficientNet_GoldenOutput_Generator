@@ -288,6 +288,7 @@ module Top_AXI_fused
         .valid_layer2(we_global_ctl),
         .col_index_OFM(col_index_OFM),
         .done_compute(done_compute),
+        .start_read(start_read),
 
         .size_3(size_3), //342
         .size_6(size_6), //1026

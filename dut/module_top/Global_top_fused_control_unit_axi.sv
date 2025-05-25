@@ -7,9 +7,11 @@ module Global_top_fused_control_unit_axi (
     input [15:0] IFM_W,
 
     // Global BRAM signal
-    output logic [31:0] wr_addr_global,
-    output logic [31:0] rd_addr_global,
-    output logic we_global,
+    output  logic                  start_write,
+    output  logic                  start_read,
+    output  logic [32-1:0] addr_read,
+    output  logic [32-1:0] addr_write,
+    output  logic [127:0] data_in,
 
     // Load BRAM signal
     output logic [31:0] wr_addr_fused,
