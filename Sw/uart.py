@@ -5,18 +5,10 @@ def read_hex_lines_to_bytes(file_path):
     with open(file_path, 'r') as f:
         for line in f:
             line = line.strip()
-            if not line:
-                continue
-            try:
-                val = int(line, 16)  # Giá trị có thể > 255
-                if 0 <= val <= 0xFFFF:
-                    # Tách thành 2 byte: MSB, LSB
-                    high = (val >> 8) & 0xFF
-                    low = val & 0xFF
-                    data.extend([high, low])
-            except ValueError:
-                print(f"⚠️ Bỏ qua dòng không hợp lệ: {line}")
+            if line:  # bỏ dòng trống
+                data.append(int(line, 16))  # chuyển từ chuỗi hex sang số
     return data
+
 def transmit_n_bits_at_a_time(serial_port, data_bytes, n_bits):
     if n_bits % 8 != 0:
         raise ValueError("n must be a multiple of 8 (e.g., 8, 16, 24, 32)")

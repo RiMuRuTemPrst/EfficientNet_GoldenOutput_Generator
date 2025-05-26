@@ -75,7 +75,7 @@ class DigitDrawer:
     def __init__(self, layer_name):
         self.model = build_quantized_model_mnist()
         try:
-            self.model.load_weights('Sw\\mnist_quantized_weights.weights.h5')
+            self.model.load_weights('Sw/mnist_quantized_weights.weights.h5')
         except FileNotFoundError:
             print("Error: Weight file 'mnist_quantized_weights.weights.h5' not found.")
             exit(1)
