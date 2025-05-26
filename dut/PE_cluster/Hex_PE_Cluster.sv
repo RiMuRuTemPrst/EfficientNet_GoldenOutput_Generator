@@ -1,4 +1,4 @@
-module PE_cluster(
+module Hex_PE_cluster(
     input  wire        clk,
     input  wire        reset_n,
     // 3 cặp IFM và Weightt
@@ -42,7 +42,7 @@ module PE_cluster(
     output wire [7:0]  OFM_16,
     output wire  [15:0]      valid
 );
-    Quad_PE instant_0 (
+    Hex_PE instant_0 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -82,7 +82,7 @@ module PE_cluster(
         .valid(valid[0]),
         .OFM(OFM_0)
     );
-        Quad_PE instant_1 (
+        Hex_PE instant_1 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -122,7 +122,7 @@ module PE_cluster(
         .valid(valid[1]),
         .OFM(OFM_1)
     );
-        Quad_PE instant_2 (
+        Hex_PE instant_2 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -162,7 +162,7 @@ module PE_cluster(
         .valid(valid[2]),
         .OFM(OFM_2)
     );
-        Quad_PE instant_3 (
+        Hex_PE instant_3 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -180,7 +180,7 @@ module PE_cluster(
         .IFM13(IFM[103:96]),
         .IFM14(IFM[111:104]),
         .IFM15(IFM[119:112]),
-        .IFM16(IFM[127:120]),,
+        .IFM16(IFM[127:120]),
         .Weight1 (Weight_3[7:0]),
         .Weight2 (Weight_3[15:8]),
         .Weight3 (Weight_3[23:16]),
@@ -202,7 +202,7 @@ module PE_cluster(
         .valid(valid[3]),
         .OFM(OFM_3)
     );
-        Quad_PE instant_4 (
+        Hex_PE instant_4 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -242,7 +242,7 @@ module PE_cluster(
         .valid(valid[4]),
         .OFM(OFM_4)
     );
-        Quad_PE instant_5 (
+        Hex_PE instant_5 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -282,7 +282,7 @@ module PE_cluster(
         .valid(valid[5]),
         .OFM(OFM_5)
     );
-        Quad_PE instant_6 (
+        Hex_PE instant_6 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -322,7 +322,7 @@ module PE_cluster(
         .valid(valid[6]),
         .OFM(OFM_6)
     );
-        Quad_PE instant_7 (
+        Hex_PE instant_7 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -362,7 +362,7 @@ module PE_cluster(
         .valid(valid[7]),
         .OFM(OFM_7)
     );
-        Quad_PE instant_8 (
+        Hex_PE instant_8 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -402,7 +402,7 @@ module PE_cluster(
         .valid(valid[8]),
         .OFM(OFM_8)
     );
-        Quad_PE instant_9 (
+        Hex_PE instant_9 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -442,7 +442,7 @@ module PE_cluster(
         .valid(valid[9]),
         .OFM(OFM_9)
     );
-        Quad_PE instant_10 (
+        Hex_PE instant_10 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -482,7 +482,7 @@ module PE_cluster(
         .valid(valid[10]),
         .OFM(OFM_10)
     );
-        Quad_PE instant_11 (
+        Hex_PE instant_11 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -522,7 +522,7 @@ module PE_cluster(
         .valid(valid[11]),
         .OFM(OFM_11)
     );
-        Quad_PE instant_12 (
+        Hex_PE instant_12 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -562,7 +562,7 @@ module PE_cluster(
         .valid(valid[12]),
         .OFM(OFM_12)
     );
-           Quad_PE instant_13 (
+           Hex_PE instant_13 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -602,7 +602,7 @@ module PE_cluster(
         .valid(valid[13]),
         .OFM(OFM_13)
     );
-            Quad_PE instant_14 (
+            Hex_PE instant_14 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),
@@ -642,7 +642,7 @@ module PE_cluster(
         .valid(valid[14]),
         .OFM(OFM_14)
     );
-            Quad_PE instant_15 (
+            Hex_PE instant_15 (
         .clk(clk),
         .reset_n(reset_n),
         .IFM1 (IFM[7:0]),

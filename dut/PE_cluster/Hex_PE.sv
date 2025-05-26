@@ -2,7 +2,7 @@ module Hex_PE(
     input  wire        clk,
     input  wire        reset_n,
     // 3 cặp IFM và Weight
-    input  wire [7:0]  IFM1, IFM2, IFM3, IFM4, IFM5, IFM6, IFM7, IFM8 ,IFM9, IFM10, IFM11, IFM12 ,IFM13, IFM14, IFM15, IFM15,
+    input  wire [7:0]  IFM1, IFM2, IFM3, IFM4, IFM5, IFM6, IFM7, IFM8 ,IFM9, IFM10, IFM11, IFM12 ,IFM13, IFM14, IFM15, IFM16,
     input  wire [7:0]  Weight1, Weight2, Weight3, Weight4, Weight5, Weight6, Weight7 ,Weight8, Weight9, Weight10, Weight11, Weight12 ,Weight13, Weight14, Weight15, Weight16,
     // Tín hiệu điều khiển
     input  wire        PE_reset,      
@@ -14,7 +14,7 @@ module Hex_PE(
 
     // --- Các wire trung gian ---
     wire [16:0] mul1, mul2, mul3, mul4, mul5, mul6, mul7, mul8, mul9, mul10, mul11, mul12, mul13, mul14, mul15, mul16;   // Kết quả 3 phép nhân
-    wire [16:0] add1, add2, add3, add4, add5, add6, add7, add8, add9, add10, add11, add12, add13, add14, add15;        // Kết quả cộng dồn từng bước
+    reg [16:0] add1, add2, add3, add4, add5, add6, add7, add8, add9, add10, add11, add12, add13, add14, add15;        // Kết quả cộng dồn từng bước
     wire [16:0] sum_d;                   // Giá trị tổng mới
     reg  [7:0] sum_q;                   // Thanh ghi lưu giá trị tổng
     reg        valid_r;                 // Thanh ghi xuất cờ valid
@@ -38,7 +38,7 @@ module Hex_PE(
     assign mul15 = IFM15 * Weight15;
     assign mul16 = IFM16 * Weight16;
     always_ff @(posedge clk or negedge reset_n) begin
-        if(~reset) begin
+        if(~reset_n) begin
             add1 <= 0;
             add2 <= 0;
             add3 <= 0;
@@ -54,7 +54,6 @@ module Hex_PE(
             add13 <= 0;
             add14 <= 0;
             add15 <= 0;
-            add16 <= 0;
         end
         else begin
             add1 <= mul1 + mul2;

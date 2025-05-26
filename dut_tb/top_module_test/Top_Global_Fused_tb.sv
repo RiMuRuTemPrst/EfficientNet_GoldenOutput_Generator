@@ -91,7 +91,7 @@ module Top_Global_Fused_tb;
     logic [6:0] num_of_line_for_pipeline;
 
     // Instantiate DUT
-    New_Top_Global_Fused_v1 dut (
+    New_Top_Global_Fused_hex dut (
         .clk(clk),
         .reset_n(reset_n),
         .base_addr_IFM(base_addr_IFM),

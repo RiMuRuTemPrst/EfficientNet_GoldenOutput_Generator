@@ -123,11 +123,11 @@ end
                 if(next_state == START_PIXEL) begin
                 end
                 if(next_state == DEEP_FETCH) begin
-                    addr_ifm <= addr_ifm + 'h4 ;
-                    addr_weight <= addr_weight + 'h4 ;
+                    addr_ifm <= addr_ifm + 'h16 ;
+                    addr_weight <= addr_weight + 'h16 ;
                     if(~next_filter)
                     valid_count <= 0;
-                    count_deep_pixel <= count_deep_pixel + 4;
+                    count_deep_pixel <= count_deep_pixel + 16;
                 end
             end
             DEEP_FETCH: begin
@@ -135,14 +135,14 @@ end
                 PE_finish <=0;
                 if(valid == 1) valid_count <= valid_count + Num_of_PE_x4;
                 if(next_state == DEEP_FETCH) begin
-                    addr_ifm <= addr_ifm + 'h4 ;
-                    addr_weight <= addr_weight + 'h4 ;
-                    count_deep_pixel <= count_deep_pixel + 'h4;
+                    addr_ifm <= addr_ifm + 'h16;
+                    addr_weight <= addr_weight + 'h16 ;
+                    count_deep_pixel <= count_deep_pixel + 'h16;
                 end
 
                 if(next_state == START_PIXEL) begin
-                    addr_ifm <= addr_ifm - (weight_c-'h4) ;
-                    addr_weight <= addr_weight + 'h4 ;
+                    addr_ifm <= addr_ifm - (weight_c-'h16) ;
+                    addr_weight <= addr_weight + 'h16 ;
                     count_deep_pixel <= 0;
                     count_filter <= count_filter + 'h4;
                     next_filter <= 1;
@@ -159,12 +159,12 @@ end
                 if(valid == 1) valid_count <= valid_count + 16;
                 if(next_state == START_PIXEL) begin
                     if(~revert) begin 
-                        addr_ifm <= addr_ifm + 4 ;
+                        addr_ifm <= addr_ifm + 16 ;
                         revert <= 1;
                     end
                     else begin
                         revert <= 0;
-                        addr_ifm <= addr_ifm - (weight_c-'h4) -  (weight_c-'h4) - 'h4 ;
+                        addr_ifm <= addr_ifm - (weight_c-'h16) -  (weight_c-'h16) - 'h16 ;
                     end
                     addr_weight <= 0 ;
                     next_filter <= 0;
