@@ -38,9 +38,9 @@ def build_quantized_model_mnist():
     x = layers.Conv2D(128, 3, strides=2, padding='valid', use_bias=True, name="conv_4")(x)
     x = layers.ReLU(name="relu_4")(x)
     x = Lambda(lambda x: quantize_layer(x, 3, 8), name="lambda_4")(x)
-    x = layers.GlobalAveragePooling2D()(x)
+    x = layers.GlobalAveragePooling2D( name="average")(x)
     x = layers.Dropout(0.3)(x)
-    outputs = layers.Dense(10, activation='softmax')(x)
+    outputs = layers.Dense(10, activation='softmax', name="finall_dense")(x)
     model = models.Model(inputs=inputs, outputs=outputs, name="mnist_cnn_quantized")
     return model
 
@@ -141,6 +141,9 @@ def main():
                     for val in output:
                         f.write(f"{val:.6f}\n")
             print(f"Saved output of layer '{layer_name}' to {filename}")
+            # >>>> THÊM ĐOẠN IN RA KẾT QUẢ DỰ ĐOÁN <<<<
+            label, confidence = drawer.predict()
+            print(f"[Predict after drawing] Digit: {label}, Confidence: {confidence:.4f}")
 
     cv2.setMouseCallback('MNIST Drawer', mouse_event)
 
