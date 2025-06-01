@@ -73,26 +73,26 @@ assign stride_shift = (stride == 1 ) ? 0 : (stride == 2 ? 1 : 0);
 
 //reg [7:0] num_of_mul_in_PE = 4; 
 //---------------------------------------------------LUT-num_of_mul_in_PE--------------------------------------------------------//
-wire [7:0] num_of_mul_in_PE_shift=4; 
+reg [7:0] num_of_mul_in_PE_shift; 
 
-// always @(*) begin
-//     case (num_of_mul_in_PE)
-//         'h2 : begin
-//             num_of_mul_in_PE_shift = 'h1;
-//         end
-//         'h4: begin
-//             num_of_mul_in_PE_shift = 'h2;
-//         end
-//         'h8: begin
-//             num_of_mul_in_PE_shift = 'h3;
-//         end
-//         'h10: begin
-//             num_of_mul_in_PE_shift = 'h4;
-//         end
-//         default : 
-//             num_of_mul_in_PE_shift = 'h2;
-//     endcase 
-// end
+always @(*) begin
+    case (num_of_mul_in_PE)
+        'h2 : begin
+            num_of_mul_in_PE_shift = 'h1;
+        end
+        'h4: begin
+            num_of_mul_in_PE_shift = 'h2;
+        end
+        'h8: begin
+            num_of_mul_in_PE_shift = 'h3;
+        end
+        'h10: begin
+            num_of_mul_in_PE_shift = 'h4;
+        end
+        default : 
+            num_of_mul_in_PE_shift = 'h2;
+    endcase 
+end
 
 //---------------------------------------------------LUT-KERNEL_W--------------------------------------------------------//
 reg [7:0] num_of_KERNEL_points; // = KERNEL_W *KERNEL_W
@@ -334,7 +334,7 @@ always @(posedge clk or negedge rst_n) begin
     else begin
 
         //if ( (row_index_KERNEL == (KERNEL_W  << num_of_tiles_shift) -4 )  ) begin 
-        if ( (row_index_KERNEL == (KERNEL_W  *num_of_tiles) -2 )  ) begin 
+        if ( (row_index_KERNEL == (KERNEL_W  *num_of_tiles) -4 )  ) begin 
             if ( col_index_KERNEL != (KERNEL_W -1))
             //predict_line_addr_fetch_ifm         <= predict_line_addr_fetch_ifm + (IFM_W << IFM_C_shift ) ;
             predict_line_addr_fetch_ifm         <= predict_line_addr_fetch_ifm + (IFM_W *IFM_C ) ;
@@ -343,7 +343,7 @@ always @(posedge clk or negedge rst_n) begin
         end
 
         //if ( (row_index_KERNEL == (KERNEL_W  << num_of_tiles_shift) -3 ) && ( col_index_KERNEL == KERNEL_W -1  )  && ( tiles_count == num_of_tiles_for_PE -1  ) ) begin 
-        if ( (row_index_KERNEL == (KERNEL_W  * num_of_tiles) -2 ) && ( col_index_KERNEL == KERNEL_W -1  )  && ( tiles_count == num_of_tiles_for_PE -1  ) ) begin 
+        if ( (row_index_KERNEL == (KERNEL_W  * num_of_tiles) -3 ) && ( col_index_KERNEL == KERNEL_W -1  )  && ( tiles_count == num_of_tiles_for_PE -1  ) ) begin 
             predict_window_addr_fetch_ifm       <= window_start_addr_ifm + ( IFM_C << stride_shift );
             predict_line_addr_fetch_ifm         <= window_start_addr_ifm + ( IFM_C << stride_shift );
         end
@@ -458,7 +458,7 @@ always @(posedge clk or negedge rst_n) begin
                     //if (row_index_KERNEL    <   (KERNEL_W << num_of_tiles_shift) -1 ) begin  
                     if (row_index_KERNEL    <   (KERNEL_W * num_of_tiles) -1 ) begin 
                         row_index_KERNEL    <= row_index_KERNEL + 1'b1;
-                        addr_fetch_ifm      <= addr_fetch_ifm + num_of_mul_in_PE;               
+                        addr_fetch_ifm      <= addr_fetch_ifm + ;               
                     end  
                     else
                     begin

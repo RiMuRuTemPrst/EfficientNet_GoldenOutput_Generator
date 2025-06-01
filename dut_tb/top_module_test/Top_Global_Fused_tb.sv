@@ -425,7 +425,7 @@ module Top_Global_Fused_tb;
 //inital for load hex debug
     always @(posedge clk) begin
     if (write_block_2) begin
-    if (dut.PE_finish_PE_cluster1x1 == 15) begin
+    if (dut.PE_finish_PE_cluster1x1_4 == 15) begin
         for (k = 0; k < 4; k = k + 1) begin
             ofm_data_4 = OFM_n_state[k];  // Lấy giá trị OFM từ output
             // Ghi từng byte của OFM vào các file
@@ -455,7 +455,7 @@ module Top_Global_Fused_tb;
     end
     end
     else if (write_block_3) begin
-    if (dut.PE_finish_PE_cluster1x1 == 15) begin
+    if (dut.PE_finish_PE_cluster1x1_4 == 15) begin
         for (k = 0; k < 4; k = k + 1) begin
             ofm_data_6 = OFM_n_state[k];  // Lấy giá trị OFM từ output
             // Ghi từng byte của OFM vào các file
@@ -485,7 +485,7 @@ module Top_Global_Fused_tb;
     end
     end
     else if (write_block_4) begin
-    if (dut.PE_finish_PE_cluster1x1 == 15) begin
+    if (dut.PE_finish_PE_cluster1x1_4 == 15) begin
         for (k = 0; k < 4; k = k + 1) begin
             ofm_data_8 = OFM_n_state[k];  // Lấy giá trị OFM từ output
             // Ghi từng byte của OFM vào các file
@@ -515,7 +515,7 @@ module Top_Global_Fused_tb;
     end
     end
     else begin
-    if (dut.PE_finish_PE_cluster1x1 == 15) begin
+    if (dut.PE_finish_PE_cluster1x1_4 == 15) begin
         for (k = 0; k < 4; k = k + 1) begin
             ofm_data_2 = OFM_n_state[k];  // Lấy giá trị OFM từ output
             // Ghi từng byte của OFM vào các file

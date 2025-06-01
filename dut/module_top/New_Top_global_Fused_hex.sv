@@ -42,11 +42,11 @@ module New_Top_Global_Fused_hex(
     logic we_global;
 
     //wire for Weight connect to PE_1x1 from BRAM
-    logic [31:0] Weight_0_n_state;
-    logic [31:0] Weight_1_n_state;
-    logic [31:0] Weight_2_n_state;
-    logic [31:0] Weight_3_n_state;
-    logic [31:0] addr_ram_next_rd;
+    logic [127:0] Weight_0_n_state;
+    logic [127:0] Weight_1_n_state;
+    logic [127:0] Weight_2_n_state;
+    logic [127:0] Weight_3_n_state;
+    logic [127:0] addr_ram_next_rd;
     logic [31:0] addr_w_n_state;
 
     logic [31:0] wr_addr_fused;
@@ -93,10 +93,23 @@ module New_Top_Global_Fused_hex(
     logic [127:0] Weight_15; 
     wire [127:0] out_BRAM_CONV;
     wire        wr_data_valid;
-    wire [15:0] done_window_for_PE_cluster;
+    logic [15:0] done_window_for_PE_cluster;
+    logic [15:0] PE_reset_1;
+    logic [15:0] PE_reset_2;
+    logic [15:0] PE_reset_3;
+    logic [15:0] PE_reset_4;
      wire [15:0] finish_for_PE_cluster;
     wire        done_window_one_bit;
+    logic        done_window_one_bit_1;
+    logic        done_window_one_bit_2;
+    logic        done_window_one_bit_3;
+    logic        done_window_one_bit_4;
     wire        finish_for_PE;
+    logic        valid_1;
+    logic        valid_2;
+    logic        valid_3;
+    logic        valid_4;
+
     // wire [7:0] count_for_a_OFM_o;
     
     wire        addr_valid;
@@ -109,7 +122,10 @@ module New_Top_Global_Fused_hex(
 
     // wire data_mux and register for pipeline
     wire [3:0] PE_reset_n_state_wire;
-    wire [31:0] data_out_mux;
+    logic [3:0] PE_reset_n_state_wire_1;
+    logic [3:0] PE_reset_n_state_wire_2;
+    logic [3:0] PE_reset_n_state_wire_3;
+    logic [3:0] PE_reset_n_state_wire_4;
     wire [7:0]  OFM_n_CONV_0;
     wire [7:0]  OFM_n_CONV_1;
     wire [7:0]  OFM_n_CONV_2;
@@ -158,6 +174,10 @@ module New_Top_Global_Fused_hex(
     logic done_compute;
     //controller 1x1 add signal 
     logic [3:0] PE_finish_PE_cluster1x1;
+    logic [3:0] PE_finish_PE_cluster1x1_1;
+    logic [3:0] PE_finish_PE_cluster1x1_2;
+    logic [3:0] PE_finish_PE_cluster1x1_3;
+    logic [3:0] PE_finish_PE_cluster1x1_4;
 
     //global signal
     logic [127:0] store_in_global_RAM;
@@ -514,6 +534,58 @@ module New_Top_Global_Fused_hex(
     .data_out(Weight_3_n_state)               // Dữ liệu ra
     );
 
+ 
+    always_ff @(posedge clk or negedge reset_n) begin
+        if(~reset_n) begin
+            PE_reset_1 <= 0;
+            PE_reset_2 <= 0;
+            PE_reset_3 <= 0;
+            PE_reset_4 <= 0;
+            valid_1 <= 0;
+            valid_2 <= 0;
+            valid_3 <= 0;
+            valid_4 <= 0;
+            PE_reset_n_state_wire_1 <= 0;
+            PE_reset_n_state_wire_2 <= 0;
+            PE_reset_n_state_wire_3 <= 0;
+            PE_reset_n_state_wire_4 <= 0;
+            PE_finish_PE_cluster1x1_1 <= 0;
+            PE_finish_PE_cluster1x1_2 <= 0;
+            PE_finish_PE_cluster1x1_3 <= 0;
+            PE_finish_PE_cluster1x1_4 <= 0;
+            done_window_one_bit_1 <= 0;
+            done_window_one_bit_2 <= 0;
+            done_window_one_bit_3 <= 0;
+            done_window_one_bit_4 <= 0;
+
+        end
+        else begin
+            PE_reset_1 <= done_window_for_PE_cluster; 
+            PE_reset_2 <= PE_reset_1;
+            PE_reset_3 <= PE_reset_2;
+            PE_reset_4 <= PE_reset_3;
+
+            valid_1 <= finish_for_PE;
+            valid_2 <= valid_1;
+            valid_3 <= valid_2;
+            valid_4 <= valid_3;
+
+            PE_reset_n_state_wire_1 <= PE_reset_n_state_wire;
+            PE_reset_n_state_wire_2 <= PE_reset_n_state_wire_1;
+            PE_reset_n_state_wire_3 <= PE_reset_n_state_wire_2;
+            PE_reset_n_state_wire_4 <= PE_reset_n_state_wire_3;
+
+            PE_finish_PE_cluster1x1_1 <= PE_finish_PE_cluster1x1;
+            PE_finish_PE_cluster1x1_2 <= PE_finish_PE_cluster1x1_1;
+            PE_finish_PE_cluster1x1_3 <= PE_finish_PE_cluster1x1_2;
+            PE_finish_PE_cluster1x1_4 <= PE_finish_PE_cluster1x1_3;
+            
+            done_window_one_bit_1 <= done_window_one_bit;
+            done_window_one_bit_2 <= done_window_one_bit_1;
+            done_window_one_bit_3 <= done_window_one_bit_2;
+            done_window_one_bit_4 <= done_window_one_bit_3;
+        end  
+    end
     addr_gen_fused addr_gen(
         .clk(clk),
         .rst_n(reset_n),
@@ -539,7 +611,7 @@ module New_Top_Global_Fused_hex(
     CONV_1x1_controller_v1 CONV_1x1_controller_inst(
         .clk(clk),
         .reset_n(reset_n),
-        .valid(finish_for_PE),
+        .valid(valid_4),
         .weight_c(IFM_C_layer2),
         .num_filter(OFM_C_layer2),
         .cal_start(ready_delay),
@@ -553,7 +625,7 @@ module New_Top_Global_Fused_hex(
     Hex_PE_Cluster_quad PE_cluster_1x1(
         .clk(clk),
         .reset_n(reset_n),
-        .PE_reset(PE_reset_n_state_wire),
+        .PE_reset(PE_reset_n_state_wire_4),
         .Weight_0(Weight_0_n_state),
         .Weight_1(Weight_1_n_state),
         .Weight_2(Weight_2_n_state),
@@ -568,7 +640,7 @@ module New_Top_Global_Fused_hex(
     Hex_PE_cluster PE_cluster_layer1(
         .clk(clk),
         .reset_n(reset_n),
-        .PE_reset(done_window_for_PE_cluster),
+        .PE_reset(PE_reset_4),
         .PE_finish(PE_finish),
         //.valid(valid),
         .IFM(IFM_data),
@@ -671,7 +743,7 @@ module New_Top_Global_Fused_hex(
     );
 
     assign done_window_for_PE_cluster       =   {16{done_window_one_bit}};
-    assign finish_for_PE_cluster            =   1 && ( addr_IFM != 'b0 )   ? {16{finish_for_PE}} : 16'b0;
+    assign finish_for_PE_cluster            =   1 && ( addr_IFM != 'b0 )   ? {16{valid_4}} : 16'b0;
     assign valid                            =   finish_for_PE_cluster;
 
     assign data_write_pipeline_bram = {OFM_active_15,OFM_active_14,OFM_active_13,OFM_active_12,OFM_active_11,OFM_active_10,OFM_active_9,OFM_active_8,OFM_active_7,OFM_active_6,OFM_active_5,OFM_active_4,OFM_active_3,OFM_active_2,OFM_active_1,OFM_active_0};
@@ -684,7 +756,7 @@ module New_Top_Global_Fused_hex(
         .clk(clk),
         .reset_n(reset_n),
         .OFM_C(IFM_C_layer2),
-        .valid(finish_for_PE),
+        .valid(valid_4),
         .write_addr(addr_ram_next_wr_wire)
     );
     BRAM_General #(
@@ -696,7 +768,7 @@ module New_Top_Global_Fused_hex(
         .clk(clk),
         .rd_addr(addr_ram_next_rd),
         .wr_addr(addr_ram_next_wr_wire),
-        .wr_rd_en(done_window_one_bit),
+        .wr_rd_en(done_window_one_bit_4),
         .data_in(data_write_pipeline_bram),
         .data_out(out_BRAM_CONV)
     );
@@ -704,7 +776,7 @@ module New_Top_Global_Fused_hex(
         .clk(clk),
         .reset_n(reset_n),
         .data_in({OFM_3_n_state,OFM_2_n_state,OFM_1_n_state,OFM_0_n_state}),
-        .valid(PE_finish_PE_cluster1x1),
+        .valid(PE_finish_PE_cluster1x1_4),
         .data_out(data_out_reg_fused),
         .valid_out(we_out_reg_fused)
     );

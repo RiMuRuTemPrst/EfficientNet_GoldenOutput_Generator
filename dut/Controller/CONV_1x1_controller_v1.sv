@@ -71,7 +71,7 @@ always_comb begin
 
         // ST_DATA_BIT
         DEEP_FETCH : begin
-            if(count_deep_pixel < weight_c - 'h4) begin
+            if(count_deep_pixel < weight_c - 'd16) begin
                 next_state = DEEP_FETCH ;
             end
             else begin
@@ -123,8 +123,8 @@ end
                 if(next_state == START_PIXEL) begin
                 end
                 if(next_state == DEEP_FETCH) begin
-                    addr_ifm <= addr_ifm + 'h16 ;
-                    addr_weight <= addr_weight + 'h16 ;
+                    addr_ifm <= addr_ifm + 'd16 ;
+                    addr_weight <= addr_weight + 'd16 ;
                     if(~next_filter)
                     valid_count <= 0;
                     count_deep_pixel <= count_deep_pixel + 16;
@@ -135,14 +135,14 @@ end
                 PE_finish <=0;
                 if(valid == 1) valid_count <= valid_count + Num_of_PE_x4;
                 if(next_state == DEEP_FETCH) begin
-                    addr_ifm <= addr_ifm + 'h16;
-                    addr_weight <= addr_weight + 'h16 ;
-                    count_deep_pixel <= count_deep_pixel + 'h16;
+                    addr_ifm <= addr_ifm + 'd16;
+                    addr_weight <= addr_weight + 'd16 ;
+                    count_deep_pixel <= count_deep_pixel + 'd16;
                 end
 
                 if(next_state == START_PIXEL) begin
-                    addr_ifm <= addr_ifm - (weight_c-'h16) ;
-                    addr_weight <= addr_weight + 'h16 ;
+                    addr_ifm <= addr_ifm - (weight_c-'d16) ;
+                    addr_weight <= addr_weight + 'd16 ;
                     count_deep_pixel <= 0;
                     count_filter <= count_filter + 'h4;
                     next_filter <= 1;
@@ -164,7 +164,7 @@ end
                     end
                     else begin
                         revert <= 0;
-                        addr_ifm <= addr_ifm - (weight_c-'h16) -  (weight_c-'h16) - 'h16 ;
+                        addr_ifm <= addr_ifm - (weight_c-'d16) -  (weight_c-'d16) - 'd16 ;
                     end
                     addr_weight <= 0 ;
                     next_filter <= 0;
