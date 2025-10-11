@@ -1,0 +1,23 @@
+QuestaSim-64 vlog 10.7c Compiler 2018.08 Aug 17 2018
+Start time: 18:17:05 on Jun 17,2025
+vlog -f filelist_com.f -f filelist_vsim.f -f filelist_tb.f -l ./log/vlogt.log 
+-- Compiling module Sub_top_CONV_tb
+-- Compiling module ReLU6_tb
+-- Compiling module Sub_top_2_CONV_tb
+-- Compiling module Sub_top_MB_CONV_tb
+** Warning: ../Fused-Block-CNN/dut_tb/top_module_test/Top_Global_Fused_tb.sv(234): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+** Warning: ../Fused-Block-CNN/dut_tb/top_module_test/Top_Global_Fused_tb.sv(304): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+** Warning: ../Fused-Block-CNN/dut_tb/top_module_test/Top_Global_Fused_tb.sv(350): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+** Warning: ../Fused-Block-CNN/dut_tb/top_module_test/Top_Global_Fused_tb.sv(395): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+** Warning: ../Fused-Block-CNN/dut_tb/top_module_test/Top_Global_Fused_tb.sv(647): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+** Warning: ../Fused-Block-CNN/dut_tb/top_module_test/Top_Global_Fused_tb.sv(694): (vlog-2600) [RDGN] - Redundant digits in numeric literal.
+-- Compiling module Top_Global_Fused_tb
+
+Top level modules:
+	Sub_top_CONV_tb
+	ReLU6_tb
+	Sub_top_2_CONV_tb
+	Sub_top_MB_CONV_tb
+	Top_Global_Fused_tb
+End time: 18:17:05 on Jun 17,2025, Elapsed time: 0:00:00
+Errors: 0, Warnings: 6

@@ -1,0 +1,45 @@
+QuestaSim-64 vlog 10.7c Compiler 2018.08 Aug 17 2018
+** Warning: (vlog-2103) Directory "../../hdl" for -y option not found.
+Start time: 18:17:05 on Jun 17,2025
+vlog -f filelist_com.f -f filelist_rtl.f "+cover=bcefs" -l ./log/vlogr.log 
+-- Compiling module BRAM
+-- Compiling module BRAM_IFM
+-- Compiling module BRAM_General
+-- Compiling module BRAM_General_weight
+-- Compiling module PE_cluster
+-- Compiling module Quad_PE
+-- Compiling module Hex_PE_Cluster_quad
+-- Compiling module Hex_PE_cluster
+-- Compiling module Hex_PE
+-- Compiling module Hex_PE_double_DSP_cluster
+-- Compiling module Hex_PE_double_DSP
+-- Compiling module Hex_PE_double_DSP_cluster_quad
+-- Compiling module Sub_top_CONV
+-- Compiling module address_generator
+-- Compiling module ReLU6
+-- Compiling module CONV_1x1_controller
+-- Compiling module CONV_1x1_controller_v1
+-- Compiling module Global_top_fused_control_unit
+-- Compiling module control_padding_new
+-- Compiling module control_padding_fused
+-- Compiling module Write_for_Bram_controller
+-- Compiling module delay
+-- Compiling module filter_for_bram
+-- Compiling module addr_gen_fused
+-- Compiling module Sub_top_2_CONV_tb
+-- Compiling module PE_cluster_1x1
+-- Compiling module Register_for_pipeline
+-- Compiling module MUX_pipeline
+-- Compiling module Sub_top_3_CONV
+-- Compiling module Data_controller
+-- Compiling module Control_unit
+-- Compiling module BRAM_IFM_128bit_in
+** Error: (vlog-7) Failed to open design unit file "../Fused-Block-CNN/dut/module_top/Sub_top_MB_CONV.sv" in read mode.
+No such file or directory. (errno = ENOENT)
+-- Compiling module Top_Global_Fused
+-- Compiling module New_Top_Global_Fused
+-- Compiling module New_Top_Global_Fused_v1
+-- Compiling module New_Top_Global_Fused_hex
+-- Compiling module Register_for_fused
+End time: 18:17:05 on Jun 17,2025, Elapsed time: 0:00:00
+Errors: 1, Warnings: 1

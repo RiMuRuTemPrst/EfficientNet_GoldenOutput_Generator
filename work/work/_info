@@ -1,0 +1,1067 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/manhung/Hung/CNN/work
+T_opt
+!s110 1750159031
+VDHiLWo>R2hUokYFX3;=Q92
+04 19 4 work Top_Global_Fused_tb fast 0
+=1-5c619920e7f1-68514eb7-dadb7-bbbf
+o-quiet -auto_acc_if_foreign -work work +acc
+Z1 tCvgOpt 0
+n@_opt
+OL;O;10.7c;67
+vaddr_gen_fused
+Z2 !s110 1750159025
+!i10b 1
+!s100 WfioT7TISHjNcN<>3FMLa2
+IY66fUY5LKim^1AU`?:DXk3
+Z3 VDg1SIo80bB@j0V0VzS_@n1
+R0
+w1748517055
+8../Fused-Block-CNN/dut/Add_gen/addr_gen_fused.v
+F../Fused-Block-CNN/dut/Add_gen/addr_gen_fused.v
+L0 1
+Z4 OL;L;10.7c;67
+r1
+!s85 0
+31
+Z5 !s108 1750159025.000000
+Z6 !s107 ../Fused-Block-CNN/dut/BRAM/Register_for_fused.sv|../Fused-Block-CNN/dut/module_top/New_Top_global_Fused_hex.sv|../Fused-Block-CNN/dut/module_top/New_Top_Global_Fused_v1.sv|../Fused-Block-CNN/dut/module_top/New_Top_Global_Fused.sv|../Fused-Block-CNN/dut/module_top/Top_Global_Fused.sv|../Fused-Block-CNN/dut/module_top/Sub_top_MB_CONV.sv|../Fused-Block-CNN/dut/BRAM/BRAM_IFM_128bit_in.sv|../Fused-Block-CNN/dut/Controller/Control_unit.v|../Fused-Block-CNN/dut/Controller/Data_controller.v|../Fused-Block-CNN/dut/module_top/Sub_top_3_CONV.sv|../Fused-Block-CNN/dut/MUX_control/MUX_pipeline.sv|../Fused-Block-CNN/dut/BRAM/Register_for_pipeline.sv|../Fused-Block-CNN/dut/PE_cluster/PE_Cluster_1x1.sv|../Fused-Block-CNN/dut/module_top/Sub_top_2_CONV.sv|../Fused-Block-CNN/dut/Add_gen/addr_gen_fused.v|../Fused-Block-CNN/dut/Controller/filter_for_bram.sv|../Fused-Block-CNN/dut/Controller/delay.sv|../Fused-Block-CNN/dut/Controller/Write_for_Bram_controller.sv|../Fused-Block-CNN/dut/Controller/control_padding_fused.sv|../Fused-Block-CNN/dut/Controller/control_padding_new.sv|../Fused-Block-CNN/dut/module_top/Global_top_fused_control_unit.sv|../Fused-Block-CNN/dut/Controller/CONV_1x1_controller_v1.sv|../Fused-Block-CNN/dut/Controller/CONV_1x1_controller.sv|../Fused-Block-CNN/dut/Activation/ReLU6.sv|../Fused-Block-CNN/dut/Add_gen/addr_gen_lastest.v|../Fused-Block-CNN/dut/module_top/Sub_top_CONV.sv|../Fused-Block-CNN/dut/PE_cluster/Hex_PE_double_DSP_Cluster_quad.sv|../Fused-Block-CNN/dut/PE_cluster/Hex_PE_double_DSP.sv|../Fused-Block-CNN/dut/PE_cluster/Hex_PE_double_DSP_Cluster.sv|../Fused-Block-CNN/dut/PE_cluster/Hex_PE.sv|../Fused-Block-CNN/dut/PE_cluster/Hex_PE_Cluster.sv|../Fused-Block-CNN/dut/PE_cluster/Hex_PE_Cluster_quad.sv|../Fused-Block-CNN/dut/PE_cluster/Quad_PE.sv|../Fused-Block-CNN/dut/PE_cluster/PE_Cluster.sv|../Fused-Block-CNN/dut/BRAM/BRAM_General_weight.sv|../Fused-Block-CNN/dut/BRAM/BRAM_General.v|../Fused-Block-CNN/dut/BRAM/BRAM_IFM.v|../Fused-Block-CNN/dut/BRAM/BRAM.v|
+Z7 !s90 -f|filelist_com.f|-f|filelist_rtl.f|+cover=bcefs|-l|./log/vlogr.log|
+!i113 0
+Z8 !s102 +cover=bcefs
+Z9 o+libext+.v +libext+.vh +libext+.sv +libext+.svh +cover=bcefs -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z10 !s92 +libext+.v +libext+.vh +libext+.sv +libext+.svh +incdir+../../inc +incdir+../../hdl -y ../../hdl +cover=bcefs -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R1
+vaddress_generator
+R2
+!i10b 1
+!s100 J2iNSRl7<AA^20mQJXb3F2
+I8hHW]7jRO3NIPdM6Ad3CH3
+R3
+R0
+w1747278930
+8../Fused-Block-CNN/dut/Add_gen/addr_gen_lastest.v
+F../Fused-Block-CNN/dut/Add_gen/addr_gen_lastest.v
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+vBRAM
+R2
+!i10b 1
+!s100 Ubc1JBKWlB83?>QNLi=<I0
+IeOgnL@fSLl3=f6mjVP]C@0
+R3
+R0
+w1744365019
+8../Fused-Block-CNN/dut/BRAM/BRAM.v
+F../Fused-Block-CNN/dut/BRAM/BRAM.v
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@b@r@a@m
+vBRAM_General
+R2
+!i10b 1
+!s100 _EK^VhEV=m_2>4LEaiL?W1
+IaIY^7mjHZ^QHl34G7Tz6P0
+R3
+R0
+w1748276734
+8../Fused-Block-CNN/dut/BRAM/BRAM_General.v
+F../Fused-Block-CNN/dut/BRAM/BRAM_General.v
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@b@r@a@m_@general
+vBRAM_General_weight
+Z11 DXx6 sv_std 3 std 0 22 d=_JfHTnXCN[H5FjiaJJc0
+R2
+!i10b 1
+!s100 SAaflPBNWClASg4Fd=eGf3
+IC00DjHXHNVW3fUa5H[@Yo3
+R3
+!s105 BRAM_General_weight_sv_unit
+S1
+R0
+Z12 w1747214023
+8../Fused-Block-CNN/dut/BRAM/BRAM_General_weight.sv
+F../Fused-Block-CNN/dut/BRAM/BRAM_General_weight.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@b@r@a@m_@general_weight
+vBRAM_IFM
+R2
+!i10b 1
+!s100 :1DTYDSD79AFeJ<V5R9DX1
+IV@MkYEMfbKDd81E;ZHDR]0
+R3
+R0
+w1745475288
+8../Fused-Block-CNN/dut/BRAM/BRAM_IFM.v
+F../Fused-Block-CNN/dut/BRAM/BRAM_IFM.v
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@b@r@a@m_@i@f@m
+vBRAM_IFM_128bit_in
+R11
+R2
+!i10b 1
+!s100 :9^cSVSG@]A5VL:iIZR@O1
+IEkfKC]DSC]3Um=MLcBgNG2
+R3
+!s105 BRAM_IFM_128bit_in_sv_unit
+S1
+R0
+Z13 w1747048638
+8../Fused-Block-CNN/dut/BRAM/BRAM_IFM_128bit_in.sv
+F../Fused-Block-CNN/dut/BRAM/BRAM_IFM_128bit_in.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@b@r@a@m_@i@f@m_128bit_in
+vcontrol_padding_fused
+R11
+R2
+!i10b 1
+!s100 J[:95DSF=64z`3DBhCSiA0
+IW4zHg2[0QVM3g<0NWQjZ30
+R3
+!s105 control_padding_fused_sv_unit
+S1
+R0
+w1747623757
+8../Fused-Block-CNN/dut/Controller/control_padding_fused.sv
+F../Fused-Block-CNN/dut/Controller/control_padding_fused.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+vcontrol_padding_new
+R11
+R2
+!i10b 1
+!s100 ==j5O7zhKHAZ8]Gc_8zi_3
+IGcNn<Sii1ElQM>E9hL07n3
+R3
+!s105 control_padding_new_sv_unit
+S1
+R0
+w1745949438
+8../Fused-Block-CNN/dut/Controller/control_padding_new.sv
+F../Fused-Block-CNN/dut/Controller/control_padding_new.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+vControl_unit
+R2
+!i10b 1
+!s100 B0kG]5z=V<C`eO[9M2QFU2
+I]n42kkfNgP=a<Z<;?:9[[2
+R3
+R0
+w1746152862
+8../Fused-Block-CNN/dut/Controller/Control_unit.v
+F../Fused-Block-CNN/dut/Controller/Control_unit.v
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@control_unit
+vCONV_1x1_controller
+R11
+R2
+!i10b 1
+!s100 ^<a6^TR1dJ^ZAL5e;=5d33
+I_jT^WWR7KOlPzIb39cR6Y3
+R3
+!s105 CONV_1x1_controller_sv_unit
+S1
+R0
+R12
+8../Fused-Block-CNN/dut/Controller/CONV_1x1_controller.sv
+F../Fused-Block-CNN/dut/Controller/CONV_1x1_controller.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@c@o@n@v_1x1_controller
+vCONV_1x1_controller_v1
+R11
+R2
+!i10b 1
+!s100 kXD`h]<`;K4d?So[k?_lj1
+IKGXYo^EZ7=9zzf]zgGI_^0
+R3
+!s105 CONV_1x1_controller_v1_sv_unit
+S1
+R0
+w1748360444
+8../Fused-Block-CNN/dut/Controller/CONV_1x1_controller_v1.sv
+F../Fused-Block-CNN/dut/Controller/CONV_1x1_controller_v1.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@c@o@n@v_1x1_controller_v1
+vData_controller
+R2
+!i10b 1
+!s100 ef7Nf^TTh`G8cMRB6EEUf2
+Im5l_jcOo`1dcSJgP?E6NW2
+R3
+R0
+R12
+8../Fused-Block-CNN/dut/Controller/Data_controller.v
+F../Fused-Block-CNN/dut/Controller/Data_controller.v
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@data_controller
+vdelay
+R11
+R2
+!i10b 1
+!s100 7lm_XcI9`2@7`5UeeV]3o0
+IU:W:N]fT2mBKHm@3nK?Y01
+R3
+!s105 delay_sv_unit
+S1
+R0
+w1747758557
+8../Fused-Block-CNN/dut/Controller/delay.sv
+F../Fused-Block-CNN/dut/Controller/delay.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+vfilter_for_bram
+R11
+R2
+!i10b 1
+!s100 1RI?@Df5?_l;hP7m=SGbn2
+Id:31f<eFf4:R3LlIlWa<M0
+R3
+!s105 filter_for_bram_sv_unit
+S1
+R0
+w1747275589
+8../Fused-Block-CNN/dut/Controller/filter_for_bram.sv
+F../Fused-Block-CNN/dut/Controller/filter_for_bram.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+vGlobal_top_fused_control_unit
+R11
+R2
+!i10b 1
+!s100 iPAk;4_I<UH87h]mI8Ao33
+I21hD1_kN9OoYWP2a0^Ek81
+R3
+!s105 Global_top_fused_control_unit_sv_unit
+S1
+R0
+w1748064457
+8../Fused-Block-CNN/dut/module_top/Global_top_fused_control_unit.sv
+F../Fused-Block-CNN/dut/module_top/Global_top_fused_control_unit.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@global_top_fused_control_unit
+vHex_PE
+R11
+R2
+!i10b 1
+!s100 jNnfW6ckA6;6bOOO:om922
+IZN_WVLGF`8PVSg8lS]YFm1
+R3
+!s105 Hex_PE_sv_unit
+S1
+R0
+w1750155703
+8../Fused-Block-CNN/dut/PE_cluster/Hex_PE.sv
+F../Fused-Block-CNN/dut/PE_cluster/Hex_PE.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@hex_@p@e
+vHex_PE_cluster
+R11
+R2
+!i10b 1
+!s100 Qf1JMVPf?I_<<8=HFzh5]2
+Ii=V1]g:oWjY=g;alo94AM0
+R3
+!s105 Hex_PE_Cluster_sv_unit
+S1
+R0
+w1748277027
+8../Fused-Block-CNN/dut/PE_cluster/Hex_PE_Cluster.sv
+F../Fused-Block-CNN/dut/PE_cluster/Hex_PE_Cluster.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@hex_@p@e_cluster
+vHex_PE_Cluster_quad
+R11
+R2
+!i10b 1
+!s100 D18;TmVC9bXCanKaE]Do;0
+IY>lJ1[S;TUn_ZF8Yf^`cd3
+R3
+!s105 Hex_PE_Cluster_quad_sv_unit
+S1
+R0
+w1748523807
+8../Fused-Block-CNN/dut/PE_cluster/Hex_PE_Cluster_quad.sv
+F../Fused-Block-CNN/dut/PE_cluster/Hex_PE_Cluster_quad.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@hex_@p@e_@cluster_quad
+vHex_PE_double_DSP
+R11
+R2
+!i10b 1
+!s100 _Ze^?Z3S12Zz<Nmk]a<7b2
+Inz7X`XmAH?S]BI_5gM`J53
+R3
+!s105 Hex_PE_double_DSP_sv_unit
+S1
+R0
+w1750157909
+8../Fused-Block-CNN/dut/PE_cluster/Hex_PE_double_DSP.sv
+F../Fused-Block-CNN/dut/PE_cluster/Hex_PE_double_DSP.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@hex_@p@e_double_@d@s@p
+vHex_PE_double_DSP_cluster
+R11
+R2
+!i10b 1
+!s100 =nGQ5jB]DWHjg2NiYA0LZ2
+Ia_Uzn`E1<La]MjhdCNjN01
+R3
+!s105 Hex_PE_double_DSP_Cluster_sv_unit
+S1
+R0
+w1750152137
+8../Fused-Block-CNN/dut/PE_cluster/Hex_PE_double_DSP_Cluster.sv
+F../Fused-Block-CNN/dut/PE_cluster/Hex_PE_double_DSP_Cluster.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@hex_@p@e_double_@d@s@p_cluster
+vHex_PE_double_DSP_cluster_quad
+R11
+R2
+!i10b 1
+!s100 BWAbl`3O:z8P]eHGaZTGD3
+IGZ^YYWXR`9zmXcnfSD_dA2
+R3
+!s105 Hex_PE_double_DSP_Cluster_quad_sv_unit
+S1
+R0
+w1750158917
+8../Fused-Block-CNN/dut/PE_cluster/Hex_PE_double_DSP_Cluster_quad.sv
+F../Fused-Block-CNN/dut/PE_cluster/Hex_PE_double_DSP_Cluster_quad.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@hex_@p@e_double_@d@s@p_cluster_quad
+vMUX_pipeline
+R11
+R2
+!i10b 1
+!s100 V8j]8nYo2=HR^A?h=>kzn0
+I_m=e5QE4]zYgjEAV?Y8eh3
+R3
+!s105 MUX_pipeline_sv_unit
+S1
+R0
+Z14 w1745949118
+8../Fused-Block-CNN/dut/MUX_control/MUX_pipeline.sv
+F../Fused-Block-CNN/dut/MUX_control/MUX_pipeline.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@m@u@x_pipeline
+vNew_Top_Global_Fused
+R11
+R2
+!i10b 1
+!s100 JXVVV^UC^@b>oR0>oUQP`2
+I2?If5FK:O7]SeIASzO=I]2
+R3
+Z15 !s105 New_Top_Global_Fused_sv_unit
+S1
+R0
+w1747214804
+8../Fused-Block-CNN/dut/module_top/New_Top_Global_Fused.sv
+F../Fused-Block-CNN/dut/module_top/New_Top_Global_Fused.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@new_@top_@global_@fused
+vNew_Top_Global_Fused_hex
+R11
+R2
+!i10b 1
+!s100 ;SIm_iT=^QEWRnkoj4c3N1
+I1=SEgN:NGi]S]Rk>^=VG92
+R3
+R15
+S1
+R0
+w1750158962
+8../Fused-Block-CNN/dut/module_top/New_Top_global_Fused_hex.sv
+F../Fused-Block-CNN/dut/module_top/New_Top_global_Fused_hex.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@new_@top_@global_@fused_hex
+vNew_Top_Global_Fused_v1
+R11
+R2
+!i10b 1
+!s100 Rn6OULCB@HQ6;8TPgF;^I1
+IVoe^5hIiZ@:n]>lB<F`LS3
+R3
+R15
+S1
+R0
+w1748055296
+8../Fused-Block-CNN/dut/module_top/New_Top_Global_Fused_v1.sv
+F../Fused-Block-CNN/dut/module_top/New_Top_Global_Fused_v1.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@new_@top_@global_@fused_v1
+vPE_cluster
+R11
+R2
+!i10b 1
+!s100 ;izIISG^XBOfe^HiFKP4L3
+I4H0R?G=6E7]]^hlWHgJ5^3
+R3
+!s105 PE_Cluster_sv_unit
+S1
+R0
+Z16 w1742890699
+8../Fused-Block-CNN/dut/PE_cluster/PE_Cluster.sv
+F../Fused-Block-CNN/dut/PE_cluster/PE_Cluster.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@p@e_cluster
+vPE_cluster_1x1
+R11
+R2
+!i10b 1
+!s100 OCWnLOn0GTciRTaf6gegb3
+IXZhV=Qc1nz0GcNE905h9A1
+R3
+!s105 PE_Cluster_1x1_sv_unit
+S1
+R0
+Z17 w1743747519
+8../Fused-Block-CNN/dut/PE_cluster/PE_Cluster_1x1.sv
+F../Fused-Block-CNN/dut/PE_cluster/PE_Cluster_1x1.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@p@e_cluster_1x1
+vQuad_PE
+R11
+R2
+!i10b 1
+!s100 UjP5O`RiFiDNj<<KG9jDd1
+INH>:o;4H2DaHM;J_8:al33
+R3
+!s105 Quad_PE_sv_unit
+S1
+R0
+R16
+8../Fused-Block-CNN/dut/PE_cluster/Quad_PE.sv
+F../Fused-Block-CNN/dut/PE_cluster/Quad_PE.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@quad_@p@e
+vRegister_for_fused
+R11
+R2
+!i10b 1
+!s100 EHOS<QJ7j5M>?_lQkKB^M1
+Ih?QUiYIiHZ3EQX;fI1>eV2
+R3
+R15
+S1
+R0
+R14
+8../Fused-Block-CNN/dut/BRAM/Register_for_fused.sv
+F../Fused-Block-CNN/dut/BRAM/Register_for_fused.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@register_for_fused
+vRegister_for_pipeline
+R11
+R2
+!i10b 1
+!s100 D?k:eFQz286Zac;<QDVA_3
+Id?oKCnHY6U6OQ<Og9mPG_1
+R3
+!s105 Register_for_pipeline_sv_unit
+S1
+R0
+R17
+8../Fused-Block-CNN/dut/BRAM/Register_for_pipeline.sv
+F../Fused-Block-CNN/dut/BRAM/Register_for_pipeline.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@register_for_pipeline
+vReLU6
+R11
+R2
+!i10b 1
+!s100 <F<3al4P5Ta8ON<cOl22_2
+I2a3nm?2MZBIj1=zo?cj7?3
+R3
+!s105 ReLU6_sv_unit
+S1
+R0
+R17
+8../Fused-Block-CNN/dut/Activation/ReLU6.sv
+F../Fused-Block-CNN/dut/Activation/ReLU6.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@re@l@u6
+vReLU6_tb
+R11
+R2
+!i10b 1
+!s100 nf4a2GW<n=I6=cDOIWg9o2
+INIFS1M4ghWTC4oYd=72hT0
+R3
+!s105 ReLU6_tb_sv_unit
+S1
+R0
+w1742874176
+8../Fused-Block-CNN/dut_tb/Activation/ReLU6_tb.sv
+F../Fused-Block-CNN/dut_tb/Activation/ReLU6_tb.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+Z18 !s107 ../Fused-Block-CNN/dut_tb/top_module_test/Top_Global_Fused_tb.sv|../Fused-Block-CNN/dut_tb/top_module_test/Sub_top_MB_CONV_tb.sv|../Fused-Block-CNN/dut_tb/top_module_test/Sub_top_2_CONV_tb.sv|../Fused-Block-CNN/dut_tb/Activation/ReLU6_tb.sv|../Fused-Block-CNN/dut_tb/top_module_test/Sub_top_CONV_tb.sv|
+Z19 !s90 -f|filelist_com.f|-f|filelist_vsim.f|-f|filelist_tb.f|-l|./log/vlogt.log|
+!i113 0
+Z20 o+libext+.v +libext+.vh +libext+.sv +libext+.svh +notimingchecks -sv -timescale 1ns/1ns -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+Z21 !s92 +libext+.v +libext+.vh +libext+.sv +libext+.svh +notimingchecks -sv -timescale 1ns/1ns +incdir+../inc -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R1
+n@re@l@u6_tb
+vSub_top_2_CONV_tb
+R11
+R2
+!i10b 1
+!s100 do@8OnM:6XegGmiOUVC9m1
+IoF<UY`SVSigSgKYX>_MLD2
+R3
+!s105 Sub_top_2_CONV_tb_sv_unit
+S1
+R0
+R17
+8../Fused-Block-CNN/dut_tb/top_module_test/Sub_top_2_CONV_tb.sv
+F../Fused-Block-CNN/dut_tb/top_module_test/Sub_top_2_CONV_tb.sv
+L0 5
+R4
+r1
+!s85 0
+31
+R5
+R18
+R19
+!i113 0
+R20
+R21
+R1
+n@sub_top_2_@c@o@n@v_tb
+vSub_top_3_CONV
+R11
+R2
+!i10b 1
+!s100 f8gWmo[k_GC[Fd8WSRik21
+IYEME;am]6RY5H<:3I94Dm1
+R3
+!s105 Sub_top_3_CONV_sv_unit
+S1
+R0
+R17
+8../Fused-Block-CNN/dut/module_top/Sub_top_3_CONV.sv
+F../Fused-Block-CNN/dut/module_top/Sub_top_3_CONV.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@sub_top_3_@c@o@n@v
+vSub_top_CONV
+R11
+R2
+!i10b 1
+!s100 1E1W^QPW12FjSMYza;8Ah2
+I_1HC>EDJfZ7l2DEASZncf3
+R3
+!s105 Sub_top_CONV_sv_unit
+S1
+R0
+w1744095604
+8../Fused-Block-CNN/dut/module_top/Sub_top_CONV.sv
+F../Fused-Block-CNN/dut/module_top/Sub_top_CONV.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@sub_top_@c@o@n@v
+vSub_top_CONV_tb
+R11
+R2
+!i10b 1
+!s100 j02`>53:CaE@_V:iKhORh0
+IhoM?dKE=AM<3Hz1F7XOJV0
+R3
+!s105 Sub_top_CONV_tb_sv_unit
+S1
+R0
+w1744251440
+8../Fused-Block-CNN/dut_tb/top_module_test/Sub_top_CONV_tb.sv
+F../Fused-Block-CNN/dut_tb/top_module_test/Sub_top_CONV_tb.sv
+L0 18
+R4
+r1
+!s85 0
+31
+R5
+R18
+R19
+!i113 0
+R20
+R21
+R1
+n@sub_top_@c@o@n@v_tb
+vSub_top_MB_CONV_tb
+R11
+R2
+!i10b 1
+!s100 BCXbe@2M^O]Ud2A:WKomU0
+IC=7nnJ4@n43[_eF7o]Bek1
+R3
+!s105 Sub_top_MB_CONV_tb_sv_unit
+S1
+R0
+R13
+8../Fused-Block-CNN/dut_tb/top_module_test/Sub_top_MB_CONV_tb.sv
+F../Fused-Block-CNN/dut_tb/top_module_test/Sub_top_MB_CONV_tb.sv
+L0 21
+R4
+r1
+!s85 0
+31
+R5
+R18
+R19
+!i113 0
+R20
+R21
+R1
+n@sub_top_@m@b_@c@o@n@v_tb
+vTop_Global_Fused_tb
+R11
+R2
+!i10b 1
+!s100 1JbLKDIlG3MV:fO?z^G<92
+I78H6:X=Xk:gLRc[:UUeiP3
+R3
+!s105 Top_Global_Fused_tb_sv_unit
+S1
+R0
+w1748574468
+8../Fused-Block-CNN/dut_tb/top_module_test/Top_Global_Fused_tb.sv
+F../Fused-Block-CNN/dut_tb/top_module_test/Top_Global_Fused_tb.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R18
+R19
+!i113 0
+R20
+R21
+R1
+n@top_@global_@fused_tb
+vWrite_for_Bram_controller
+R11
+R2
+!i10b 1
+!s100 [SaC=H>::RkQXB0F0E^bM2
+I3I5W8OVQKAz;ejn0]16[O2
+R3
+!s105 Write_for_Bram_controller_sv_unit
+S1
+R0
+w1747215539
+8../Fused-Block-CNN/dut/Controller/Write_for_Bram_controller.sv
+F../Fused-Block-CNN/dut/Controller/Write_for_Bram_controller.sv
+L0 1
+R4
+r1
+!s85 0
+31
+R5
+R6
+R7
+!i113 0
+R8
+R9
+R10
+R1
+n@write_for_@bram_controller
