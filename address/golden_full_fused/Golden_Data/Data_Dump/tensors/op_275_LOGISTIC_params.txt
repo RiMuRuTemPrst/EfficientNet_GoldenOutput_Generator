@@ -1,0 +1,11 @@
+Op Type: LOGISTIC
+Output Tensor: efficientnetv2-b0/block6f_activation/Sigmoid
+Output Scale: 0.00390625
+Output Zero Point: -128
+Output Shape: [1, 7, 7, 1152]
+
+# --- Shapes summary ---
+IFM0 Shape: [1, 7, 7, 1152]
+IFM1/Weights Shape: None
+Bias Shape: None
+OFM Shape: [1, 7, 7, 1152]

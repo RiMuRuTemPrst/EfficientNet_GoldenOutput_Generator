@@ -1,0 +1,18 @@
+Op Type: MUL
+Output Tensor: efficientnetv2-b0/block6d_se_reduce/mul_1
+Output Scale: 0.02029639109969139
+Output Zero Point: -114
+Output Shape: [1, 1, 1, 48]
+
+# --- Weights ---
+Name: efficientnetv2-b0/block6d_se_reduce/Sigmoid
+Shape: [1, 1, 1, 48]
+Scale(s): [0.00390625]
+Zero Point(s): [-128]
+Axis: 0
+
+# --- Shapes summary ---
+IFM0 Shape: [1, 1, 1, 48]
+IFM1/Weights Shape: [1, 1, 1, 48]
+Bias Shape: None
+OFM Shape: [1, 1, 1, 48]

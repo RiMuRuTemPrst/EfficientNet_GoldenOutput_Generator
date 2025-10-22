@@ -1,0 +1,18 @@
+Op Type: MUL
+Output Tensor: efficientnetv2-b0/block6b_se_excite/mul
+Output Scale: 0.009668819606304169
+Output Zero Point: -103
+Output Shape: [1, 7, 7, 1152]
+
+# --- Weights ---
+Name: efficientnetv2-b0/block6b_se_expand/Sigmoid
+Shape: [1, 1, 1, 1152]
+Scale(s): [0.00390625]
+Zero Point(s): [-128]
+Axis: 0
+
+# --- Shapes summary ---
+IFM0 Shape: [1, 7, 7, 1152]
+IFM1/Weights Shape: [1, 1, 1, 1152]
+Bias Shape: None
+OFM Shape: [1, 7, 7, 1152]

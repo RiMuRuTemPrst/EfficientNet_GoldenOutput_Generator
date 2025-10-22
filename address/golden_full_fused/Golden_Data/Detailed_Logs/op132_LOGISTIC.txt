@@ -1,0 +1,27 @@
+MODEL : efficientnetv2b0_int8.tflite
+OP #132: LOGISTIC
+
+=== IFM0 ===
+name    : efficientnetv2-b0/block5c_se_reduce/BiasAdd;efficientnetv2-b0/block6a_se_reduce/Conv2D;efficientnetv2-b0/block5c_se_reduce/Conv2D;efficientnetv2-b0/block5c_se_reduce/BiasAdd/ReadVariableOp
+index   : 328
+shape   : [1, 1, 1, 28]
+dtype   : <class 'numpy.int8'>
+quant   : {'scales': [0.0256465096026659], 'zero_points': [-69], 'axis': 0, 'scale_tuple': 0.0256465096026659, 'zp_tuple': -69}
+values(int):
+[[[[ 122  -28  -53  -87  -36  -51 -115  -27   71  -11   51   -8   -5    1   10   14  -46  -36  -54   -5  -33   -5
+      17  -27   64  -61  -24   65]]]]
+
+=== IFM1 ===
+N/A
+
+=== BIAS ===
+N/A
+
+=== OFM ===
+name    : efficientnetv2-b0/block5c_se_reduce/Sigmoid
+index   : 329
+shape   : [1, 1, 1, 28]
+dtype   : <class 'numpy.int8'>
+quant   : {'scales': [0.00390625], 'zero_points': [-128], 'axis': 0, 'scale_tuple': 0.00390625, 'zp_tuple': -128}
+values(int):
+[[[[126  62  26 -29  51  29 -68  63 121  81 117  84  86  92  98 101  37  51  24  86  55  86 103  63 120  13  67 120]]]]

@@ -1,0 +1,117 @@
+m255
+K4
+z2
+13
+!s112 1.1
+!i10d 8192
+!i10e 25
+!i10f 100
+cModel Technology
+Z0 d/home/tquocanh/Code/Verify_Class/Oct_19th_Assigment/PISO/questasim
+T_opt
+!s110 1761125393
+VH5W4j7A<i<4]VXFM8;9c72
+04 15 4 work tb_requantize16 fast 0
+=1-e00af654afa5-68f8a411-8708d-24d5
+o-quiet -auto_acc_if_foreign -work work +acc
+Z1 tCvgOpt 0
+n@_opt
+OL;O;10.7c;67
+R0
+vDFRAM
+Z2 DXx6 sv_std 3 std 0 22 d=_JfHTnXCN[H5FjiaJJc0
+Z3 !s110 1761126542
+!i10b 1
+!s100 lK]TUPZl1o5@8jE1Ylkk:0
+I3i1XQCkcVf9UcP<dfSL;z3
+Z4 VDg1SIo80bB@j0V0VzS_@n1
+!s105 DFRAM_sv_unit
+S1
+Z5 d/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/Questasim
+w1761122552
+8/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/src/DFRAM.sv
+F/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/src/DFRAM.sv
+L0 2
+Z6 OL;L;10.7c;67
+r1
+!s85 0
+31
+Z7 !s108 1761126542.000000
+!s107 /home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/src/DFRAM.sv|
+!s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/src/DFRAM.sv|
+!i113 0
+Z8 o-work work -sv -L mtiAvm -L mtiRnm -L mtiOvm -L mtiUvm -L mtiUPF -L infact
+R1
+n@d@f@r@a@m
+vrequantize16_core
+R2
+R3
+!i10b 1
+!s100 IjNnbR`7H59hXd<HR2WNb0
+INSB4OWo9z`Lag_gJIo7Ek0
+R4
+!s105 requantize16_core_sv_unit
+S1
+R5
+w1761122731
+8/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/src/requantize16_core.sv
+F/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/src/requantize16_core.sv
+L0 2
+R6
+r1
+!s85 0
+31
+R7
+!s107 /home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/src/requantize16_core.sv|
+!s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/src/requantize16_core.sv|
+!i113 0
+R8
+R1
+vrequantize16_top
+R2
+R3
+!i10b 1
+!s100 zkNz0gL?Sz0J7U`[>Zl@b2
+IFE_AX`ahCJS8bRz9jVVSI0
+R4
+!s105 requantize16_top_sv_unit
+S1
+R5
+w1761122829
+8/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/src/requantize16_top.sv
+F/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/src/requantize16_top.sv
+L0 2
+R6
+r1
+!s85 0
+31
+R7
+!s107 /home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/src/requantize16_top.sv|
+!s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/src/requantize16_top.sv|
+!i113 0
+R8
+R1
+vtb_requantize16
+R2
+R3
+!i10b 1
+!s100 WZel<nLZ`Ld4LG66O[c]:0
+I6N6Ib8>A=A1XSPChAJ_J=1
+R4
+!s105 tb_sv_unit
+S1
+R5
+w1761124983
+8/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/Questasim/tb.sv
+F/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/Questasim/tb.sv
+L0 13
+R6
+r1
+!s85 0
+31
+R7
+!s107 ../src/requantize16_top.sv|../src/requantize16_core.sv|../src/DFRAM.sv|/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/Questasim/tb.sv|
+!s90 -reportprogress|300|-work|work|-vopt|-sv|-stats=none|/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/Questasim/tb.sv|
+!i113 0
+R8
+R1

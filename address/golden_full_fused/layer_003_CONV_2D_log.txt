@@ -1,0 +1,15 @@
+===== SIMULATION LOG: Layer 3 (CONV_2D) =====
+Input Scale=0.008305505849421024, ZP=127
+Weight Shape=(32, 3, 3, 3), #scales=32, #zps=32
+Output Scale=0.3273392617702484, ZP=37
+IFM Shape: (1, 224, 224, 3) → OFM Shape: (1, 112, 112, 32)
+
+Stride=(2, 2), Padding=SAME, pads=(0, 1, 0, 1)
+IFM padded shape: (225, 225, 3)
+Weight layout detected: OHWI
+
+Simulation completed and output saved.
+
+Total mismatches: 227750 / 401408
+Top channel mismatch: c=13, diffs=12543 / 12544
+❌ OUTPUT KHÔNG KHỚP

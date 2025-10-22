@@ -1,0 +1,18 @@
+Op Type: MUL
+Output Tensor: efficientnetv2-b0/block5a_activation/mul_1
+Output Scale: 0.025696100667119026
+Output Zero Point: -117
+Output Shape: [1, 14, 14, 576]
+
+# --- Weights ---
+Name: efficientnetv2-b0/block5a_activation/Sigmoid
+Shape: [1, 14, 14, 576]
+Scale(s): [0.00390625]
+Zero Point(s): [-128]
+Axis: 0
+
+# --- Shapes summary ---
+IFM0 Shape: [1, 14, 14, 576]
+IFM1/Weights Shape: [1, 14, 14, 576]
+Bias Shape: None
+OFM Shape: [1, 14, 14, 576]

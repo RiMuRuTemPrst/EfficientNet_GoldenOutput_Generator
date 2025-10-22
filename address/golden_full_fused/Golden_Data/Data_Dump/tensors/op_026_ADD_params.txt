@@ -1,0 +1,18 @@
+Op Type: ADD
+Output Tensor: efficientnetv2-b0/block3b_add/add
+Output Scale: 0.17572425305843353
+Output Zero Point: -13
+Output Shape: [1, 28, 28, 48]
+
+# --- Weights ---
+Name: efficientnetv2-b0/block3a_project_bn/FusedBatchNormV3;efficientnetv2-b0/block6h_se_reduce/Conv2D;efficientnetv2-b0/block3a_project_conv/Conv2D
+Shape: [1, 28, 28, 48]
+Scale(s): [0.1337714046239853]
+Zero Point(s): [-24]
+Axis: 0
+
+# --- Shapes summary ---
+IFM0 Shape: [1, 28, 28, 48]
+IFM1/Weights Shape: [1, 28, 28, 48]
+Bias Shape: None
+OFM Shape: [1, 28, 28, 48]

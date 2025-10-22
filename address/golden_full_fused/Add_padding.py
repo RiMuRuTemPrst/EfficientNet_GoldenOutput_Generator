@@ -28,7 +28,7 @@ def write_hex_file(filename, padded_ifm):
                     f.write(f"{padded_ifm[h, w, c]:02x}\n")  # Ghi theo thứ tự: channel → row → col
 
 # ======== Sử dụng ==========
-input_file = "../Fused-Block-CNN/address/golden_full_fused/hex/ifm.hex"
+input_file = "../Fused-Block-CNN/address/golden_full_fused/hex/input_out.hex"
 output_file = "../Fused-Block-CNN/address/golden_full_fused/hex/ifm_padded.hex"
 parser = argparse.ArgumentParser()
 parser.add_argument("--ifm_height", type=int, required=True)

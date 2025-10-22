@@ -1,0 +1,36 @@
+MODEL : efficientnetv2b0_int8.tflite
+OP #284: MUL
+
+=== INPUT0 ===
+name    : efficientnetv2-b0/block6f_se_reduce/BiasAdd;efficientnetv2-b0/block6h_se_reduce/Conv2D;efficientnetv2-b0/block6f_se_reduce/Conv2D;efficientnetv2-b0/block6f_se_reduce/BiasAdd/ReadVariableOp
+index   : 479
+shape   : [1, 1, 1, 48]
+dtype   : <class 'numpy.int8'>
+quant   : {'scales': [0.028416091576218605], 'zero_points': [-73], 'axis': 0, 'scale_tuple': 0.028416091576218605, 'zp_tuple': -73}
+values(int):
+[[[[ -89   34   86  -51  -87  -40   -5  -36  -45  -92   43   93  -85  -42  124   -2  -86   15  -67  -33 -113  -75
+     -42  -90  -49  -32  -31   17  -73  -19  -70  -63  -13 -128   11  -56  -99   18  -70  -54  -24  -76  -15   47
+     -64  -71  -45  -47]]]]
+
+=== INPUT1 ===
+name    : efficientnetv2-b0/block6f_se_reduce/Sigmoid
+index   : 480
+shape   : [1, 1, 1, 48]
+dtype   : <class 'numpy.int8'>
+quant   : {'scales': [0.00390625], 'zero_points': [-128], 'axis': 0, 'scale_tuple': 0.00390625, 'zp_tuple': -128}
+values(int):
+[[[[-29 116 125  39 -25  56  96  62  48 -34 119 126 -22  53 127  98 -23 109  11  66 -66  -4  53 -30  42  67  68 110
+      0  83   5  18  89 -84 106  30 -45 110   5  34  77  -5  87 120  16   4  48  45]]]]
+
+=== OFM ===
+name    : efficientnetv2-b0/block6f_se_reduce/mul_1
+index   : 481
+shape   : [1, 1, 1, 48]
+dtype   : <class 'numpy.int8'>
+quant   : {'scales': [0.02334751933813095], 'zero_points': [-116], 'axis': 0, 'scale_tuple': 0.02334751933813095, 'zp_tuple': -116}
+values(int):
+[[[[-124    8   75  -99 -123  -87  -44  -83  -93 -124   20   84 -122  -89  123  -40 -122  -17 -112  -79 -128 -117
+     -89 -124  -97  -78  -77  -14 -116  -62 -114 -109  -54 -128  -23 -103 -126  -13 -114 -101  -68 -118  -57   25
+    -110 -115  -93  -95]]]]
+
+(Eltwise verification error: name 'eltwise_mul_debug' is not defined)

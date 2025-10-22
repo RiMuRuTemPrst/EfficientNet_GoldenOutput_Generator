@@ -1,0 +1,18 @@
+Op Type: MUL
+Output Tensor: efficientnetv2-b0/normalization/truediv;efficientnetv2-b0/normalization/Sqrt1
+Output Scale: 0.008305505849421024
+Output Zero Point: 127
+Output Shape: [1, 224, 224, 3]
+
+# --- Weights ---
+Name: efficientnetv2-b0/normalization/truediv;efficientnetv2-b0/normalization/Sqrt
+Shape: [1, 1, 1, 3]
+Scale(s): [0.017507003620266914]
+Zero Point(s): [-128]
+Axis: 0
+
+# --- Shapes summary ---
+IFM0 Shape: [1, 224, 224, 3]
+IFM1/Weights Shape: [1, 1, 1, 3]
+Bias Shape: None
+OFM Shape: [1, 224, 224, 3]

@@ -1,0 +1,38 @@
+MODEL : efficientnetv2b0_int8.tflite
+OP #280: PACK
+
+=== IFM0 ===
+name    : efficientnetv2-b0/block6f_se_reshape/strided_slice
+index   : 476
+shape   : []
+dtype   : <class 'numpy.int32'>
+quant   : {'scales': [], 'zero_points': [], 'axis': 0, 'scale_tuple': 0.0, 'zp_tuple': 0}
+values(int):
+1
+
+=== IFM1 ===
+name    : efficientnetv2-b0/block4a_se_reshape/Reshape/shape/1
+index   : 4
+shape   : []
+dtype   : <class 'numpy.int32'>
+quant   : {'scales': [], 'zero_points': [], 'axis': 0, 'scale_tuple': 0.0, 'zp_tuple': 0}
+values(int):
+1
+
+=== BIAS ===
+name    : efficientnetv2-b0/block4a_se_reshape/Reshape/shape/1
+index   : 4
+shape   : []
+dtype   : <class 'numpy.int32'>
+quant   : {'scales': [], 'zero_points': [], 'axis': 0, 'scale_tuple': 0.0, 'zp_tuple': 0}
+values(int):
+1
+
+=== OFM ===
+name    : efficientnetv2-b0/block6f_se_reshape/Reshape/shape
+index   : 477
+shape   : [4]
+dtype   : <class 'numpy.int32'>
+quant   : {'scales': [], 'zero_points': [], 'axis': 0, 'scale_tuple': 0.0, 'zp_tuple': 0}
+values(int):
+[   1    1    1 1152]

@@ -1,0 +1,19 @@
+===== SIMULATION LOG: Layer 9 (CONV_2D) =====
+Input Scale=0.14552435278892517, ZP=-126
+Weight Shape hint=(64, 3, 3, 16), #scales=64, #zps=64
+Output Scale=0.130977600812912, ZP=-10
+IFM Shape: (N,H,W,C)= (1, 112, 112, 16) → OFM Shape: (1, 56, 56, 64)
+
+Stride=(2, 2), Padding=SAME, pads=(0, 1, 0, 1)
+IFM padded shape: (113, 113, 16)
+
+[Auto layout scoring (decode-from src → OHWI)]:
+  src=OHWI: mism=0/16384 (0.00%)
+  src=OIHW: mism=16013/16384 (97.74%)
+  src=HWIO: mism=16376/16384 (99.95%)
+=> Chọn src layout: OHWI
+Requantization: dùng rdivpot_neg_no_bias_ge (chuẩn).
+
+Simulation completed and output saved.
+Total mismatches: 0 / 200704
+✅ OUTPUT KHỚP

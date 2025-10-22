@@ -1,0 +1,22 @@
+===== SIMULATION LOG: Layer 3 (CONV_2D) =====
+Input Scale=0.008305505849421024, ZP=127
+Weight Shape hint=(32, 3, 3, 3), #scales=32, #zps=32
+Output Scale=0.3273392617702484, ZP=37
+IFM Shape: (N,H,W,C)= (1, 224, 224, 3) → OFM Shape: (1, 112, 112, 32)
+
+Stride=(2, 2), Padding=SAME, pads=(0, 1, 0, 1)
+IFM padded shape: (225, 225, 3)
+Saved per-element M to:  ./Golden_Data/Layer_Logs/layer_003_CONV_2D_qmul_map.txt
+Saved per-element exp to:./Golden_Data/Layer_Logs/layer_003_CONV_2D_exp_map.txt
+
+[Auto layout scoring (decode-from src → OHWI)]:
+  src=OHWI: mism=0/8192 (0.00%)
+  src=OIHW: mism=4437/8192 (54.16%)
+  src=HWIO: mism=8167/8192 (99.69%)
+=> Chọn src layout: OHWI
+Requantization: dùng rdivpot_neg_no_bias_ge (chuẩn).
+Saved pre-requant ACC (int32) to: ./Golden_Data/Layer_Logs/layer_003_CONV_2D_acc_map.txt
+
+Simulation completed and output saved.
+Total mismatches: 0 / 401408
+✅ OUTPUT KHỚP

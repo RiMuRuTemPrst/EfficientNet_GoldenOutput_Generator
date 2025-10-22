@@ -1,0 +1,18 @@
+Op Type: ADD
+Output Tensor: efficientnetv2-b0/block5d_add/add
+Output Scale: 0.14244845509529114
+Output Zero Point: 14
+Output Shape: [1, 14, 14, 112]
+
+# --- Weights ---
+Name: efficientnetv2-b0/block5c_add/add
+Shape: [1, 14, 14, 112]
+Scale(s): [0.14873166382312775]
+Zero Point(s): [-1]
+Axis: 0
+
+# --- Shapes summary ---
+IFM0 Shape: [1, 14, 14, 112]
+IFM1/Weights Shape: [1, 14, 14, 112]
+Bias Shape: None
+OFM Shape: [1, 14, 14, 112]

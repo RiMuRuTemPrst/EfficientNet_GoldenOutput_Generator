@@ -1,0 +1,18 @@
+Op Type: MUL
+Output Tensor: efficientnetv2-b0/rescaling/mul
+Output Scale: 1.5378702300949953e-05
+Output Zero Point: -128
+Output Shape: [1, 224, 224, 3]
+
+# --- Weights ---
+Name: efficientnetv2-b0/rescaling/Cast/x
+Shape: []
+Scale(s): [1.5378702300949953e-05]
+Zero Point(s): [-128]
+Axis: 0
+
+# --- Shapes summary ---
+IFM0 Shape: [1, 224, 224, 3]
+IFM1/Weights Shape: []
+Bias Shape: None
+OFM Shape: [1, 224, 224, 3]

@@ -1,0 +1,11 @@
+Op Type: SHAPE
+Output Tensor: efficientnetv2-b0/block6d_se_reshape/Shape
+Output Scale: 0.0
+Output Zero Point: 0
+Output Shape: [2]
+
+# --- Shapes summary ---
+IFM0 Shape: [1, 1152]
+IFM1/Weights Shape: None
+Bias Shape: None
+OFM Shape: [2]

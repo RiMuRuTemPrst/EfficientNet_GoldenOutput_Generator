@@ -1,0 +1,24 @@
+Op Type: PACK
+Output Tensor: efficientnetv2-b0/block6e_se_reshape/Reshape/shape
+Output Scale: 0.0
+Output Zero Point: 0
+Output Shape: [4]
+
+# --- Weights ---
+Name: efficientnetv2-b0/block4a_se_reshape/Reshape/shape/1
+Shape: []
+Scale(s): []
+Zero Point(s): []
+Axis: 0
+
+# --- Bias ---
+Name: efficientnetv2-b0/block4a_se_reshape/Reshape/shape/1
+Shape: []
+Scale(s): []
+Zero Point(s): []
+
+# --- Shapes summary ---
+IFM0 Shape: []
+IFM1/Weights Shape: []
+Bias Shape: []
+OFM Shape: [4]

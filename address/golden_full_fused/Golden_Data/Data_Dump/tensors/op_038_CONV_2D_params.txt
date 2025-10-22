@@ -1,0 +1,24 @@
+Op Type: CONV_2D
+Output Tensor: efficientnetv2-b0/block4a_se_reduce/BiasAdd;efficientnetv2-b0/block4a_se_reduce/Conv2D;efficientnetv2-b0/block4a_se_reduce/BiasAdd/ReadVariableOp
+Output Scale: 0.0902305468916893
+Output Zero Point: -11
+Output Shape: [1, 1, 1, 12]
+
+# --- Weights ---
+Name: efficientnetv2-b0/block4a_se_reduce/Conv2D
+Shape: [12, 1, 1, 192]
+Scale(s): [0.0012286690762266517, 0.009512769058346748, 0.0010720648569986224, 0.001745583489537239, 0.0011528608156368136, 0.0021800841204822063, 0.0012551740510389209, 0.001494866912253201, 0.0009228375856764615, 0.0021798976231366396, 0.008765324018895626, 0.0013289923081174493]
+Zero Point(s): [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+Axis: 0
+
+# --- Bias ---
+Name: efficientnetv2-b0/block4a_se_reduce/BiasAdd/ReadVariableOp
+Shape: [12]
+Scale(s): [6.514862616313621e-05, 0.0005044025601819158, 5.684488496626727e-05, 9.255736222257838e-05, 6.112898699939251e-05, 0.00011559620907064527, 6.655402103206143e-05, 7.926343096187338e-05, 4.8932295612758026e-05, 0.0001155863210442476, 0.0004647702444344759, 7.046813698252663e-05]
+Zero Point(s): [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+
+# --- Shapes summary ---
+IFM0 Shape: [1, 1, 1, 192]
+IFM1/Weights Shape: [12, 1, 1, 192]
+Bias Shape: [12]
+OFM Shape: [1, 1, 1, 12]

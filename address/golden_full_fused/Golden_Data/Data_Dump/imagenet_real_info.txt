@@ -1,0 +1,5 @@
+Label: 742
+Shape: (224, 224, 3)
+Dtype: uint8
+Min: 2, Max: 255
+Mean: 198.28, Std: 55.76

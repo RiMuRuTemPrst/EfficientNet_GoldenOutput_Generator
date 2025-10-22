@@ -50,7 +50,7 @@ def process_conv_with_stride(input_file, output_file, depth, height, width):
         for d in range(depth):  # Duyệt qua chiều cao mới
             for h in range(new_height):  # Duyệt qua chiều rộng mới
                 for w in range(new_width):  # Duyệt qua chiều sâu
-                    outfile.write(f"{new_data[d][h][w]:02X}\n")  # Ghi giá trị theo thứ tự depth -> height -> width
+                    outfile.write(f"{new_data[d][h][w]:04X}\n")  # Ghi giá trị theo thứ tự depth -> height -> width
 
 
 def main():

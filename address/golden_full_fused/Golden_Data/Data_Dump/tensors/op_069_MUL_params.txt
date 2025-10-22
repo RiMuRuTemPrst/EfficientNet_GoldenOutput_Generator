@@ -1,0 +1,18 @@
+Op Type: MUL
+Output Tensor: efficientnetv2-b0/block4c_activation/mul_1
+Output Scale: 0.026568347588181496
+Output Zero Point: -118
+Output Shape: [1, 14, 14, 384]
+
+# --- Weights ---
+Name: efficientnetv2-b0/block4c_activation/Sigmoid
+Shape: [1, 14, 14, 384]
+Scale(s): [0.00390625]
+Zero Point(s): [-128]
+Axis: 0
+
+# --- Shapes summary ---
+IFM0 Shape: [1, 14, 14, 384]
+IFM1/Weights Shape: [1, 14, 14, 384]
+Bias Shape: None
+OFM Shape: [1, 14, 14, 384]

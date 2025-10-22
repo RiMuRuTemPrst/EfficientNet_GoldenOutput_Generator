@@ -1,0 +1,18 @@
+Op Type: MEAN
+Output Tensor: efficientnetv2-b0/block4a_se_squeeze/Mean
+Output Scale: 0.05302373692393303
+Output Zero Point: -123
+Output Shape: [1, 192]
+
+# --- Weights ---
+Name: efficientnetv2-b0/avg_pool/Mean/reduction_indices
+Shape: [2]
+Scale(s): []
+Zero Point(s): []
+Axis: 0
+
+# --- Shapes summary ---
+IFM0 Shape: [1, 14, 14, 192]
+IFM1/Weights Shape: [2]
+Bias Shape: None
+OFM Shape: [1, 192]

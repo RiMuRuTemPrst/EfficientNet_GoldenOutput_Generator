@@ -1,0 +1,17 @@
+/home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/Questasim/tb.sv {2 {vlog -work work -vopt -sv -stats=none /home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/Questasim/tb.sv
+QuestaSim-64 vlog 10.7c Compiler 2018.08 Aug 17 2018
+-- Compiling module DFRAM
+-- Compiling module requantize16_core
+** Warning: ** while parsing file included at /home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/Questasim/tb.sv(9)
+** at ../src/requantize16_core.sv(24): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: ** while parsing file included at /home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/Questasim/tb.sv(9)
+** at ../src/requantize16_core.sv(25): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+** Warning: ** while parsing file included at /home/tquocanh/Code/EffcientNet_Project/CNN_Golden_Output_Generator/Fused-Block-CNN/address/golden_full_fused/Verilog/Questasim/tb.sv(9)
+** at ../src/requantize16_core.sv(26): (vlog-2583) [SVCHK] - Extra checking for conflicts with always_comb and always_latch variables is done at vopt time.
+-- Compiling module requantize16_top
+-- Compiling module tb_requantize16
+
+Top level modules:
+	tb_requantize16
+
+} {} {}}

@@ -1,0 +1,24 @@
+Op Type: STRIDED_SLICE
+Output Tensor: efficientnetv2-b0/block4b_se_reshape/strided_slice
+Output Scale: 0.0
+Output Zero Point: 0
+Output Shape: []
+
+# --- Weights ---
+Name: efficientnetv2-b0/block4a_se_reshape/strided_slice/stack
+Shape: [1]
+Scale(s): []
+Zero Point(s): []
+Axis: 0
+
+# --- Bias ---
+Name: efficientnetv2-b0/block4a_se_reshape/strided_slice/stack_1
+Shape: [1]
+Scale(s): []
+Zero Point(s): []
+
+# --- Shapes summary ---
+IFM0 Shape: [2]
+IFM1/Weights Shape: [1]
+Bias Shape: [1]
+OFM Shape: []
