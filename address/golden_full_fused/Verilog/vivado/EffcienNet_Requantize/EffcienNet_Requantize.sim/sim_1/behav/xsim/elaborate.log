@@ -1,0 +1,59 @@
+Vivado Simulator v2024.2.0
+Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
+Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+Running: D:/AppData/Vivado/Vivado/2024.2/bin/unwrapped/win64.o/xelab.exe --incr --debug typical --relax --mt 2 -L xil_defaultlib -L uvm -L unisims_ver -L unimacro_ver -L secureip --snapshot tb_requantize16_behav xil_defaultlib.tb_requantize16 xil_defaultlib.glbl -log elaborate.log 
+Using 2 slave threads.
+Starting static elaboration
+Pass Through NonSizing Optimizer
+Completed static elaboration
+Starting simulation data flow analysis
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_top.sv" Line 2. Module requantize16_top(DEPTH=1048576,AW=20) doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/DFRAM.sv" Line 3. Module DFRAM(DW=512,DEPTH=1048576,AW=20) doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/DFRAM.sv" Line 3. Module DFRAM(DEPTH=1048576,AW=20) doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_core.sv" Line 2. Module requantize16_core_default doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_top.sv" Line 2. Module requantize16_top(DEPTH=1048576,AW=20) doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/DFRAM.sv" Line 3. Module DFRAM(DW=512,DEPTH=1048576,AW=20) doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/DFRAM.sv" Line 3. Module DFRAM(DEPTH=1048576,AW=20) doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_core.sv" Line 2. Module requantize16_core_default doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+WARNING: [XSIM 43-4099] "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" Line 2. Module requantize16_lane doesn't have a timescale but at least one module in design has a timescale.
+Completed simulation data flow analysis
+Time Resolution for simulation is 1ps
+Compiling module xil_defaultlib.DFRAM(DW=512,DEPTH=1048576,AW=20...
+Compiling module xil_defaultlib.DFRAM(DEPTH=1048576,AW=20)
+Compiling module xil_defaultlib.requantize16_lane
+Compiling module xil_defaultlib.requantize16_core_default
+Compiling module xil_defaultlib.requantize16_top(DEPTH=1048576,A...
+Compiling module xil_defaultlib.tb_requantize16
+Compiling module xil_defaultlib.glbl
+Built simulation snapshot tb_requantize16_behav

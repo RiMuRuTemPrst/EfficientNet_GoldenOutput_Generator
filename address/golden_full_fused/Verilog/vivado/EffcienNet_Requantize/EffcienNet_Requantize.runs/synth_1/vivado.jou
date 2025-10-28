@@ -1,0 +1,24 @@
+#-----------------------------------------------------------
+# Vivado v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Sun Oct 26 00:31:16 2025
+# Process ID         : 14632
+# Current directory  : D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/vivado/EffcienNet_Requantize/EffcienNet_Requantize.runs/synth_1
+# Command line       : vivado.exe -log requantize16_top.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source requantize16_top.tcl
+# Log file           : D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/vivado/EffcienNet_Requantize/EffcienNet_Requantize.runs/synth_1/requantize16_top.vds
+# Journal file       : D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/vivado/EffcienNet_Requantize/EffcienNet_Requantize.runs/synth_1\vivado.jou
+# Running On         : DESKTOP-28K03Q8
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26200
+# Processor Detail   : AMD Ryzen 5 5600H with Radeon Graphics         
+# CPU Frequency      : 3294 MHz
+# CPU Physical cores : 6
+# CPU Logical cores  : 12
+# Host memory        : 17024 MB
+# Swap memory        : 9149 MB
+# Total Virtual      : 26174 MB
+# Available Virtual  : 3670 MB
+#-----------------------------------------------------------
+source requantize16_top.tcl -notrace

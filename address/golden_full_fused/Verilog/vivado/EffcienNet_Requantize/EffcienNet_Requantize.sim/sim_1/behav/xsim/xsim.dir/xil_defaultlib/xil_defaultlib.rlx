@@ -1,0 +1,10 @@
+0.7
+2020.2
+Nov  8 2024
+22:36:57
+D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/DFRAM.sv,1761413260,systemVerilog,,D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_core.sv,,DFRAM,,uvm,,,,,,
+D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_core.sv,1761405169,systemVerilog,,D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv,,requantize16_core,,uvm,,,,,,
+D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv,1761405152,systemVerilog,,D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_top.sv,,requantize16_lane,,uvm,,,,,,
+D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_top.sv,1761200549,systemVerilog,,D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/tb/tb.sv,,requantize16_top,,uvm,,,,,,
+D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/tb/tb.sv,1761413295,systemVerilog,,,,tb_requantize16,,uvm,,,,,,
+D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/vivado/EffcienNet_Requantize/EffcienNet_Requantize.sim/sim_1/behav/xsim/glbl.v,1724786425,verilog,,,,glbl,,uvm,,,,,,

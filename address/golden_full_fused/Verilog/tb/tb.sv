@@ -1,26 +1,14 @@
 `timescale 1ns/10ps
 `define CYCLE     2.5
-`define MAX_CYCLE 64'd300000000  // timeout theo thời gian mô phỏng
+`define MAX_CYCLE 64'd300000000  // timeout theo th�?i gian mô ph�?ng
 
 `ifdef SYN
   // TODO: add lib + netlist synth nếu cần
-`else
+`el
 //  `include "../src/DFRAM.sv"
 //  `include "../src/requantize16_core.sv"
 //  `include "../src/requantize16_top.sv"
 `endif
-
-// ==================== CONFIG PATHS (compile-time) ====================
-// Có thể override trong Vivado bằng Verilog Defines (e.g. -d DATA_ROOT="X:/...")
-`ifndef DATA_ROOT
-  `define DATA_ROOT "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Golden_Data"
-`endif
-`define QMUL_FILE   {`DATA_ROOT, "/Layer_Logs/layer_003_CONV_2D_qmul_map.txt"}
-`define EXP_FILE    {`DATA_ROOT, "/Layer_Logs/layer_003_CONV_2D_exp_map.txt"}
-`define ACC_FILE    {`DATA_ROOT, "/Layer_Logs/layer_003_CONV_2D_acc_map.txt"}
-`define GOLDEN_FILE {`DATA_ROOT, "/Data_Dump/golden_outputs/op_003_CONV_2D_output.txt"}
-
-// ====================================================================
 
 module tb_requantize16;
 
@@ -33,6 +21,16 @@ module tb_requantize16;
     #(`CYCLE*4);
     rst_n = 1;
   end
+
+  //==================== File paths ====================//
+  // Chỉnh path theo cấu trúc thư mục của bạn
+  string QMUL_FILE   = "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Golden_Data/Layer_Logs/layer_003_CONV_2D_qmul_map.txt";
+  string EXP_FILE    = "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Golden_Data/Layer_Logs/layer_003_CONV_2D_exp_map.txt";
+  string ACC_FILE    = "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Golden_Data/Layer_Logs/layer_003_CONV_2D_acc_map.txt";
+  string GOLDEN_FILE = "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Golden_Data/Data_Dump/golden_outputs/op_003_CONV_2D_output.txt";
+
+  // Zero-point của layer (đổi nếu khác)
+  localparam signed [7:0] OUT_ZP = 8'sd37;
 
   //==================== DUT wiring ====================//
   localparam int LANES = 16;
@@ -70,18 +68,15 @@ module tb_requantize16;
 
   // Khởi tạo để tránh X-propagation
   initial begin
-    start   = 1'b0;
-    addr_r  = '0;
+    start  = 1'b0;
+    addr_r = '0;
     acc_vec = '0;
-    out_zp  =  OUT_ZP;
+    out_zp = OUT_ZP;
   end
 
-  // Zero-point của layer (đổi nếu khác)
-  localparam signed [7:0] OUT_ZP = 8'sd37;
-
   //==================== Plusargs / Watchdog ====================//
-  int LIMIT_ENTRIES   = -1;   // ENTRIES=N để chạy nhanh 1 phần
-  int MAX_WAIT_CYCLES = 32;   // MAXWAIT=W để chỉnh watchdog đợi 'done'
+  int LIMIT_ENTRIES = -1;         // ENTRIES=N để chạy nhanh 1 phần
+  int MAX_WAIT_CYCLES = 32;       // MAXWAIT=W để chỉnh watchdog đợi 'done'
   initial begin
     if ($value$plusargs("ENTRIES=%d", LIMIT_ENTRIES))
       $display("[TB] LIMIT_ENTRIES = %0d", LIMIT_ENTRIES);
@@ -95,8 +90,8 @@ module tb_requantize16;
   int shown  = 0;           // in tối đa 10 mismatch
   int total_entries = 0;    // đếm theo stream thực tế
 
-  //==================== Helpers: đọc 1 entry ====================//
-  // Trả về 0 nếu EOF bất kỳ file nào khi đọc entry tiếp theo
+  //==================== Helpers: đ�?c 1 entry ====================//
+  // Trả v�? 0 nếu EOF bất kỳ file nào khi đ�?c entry tiếp theo
   function automatic bit read_one_entry_pack_ME(
       output logic [LANES*32-1:0] M_pack,
       output logic [LANES*8 -1:0] E_pack
@@ -106,17 +101,17 @@ module tb_requantize16;
     begin
       M_pack = '0;
       E_pack = '0;
-      // đọc 16 qmul (int32 decimal)
+      // đ�?c 16 qmul (int32 decimal)
       for (int k=0; k<LANES; k++) begin
         c = $fscanf(fm, "%d\n", v);
         if (c!=1) return 0;
         M_pack[k*32 +: 32] = $signed(v);
       end
-      // đọc 16 exp (int8 decimal, có thể âm)
+      // đ�?c 16 exp (int8 decimal, có thể âm)
       for (int k=0; k<LANES; k++) begin
         c = $fscanf(fe, "%d\n", v);
         if (c!=1) return 0;
-        vb = v; // cast về 8-bit có dấu
+        vb = v; // cast v�? 8-bit có dấu
         E_pack[k*8 +: 8] = vb;
       end
       return 1;
@@ -148,7 +143,7 @@ module tb_requantize16;
       for (int k=0; k<LANES; k++) begin
         c = $fscanf(fg, "%d\n", v);
         if (c!=1) return 0;
-        vb = v; // cast về 8-bit có dấu
+        vb = v; // cast v�? 8-bit có dấu
         GOLD_pack[k*8 +: 8] = vb;
       end
       return 1;
@@ -160,26 +155,20 @@ module tb_requantize16;
     logic [LANES*32-1:0] M_pack, ACC_pack;
     logic [LANES*8 -1:0] E_pack;
     logic [LANES*8 -1:0] GOLD_pack;
-    bit   done_seen;   // khai báo sớm để Vivado parser không bắt lỗi
+    bit   done_seen;   // <<< moved declaration lên đầu block
 
     int idx = 0;
-    bit open_ok = 1;
+
     begin
       out_zp = OUT_ZP;
 
-      // mở tất cả file rồi mới quyết định dừng
-      
-      fm = $fopen(`QMUL_FILE,   "r"); if (!fm) begin $display("[TB] ERROR open QMUL : %s", `QMUL_FILE);   open_ok = 0; end
-      fe = $fopen(`EXP_FILE,    "r"); if (!fe) begin $display("[TB] ERROR open EXP  : %s", `EXP_FILE);    open_ok = 0; end
-      fa = $fopen(`ACC_FILE,    "r"); if (!fa) begin $display("[TB] ERROR open ACC  : %s", `ACC_FILE);    open_ok = 0; end
-      fg = $fopen(`GOLDEN_FILE, "r"); if (!fg) begin $display("[TB] ERROR open GOLD : %s", `GOLDEN_FILE); open_ok = 0; end
-      if (!open_ok) begin
-        $display("[TB] Paths:\n  QMUL=%s\n  EXP =%s\n  ACC =%s\n  GOLD=%s",
-                 `QMUL_FILE, `EXP_FILE, `ACC_FILE, `GOLDEN_FILE);
-        $finish;
-      end
+      // mở file
+      fm = $fopen(QMUL_FILE,   "r"); if (!fm) begin $display("[TB] ERROR open %s", QMUL_FILE);   $finish; end
+      fe = $fopen(EXP_FILE,    "r"); if (!fe) begin $display("[TB] ERROR open %s", EXP_FILE);    $finish; end
+      fa = $fopen(ACC_FILE,    "r"); if (!fa) begin $display("[TB] ERROR open %s", ACC_FILE);    $finish; end
+      fg = $fopen(GOLDEN_FILE, "r"); if (!fg) begin $display("[TB] ERROR open %s", GOLDEN_FILE); $finish; end
 
-      // chờ reset
+      // ch�? reset
       @(posedge rst_n);
       @(negedge clk);
 
@@ -187,7 +176,7 @@ module tb_requantize16;
       forever begin
         if (LIMIT_ENTRIES>0 && idx>=LIMIT_ENTRIES) break;
 
-        // đọc 1 entry từ 4 file
+        // đ�?c 1 entry từ 4 file
         if (!read_one_entry_pack_ME(M_pack, E_pack)) break;
         if (!read_one_entry_acc(ACC_pack))           break;
         if (!read_one_entry_golden(GOLD_pack))       break;
@@ -196,7 +185,7 @@ module tb_requantize16;
         i_DUT.u_dfram_M.mem[idx] = M_pack;
         i_DUT.u_dfram_E.mem[idx] = E_pack;
 
-        // chờ DUT sẵn sàng (IDLE)
+        // ch�? DUT sẵn sàng (IDLE)
         if (!ready) @(posedge ready);
 
         // phát start cho entry này
@@ -218,7 +207,7 @@ module tb_requantize16;
         if (!done_seen) begin
           errors++;
           if (shown < 10) begin
-            $display("[TB][TIMEOUT] entry=%0d addr=%0d: 'done' không về trong %0d chu kỳ.",
+            $display("[TB][TIMEOUT] entry=%0d addr=%0d: 'done' không v�? trong %0d chu kỳ.",
                      idx, addr_r, MAX_WAIT_CYCLES);
             shown++;
           end
@@ -252,7 +241,7 @@ module tb_requantize16;
       if (errors==0)
         $display("[TB] ✅ PASS: %0d entries × %0d lanes khớp hoàn toàn.", total_entries, LANES);
       else
-        $display("[TB] ❌ FAIL: %0d mismatches trên %0d entries.", errors, total_entries);
+        $display("[TB] �?� FAIL: %0d mismatches trên %0d entries.", errors, total_entries);
     end
   endtask
 
@@ -268,7 +257,7 @@ module tb_requantize16;
     $finish;
   end
 
-  //==================== Timeout theo thời gian mô phỏng ====================//
+  //==================== Timeout theo th�?i gian mô ph�?ng ====================//
   initial begin
     #(`MAX_CYCLE);
     print_cat_timeout();

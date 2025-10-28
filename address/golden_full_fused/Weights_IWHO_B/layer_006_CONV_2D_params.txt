@@ -1,0 +1,13 @@
+Op Type: CONV_2D
+Orig Weight Shape (O,H,W,I): (16, 3, 3, 32)
+IWHO Weight Shape (I,W,H,O): (32, 3, 3, 16)
+Bias Shape: (16,)
+Output Tensor: efficientnetv2-b0/block1a_project_bn/FusedBatchNormV3;efficientnetv2-b0/block1a_project_conv/Conv2D
+Output Scale: 0.2034601867198944
+Output ZeroPoint: -54
+W scales (len): 16
+W zero_points (len): 16
+W quant_dim: 0
+B scales (len): 16
+B zero_points (len): 16
+Note: CONV_2D -> IWHO (I,W,H,O)

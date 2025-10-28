@@ -1,0 +1,13 @@
+Op Type: FULLY_CONNECTED
+Orig Weight Shape (O,I): (1000, 1280)
+IWHO Weight Shape (I,1,1,O): (1280, 1, 1, 1000)
+Bias Shape: (1000,)
+Output Tensor: efficientnetv2-b0/predictions/MatMul;efficientnetv2-b0/predictions/BiasAdd
+Output Scale: 0.019165072590112686
+Output ZeroPoint: -47
+W scales (len): 1
+W zero_points (len): 1
+W quant_dim: 0
+B scales (len): 1
+B zero_points (len): 1
+Note: FC -> IWHO ảo (I,1,1,O)

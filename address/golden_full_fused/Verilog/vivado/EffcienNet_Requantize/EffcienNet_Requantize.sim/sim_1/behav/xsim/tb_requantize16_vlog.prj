@@ -1,0 +1,13 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  \
+"../../../../../../src/DFRAM.sv" \
+"../../../../../../src/requantize16_core.sv" \
+"../../../../../../src/requantize16_lane.sv" \
+"../../../../../../src/requantize16_top.sv" \
+"../../../../../../tb/tb.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

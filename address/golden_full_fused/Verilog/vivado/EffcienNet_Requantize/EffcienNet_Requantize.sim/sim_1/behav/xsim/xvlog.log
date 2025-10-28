@@ -1,0 +1,10 @@
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/DFRAM.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module DFRAM
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_core.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module requantize16_core
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_lane.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module requantize16_lane
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/src/requantize16_top.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module requantize16_top
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "D:/A.Code_code/Lab_Project/EfficientNet/Requantize/address/golden_full_fused/Verilog/tb/tb.sv" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_requantize16

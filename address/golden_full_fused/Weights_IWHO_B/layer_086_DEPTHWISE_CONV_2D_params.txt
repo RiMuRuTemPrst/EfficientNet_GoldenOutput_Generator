@@ -1,0 +1,14 @@
+Op Type: DEPTHWISE_CONV_2D
+Orig Weight Shape (1,H,W,O): (1, 3, 3, 576)
+Decomposed: I_in=576, M=1, O=I_in*M
+IWHO(Depthwise) Shape (I,W,H,M): (576, 3, 3, 1)
+Bias Shape: (576,)
+Output Tensor: efficientnetv2-b0/block5a_bn/FusedBatchNormV3;efficientnetv2-b0/block5a_se_expand/Conv2D;efficientnetv2-b0/block5a_dwconv2/depthwise
+Output Scale: 0.06498778611421585
+Output ZeroPoint: 30
+W scales (len): 576
+W zero_points (len): 576
+W quant_dim: 3
+B scales (len): 576
+B zero_points (len): 576
+Note: DEPTHWISE -> (I_in, W, H, M); dùng groups=I_in khi thực thi

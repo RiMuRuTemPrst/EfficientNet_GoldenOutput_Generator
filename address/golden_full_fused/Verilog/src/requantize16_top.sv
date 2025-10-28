@@ -1,4 +1,4 @@
-// requantize16_top.sv — yêu cầu DFRAM trả M/exp ở chu kỳ kế tiếp khi start
+
 module requantize16_top #(
   parameter int LANES   = 16,
   parameter int DEPTH   = 131072,
@@ -63,7 +63,6 @@ module requantize16_top #(
     .rd_valid(e_rd_valid)
   );
 
-  // ================= Điều phối đơn giản (1 outstanding) ================
   typedef enum logic [1:0] {IDLE, WAIT_RD, ISSUE_CORE} state_t;
   state_t st, st_n;
 
